@@ -32,13 +32,14 @@ export async function runQAAgent(
     messages: [{ role: 'user', content: userMessage }],
   });
 
-  const text = (response.content[0] as { type: 'text'; text: string }).text.trim();
+  const raw = (response.content[0] as { type: 'text'; text: string }).text.trim();
+  const text = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
 
   let parsed: QAAgentOutput;
   try {
     parsed = JSON.parse(text);
   } catch {
-    throw new Error(`QA agent returned non-JSON: ${text}`);
+    throw new Error(`QA agent returned non-JSON: ${raw}`);
   }
 
   return parsed;

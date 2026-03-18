@@ -36,7 +36,7 @@ export async function runDevAgent(
 
   const response = await client.messages.create({
     model: 'claude-opus-4-6',
-    max_tokens: 8192,
+    max_tokens: 16000,
     system: systemPrompt,
     messages: [{ role: 'user', content: userLines.join('\n') }],
   });

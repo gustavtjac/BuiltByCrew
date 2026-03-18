@@ -30,32 +30,40 @@ export async function runMarketingAgent(
     messages: [{ role: 'user', content: userMessage }],
   });
 
-  const text = (response.content[0] as { type: 'text'; text: string }).text.trim();
+  const raw = (response.content[0] as { type: 'text'; text: string }).text.trim();
+  const text = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
 
   let parsed: MarketingAgentOutput;
   try {
     parsed = JSON.parse(text);
   } catch {
-    throw new Error(`Marketing agent returned non-JSON: ${text}`);
+    throw new Error(`Marketing agent returned non-JSON: ${raw}`);
   }
 
-  // Validate tweet lengths
-  for (const [key, tweet] of Object.entries(parsed) as [keyof MarketingAgentOutput, string][]) {
-    if (tweet.length > 280) {
-      throw new Error(`${key} exceeds 280 characters (${tweet.length})`);
+  // Truncate tweets that exceed 280 characters
+  for (const key of Object.keys(parsed) as (keyof MarketingAgentOutput)[]) {
+    if (parsed[key].length > 280) {
+      parsed[key] = parsed[key].slice(0, 277) + '...';
     }
   }
 
-  // Post the day-0 tweet immediately
-  const twitterClient = new TwitterApi({
-    appKey: config.twitterApiKey,
-    appSecret: config.twitterApiSecret,
-    accessToken: config.twitterAccessToken,
-    accessSecret: config.twitterAccessSecret,
-  });
-
-  await twitterClient.v2.tweet(parsed.day0Tweet);
-  console.log(`[marketing] Day-0 tweet posted`);
+  // Post the day-0 tweet immediately (non-fatal if Twitter API is unavailable)
+  if (config.twitterApiKey && config.twitterApiSecret && config.twitterAccessToken && config.twitterAccessSecret) {
+    try {
+      const twitterClient = new TwitterApi({
+        appKey: config.twitterApiKey,
+        appSecret: config.twitterApiSecret,
+        accessToken: config.twitterAccessToken,
+        accessSecret: config.twitterAccessSecret,
+      });
+      await twitterClient.v2.tweet(parsed.day0Tweet);
+      console.log(`[marketing] Day-0 tweet posted`);
+    } catch (err: any) {
+      console.warn(`[marketing] Tweet skipped: ${err?.message ?? err}`);
+    }
+  } else {
+    console.log(`[marketing] Twitter credentials not set — skipping tweet`);
+  }
 
   return parsed;
 }

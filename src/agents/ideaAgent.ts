@@ -31,13 +31,14 @@ export async function runIdeaAgent(
     messages: [{ role: 'user', content: userMessage }],
   });
 
-  const text = (response.content[0] as { type: 'text'; text: string }).text.trim();
+  const raw = (response.content[0] as { type: 'text'; text: string }).text.trim();
+  const text = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
 
   let parsed: IdeaAgentOutput;
   try {
     parsed = JSON.parse(text);
   } catch {
-    throw new Error(`Idea agent returned non-JSON: ${text}`);
+    throw new Error(`Idea agent returned non-JSON: ${raw}`);
   }
 
   if (!parsed.title || !parsed.description || !parsed.slug) {
