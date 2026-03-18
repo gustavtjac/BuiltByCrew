@@ -394,6 +394,37 @@
     }
     .apps-empty p { font-family: var(--ps2); font-size: 0.52rem; color: var(--muted); line-height: 2.8; }
 
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem; margin-top: 2.5rem;
+    }
+    .app-card {
+      background: var(--surf);
+      border: 3px solid var(--bdr);
+      box-shadow: 4px 4px 0 #000;
+      padding: 1.25rem 1.25rem 1rem;
+      text-decoration: none; color: var(--text);
+      display: flex; flex-direction: column; gap: 0.5rem;
+      transition: transform 0.08s, box-shadow 0.08s, border-color 0.1s;
+    }
+    .app-card:hover {
+      transform: translate(-3px,-3px);
+      box-shadow: 7px 7px 0 #000;
+      border-color: var(--gold);
+    }
+    .app-card-name {
+      font-family: var(--ps2); font-size: 0.58rem;
+      color: var(--gold); line-height: 1.6;
+      text-shadow: 0 0 10px var(--glow-g);
+    }
+    .app-card-date { font-family: var(--ps2); font-size: 0.38rem; color: var(--muted); }
+    .app-card-url {
+      font-family: var(--vt); font-size: 1rem;
+      color: var(--cyan); margin-top: auto; padding-top: 0.5rem;
+      border-top: 1px solid var(--bdr);
+    }
+
     /* ── FOOTER ─────────────────────────────────────────────────── */
     footer {
       background: var(--surf); border-top: 3px solid var(--gold);
@@ -504,11 +535,13 @@
       <div class="eyebrow">// ACHIEVEMENTS_UNLOCKED</div>
       <h2>EVERYTHING WE'VE SHIPPED</h2>
       <p class="sect-sub">Each app lives at its own subdomain under builtbycrew.online. Browse them, use them, share them.</p>
-      <div class="apps-empty" id="apps-container">
-        <p>NO BUILDS LOADED YET.</p>
-        <p>&nbsp;</p>
-        <p>FIRST APP INCOMING.</p>
-        <p>STAND BY<span class="blink">_</span></p>
+      <div id="apps-container">
+        <div class="apps-empty">
+          <p>NO BUILDS LOADED YET.</p>
+          <p>&nbsp;</p>
+          <p>FIRST APP INCOMING.</p>
+          <p>STAND BY<span class="blink">_</span></p>
+        </div>
       </div>
     </section>
   </main>
@@ -520,6 +553,7 @@
     <p>INSERT COIN TO CONTINUE <span class="blink">_</span></p>
   </footer>
 
+  <script>window.__APPS__=[];</script>
   <script>
   (() => {
     // Remove boot overlay after animation
@@ -702,8 +736,31 @@
       grid.appendChild(card);
     });
 
+    // ── APPS GRID ─────────────────────────────────────────────────
+    const apps = window.__APPS__ || [];
+    const appsContainer = document.getElementById('apps-container');
+    if (apps.length && appsContainer) {
+      const grid = document.createElement('div');
+      grid.className = 'apps-grid';
+      [...apps].reverse().forEach(app => {
+        const a = document.createElement('a');
+        a.className = 'app-card';
+        a.href = app.url;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        const subdomain = app.url.replace('https://', '').split('.')[0];
+        a.innerHTML = `
+          <div class="app-card-name">${app.title}</div>
+          <div class="app-card-date">${app.date}</div>
+          <div class="app-card-url">▶ ${subdomain}.builtbycrew.online</div>`;
+        grid.appendChild(a);
+      });
+      appsContainer.innerHTML = '';
+      appsContainer.appendChild(grid);
+    }
+
     // ── STATS COUNTER ─────────────────────────────────────────────
-    const shipped = parseInt(localStorage.getItem('builtbycrew_shipped') || '0', 10);
+    const shipped = apps.length;
     const el = document.getElementById('stat-apps');
     if (el && shipped > 0) {
       let cur = 0;

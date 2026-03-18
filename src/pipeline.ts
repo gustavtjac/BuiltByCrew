@@ -11,6 +11,7 @@ import { runDevAgent } from './agents/devAgent';
 import { runQAAgent } from './agents/qaAgent';
 import { runOpsAgent } from './agents/opsAgent';
 import { runMarketingAgent } from './agents/marketingAgent';
+import { deployLanding } from '../scripts/deploy-landing';
 
 const RUNS_PATH = path.resolve('data', 'runs.json');
 const APPS_DIR = path.resolve('apps');
@@ -131,7 +132,8 @@ export async function runPipeline(): Promise<void> {
 
     record.idea = idea.title;
     record.ideaDescription = idea.description;
-    record.slug = slugify(idea.slug, { lower: true, strict: true });
+    const fullSlug = slugify(idea.slug, { lower: true, strict: true });
+    record.slug = fullSlug.split('-').slice(0, 2).join('-');
     updateRecord(store, record);
     saveRuns(store);
 
@@ -206,6 +208,17 @@ export async function runPipeline(): Promise<void> {
     saveRuns(store);
 
     console.log(`[pipeline] Run complete. App: ${idea.title} — ${opsOut.liveUrl}`);
+
+    // Redeploy landing page with updated apps list
+    try {
+      const successfulApps = store.runs
+        .filter(r => r.status === 'success' && r.url)
+        .map(r => ({ title: r.idea, url: r.url!, date: r.date.slice(0, 10) }));
+      await deployLanding(successfulApps);
+      console.log(`[pipeline] Landing page updated`);
+    } catch (err: any) {
+      console.warn(`[pipeline] Landing redeploy failed:`, err?.message ?? err);
+    }
   } catch (err) {
     record.status = 'failed';
     record.failureReason = err instanceof Error ? err.message : String(err);
