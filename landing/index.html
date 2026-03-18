@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BuiltByCrew — A new app, every day.</title>
+  <meta name="description" content="Six AI agents. One new web app every day. No humans required." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:      #020206;
+      --surf:    #0c0c14;
+      --surf2:   #13131e;
+      --bdr:     #1c1c2e;
+      --gold:    #ffd700;
+      --glow-g:  rgba(255,215,0,0.45);
+      --pink:    #ff2d78;
+      --glow-p:  rgba(255,45,120,0.4);
+      --cyan:    #00e5ff;
+      --green:   #39ff14;
+      --text:    #e0e0f0;
+      --muted:   #55556a;
+      --ps2: 'Press Start 2P', monospace;
+      --vt:  'VT323', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--vt);
+      font-size: 1.15rem;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    /* ── KEYFRAMES ───────────────────────────────────────────────── */
+
+    @keyframes blink    { 50% { opacity: 0; } }
+    .blink { animation: blink 1s step-end infinite; }
+
+    @keyframes float-idle {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-7px); }
+    }
+
+    @keyframes glow-pulse {
+      0%, 100% { text-shadow: 0 0 10px var(--gold), 0 0 25px var(--glow-g); }
+      50%       { text-shadow: 0 0 22px var(--gold), 0 0 55px var(--gold), 0 0 90px var(--glow-g); }
+    }
+
+    @keyframes glitch-r {
+      0%,86%,100% { transform: translateX(0);  opacity: 0; }
+      87%          { transform: translateX(-7px); opacity: 0.85; }
+      88%          { transform: translateX(7px);  opacity: 0.85; }
+      89%          { transform: translateX(0);  opacity: 0; }
+      93%          { transform: translateX(-3px); opacity: 0.4; }
+      94%          { transform: translateX(0);  opacity: 0; }
+    }
+
+    @keyframes glitch-c {
+      0%,88%,100% { transform: translateX(0);  opacity: 0; }
+      89%          { transform: translateX(6px);  opacity: 0.85; }
+      90%          { transform: translateX(-6px); opacity: 0.85; }
+      91%          { transform: translateX(0);  opacity: 0; }
+      95%          { transform: translateX(3px);  opacity: 0.4; }
+      96%          { transform: translateX(0);  opacity: 0; }
+    }
+
+    @keyframes sweep { 0% { top: -8%; } 100% { top: 108%; } }
+
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    @keyframes neon-flicker {
+      0%,18%,20%,24%,54%,57%,100% { opacity: 1; }
+      19%,22%,55%                  { opacity: 0.75; }
+    }
+
+    @keyframes card-glow-pulse {
+      0%,100% { box-shadow: 5px 5px 0 #000, 0 0 18px var(--cc-glow); }
+      50%      { box-shadow: 5px 5px 0 #000, 0 0 40px var(--cc),  0 0 70px var(--cc-glow); }
+    }
+
+    @keyframes boot {
+      0%   { clip-path: inset(49.5% 0); filter: brightness(8); }
+      35%  { clip-path: inset(0% 0);    filter: brightness(2); }
+      55%  { filter: brightness(0.6); }
+      75%  { filter: brightness(1.3); }
+      100% { clip-path: inset(0% 0);    filter: brightness(1); opacity: 0; }
+    }
+
+    /* ── CRT BOOT OVERLAY ───────────────────────────────────────── */
+    #boot {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--bg);
+      animation: boot 1.3s ease-out forwards;
+      pointer-events: none;
+    }
+
+    /* ── BACKGROUND LAYERS ──────────────────────────────────────── */
+
+    /* Pixel grid */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 1;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 8px 8px;
+      pointer-events: none;
+    }
+
+    #stars { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
+
+    .vignette {
+      position: fixed; inset: 0; z-index: 3; pointer-events: none;
+      background: radial-gradient(ellipse at 50% 50%,
+        transparent 55%, rgba(0,0,0,0.55) 82%, rgba(0,0,0,0.92) 100%);
+    }
+
+    .scanlines {
+      position: fixed; inset: 0; z-index: 4; pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg, rgba(0,0,0,0.09) 0px, rgba(0,0,0,0.09) 1px,
+        transparent 1px, transparent 3px);
+    }
+
+    .sweep-line {
+      position: fixed; left: 0; right: 0; height: 100px; z-index: 5;
+      pointer-events: none;
+      background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.035), transparent);
+      animation: sweep 7s linear infinite;
+    }
+
+    /* All real content sits above overlays */
+    nav, main, footer, .ticker-wrap, .stats-bar { position: relative; z-index: 10; }
+
+    /* ── NAV ────────────────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(2,2,6,0.96);
+      border-bottom: 3px solid var(--gold);
+      padding: 0.9rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 30px rgba(255,215,0,0.12);
+    }
+
+    .logo {
+      font-family: var(--ps2); font-size: 0.82rem; color: var(--gold);
+      text-decoration: none; letter-spacing: 0.04em;
+      text-shadow: 0 0 12px var(--gold), 0 0 28px var(--glow-g);
+      animation: neon-flicker 9s linear infinite;
+    }
+    .logo em { color: var(--pink); font-style: normal;
+      text-shadow: 0 0 12px var(--pink), 0 0 28px var(--glow-p); }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--ps2); font-size: 0.47rem;
+      color: var(--muted); text-decoration: none; letter-spacing: 0.08em;
+      transition: color 0.12s, text-shadow 0.12s;
+    }
+    .nav-links a:hover { color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+
+    /* ── HERO ───────────────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 4rem 2rem 3rem;
+    }
+
+    .hero-eye {
+      font-family: var(--ps2); font-size: 0.48rem;
+      color: var(--green); letter-spacing: 0.2em; margin-bottom: 2.5rem;
+      text-shadow: 0 0 10px var(--green);
+    }
+
+    /* Glitch title */
+    .title-wrap {
+      position: relative; display: inline-block; margin-bottom: 0.6rem;
+    }
+    .title-wrap::before, .title-wrap::after {
+      content: attr(data-text);
+      font-family: var(--ps2); font-size: clamp(1.5rem,5vw,3.4rem);
+      letter-spacing: 0.03em; line-height: 1.3;
+      position: absolute; top: 0; left: 0; opacity: 0; pointer-events: none;
+    }
+    .title-wrap::before { color: var(--pink);  clip-path: polygon(0 22%,100% 22%,100% 44%,0 44%); animation: glitch-r 6s linear infinite; }
+    .title-wrap::after  { color: var(--cyan);  clip-path: polygon(0 62%,100% 62%,100% 76%,0 76%); animation: glitch-c 6s linear infinite; }
+
+    .hero-title {
+      font-family: var(--ps2); font-size: clamp(1.5rem,5vw,3.4rem);
+      color: var(--gold); letter-spacing: 0.03em; line-height: 1.3;
+      animation: glow-pulse 3.5s ease-in-out infinite;
+    }
+
+    .hero-sub {
+      font-family: var(--ps2); font-size: clamp(0.5rem,1.4vw,0.85rem);
+      color: var(--pink); letter-spacing: 0.08em;
+      text-shadow: 0 0 8px var(--pink), 0 0 22px var(--glow-p);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-deco {
+      font-family: var(--ps2); font-size: 0.5rem;
+      color: var(--muted); letter-spacing: 0.55em; margin: 1.25rem 0;
+    }
+
+    .hero-desc {
+      font-family: var(--vt); font-size: 1.35rem;
+      color: rgba(224,224,240,0.72); max-width: 620px;
+      line-height: 1.75; margin: 0 auto 2.5rem;
+    }
+
+    .cta {
+      display: inline-block; font-family: var(--ps2); font-size: 0.68rem;
+      color: #000; background: var(--gold); padding: 1rem 2.25rem;
+      text-decoration: none; letter-spacing: 0.06em;
+      box-shadow: 5px 5px 0 #000;
+      transition: transform 0.07s, box-shadow 0.07s, filter 0.07s;
+    }
+    .cta:hover  { transform: translate(-3px,-3px); box-shadow: 8px 8px 0 #000, 0 0 24px var(--gold), 0 0 50px var(--glow-g); filter: brightness(1.08); }
+    .cta:active { transform: translate(5px,5px);  box-shadow: none; }
+
+    .hero-coin {
+      font-family: var(--ps2); font-size: 0.48rem;
+      color: var(--muted); margin-top: 1.5rem; letter-spacing: 0.12em;
+    }
+
+    /* ── TICKER ─────────────────────────────────────────────────── */
+    .ticker-wrap {
+      overflow: hidden; white-space: nowrap;
+      background: var(--gold); padding: 0.55rem 0;
+      border-top: 3px solid #000; border-bottom: 3px solid #000;
+    }
+    .ticker-inner { display: inline-block; animation: ticker 28s linear infinite; }
+    .ticker-inner span {
+      font-family: var(--ps2); font-size: 0.52rem;
+      color: #000; letter-spacing: 0.14em; padding: 0 1.8rem;
+    }
+
+    /* ── STATS BAR ──────────────────────────────────────────────── */
+    .stats-bar {
+      background: var(--surf);
+      border-bottom: 3px solid var(--bdr);
+      padding: 2.25rem 2rem;
+      display: flex; justify-content: center; gap: 4.5rem; flex-wrap: wrap;
+    }
+    .stat { text-align: center; }
+    .stat-val {
+      font-family: var(--ps2); font-size: 2rem; color: var(--gold); display: block;
+      text-shadow: 0 0 18px var(--glow-g);
+    }
+    .stat-lbl {
+      font-family: var(--ps2); font-size: 0.43rem;
+      color: var(--muted); letter-spacing: 0.1em; margin-top: 0.5rem;
+    }
+
+    /* ── SECTIONS ───────────────────────────────────────────────── */
+    .section { max-width: 1140px; margin: 0 auto; padding: 5.5rem 2rem; }
+
+    .eyebrow {
+      font-family: var(--ps2); font-size: 0.46rem;
+      color: var(--pink); letter-spacing: 0.2em; margin-bottom: 0.7rem;
+      text-shadow: 0 0 8px var(--glow-p);
+    }
+
+    h2 {
+      font-family: var(--ps2); font-size: clamp(0.85rem,2vw,1.35rem);
+      color: var(--gold); line-height: 1.65; margin-bottom: 0.7rem;
+      text-shadow: 0 0 14px var(--glow-g);
+    }
+
+    .sect-sub { font-family: var(--vt); font-size: 1.25rem; color: var(--muted); max-width: 560px; line-height: 1.7; }
+
+    /* ── QUEST LOG ──────────────────────────────────────────────── */
+    .quest-log {
+      margin-top: 2.5rem;
+      border: 3px solid var(--bdr); background: var(--surf);
+      box-shadow: 0 0 50px rgba(0,0,0,0.6), inset 0 0 50px rgba(0,0,0,0.25);
+    }
+    .quest-hdr {
+      background: var(--surf2); border-bottom: 3px solid var(--bdr);
+      padding: 0.6rem 1.25rem;
+      font-family: var(--ps2); font-size: 0.5rem;
+      color: var(--gold); letter-spacing: 0.08em; text-shadow: 0 0 8px var(--glow-g);
+    }
+    .quest-step {
+      display: flex; gap: 1.5rem; align-items: flex-start;
+      padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--bdr);
+      transition: background 0.15s;
+    }
+    .quest-step:last-child { border-bottom: none; }
+    .quest-step:hover { background: rgba(57,255,20,0.03); }
+    .qnum {
+      font-family: var(--ps2); font-size: 0.62rem;
+      color: var(--green); min-width: 34px; padding-top: 0.1rem;
+      text-shadow: 0 0 8px var(--green);
+    }
+    .quest-step h3 {
+      font-family: var(--ps2); font-size: 0.55rem;
+      color: var(--text); margin-bottom: 0.35rem; letter-spacing: 0.04em;
+    }
+    .quest-step p { font-family: var(--vt); font-size: 1.15rem; color: var(--muted); line-height: 1.65; }
+
+    /* ── NEON DIVIDER ───────────────────────────────────────────── */
+    .neon-rule {
+      position: relative; z-index: 10;
+      height: 3px; max-width: 900px; margin: 0 auto;
+      background: linear-gradient(90deg,
+        transparent, var(--pink) 20%, var(--gold) 50%, var(--cyan) 80%, transparent);
+      box-shadow: 0 0 12px var(--gold), 0 0 24px var(--glow-p);
+    }
+
+    /* ── CREW GRID ──────────────────────────────────────────────── */
+    .crew-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(305px,1fr));
+      gap: 1.5rem; margin-top: 3rem;
+    }
+
+    .crew-card {
+      --cc:      var(--gold);
+      --cc-glow: var(--glow-g);
+      background: var(--surf);
+      border: 3px solid var(--cc);
+      box-shadow: 5px 5px 0 #000, 0 0 16px var(--cc-glow);
+      display: flex; flex-direction: column;
+      transition: transform 0.09s, box-shadow 0.09s;
+      overflow: hidden;
+    }
+    .crew-card:hover {
+      transform: translate(-4px,-4px);
+      animation: card-glow-pulse 1.4s ease-in-out infinite;
+    }
+
+    /* Colored top bar */
+    .card-bar {
+      background: var(--cc); padding: 0.38rem 0.85rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-bar-role { font-family: var(--ps2); font-size: 0.4rem; color: #000; letter-spacing: 0.07em; }
+    .card-bar-lvl  { font-family: var(--ps2); font-size: 0.38rem; color: rgba(0,0,0,0.6); }
+
+    /* Sprite stage */
+    .sprite-stage {
+      background: var(--surf2); display: flex;
+      align-items: center; justify-content: center;
+      padding: 1.5rem 1rem; position: relative;
+      border-bottom: 2px solid var(--bdr);
+    }
+    .sprite-stage::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 60%, var(--cc-glow), transparent 68%);
+      opacity: 0.4;
+    }
+    .sprite-wrap {
+      image-rendering: pixelated; position: relative;
+      animation: float-idle 2.6s ease-in-out infinite;
+    }
+
+    /* Card body */
+    .card-body { padding: 1rem 1.1rem; flex: 1; display: flex; flex-direction: column; }
+    .card-name  { font-family: var(--ps2); font-size: 0.78rem; color: var(--text); margin-bottom: 0.4rem; }
+
+    .hp-row { display: flex; align-items: center; gap: 0.5rem; margin: 0.35rem 0 0.65rem; }
+    .hp-lbl { font-family: var(--ps2); font-size: 0.38rem; color: var(--muted); min-width: 18px; }
+    .hp-track { flex: 1; height: 6px; background: var(--surf2); border: 2px solid var(--bdr); }
+    .hp-fill  { height: 100%; }
+    .hp-num   { font-family: var(--ps2); font-size: 0.36rem; color: var(--muted); min-width: 30px; text-align: right; }
+
+    .card-bio   { font-family: var(--vt); font-size: 1.1rem; color: var(--muted); line-height: 1.6; flex: 1; margin-bottom: 0.75rem; }
+    .card-skills { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: auto; }
+    .skill {
+      font-family: var(--ps2); font-size: 0.35rem; letter-spacing: 0.04em;
+      color: var(--cc); border: 2px solid var(--cc); padding: 0.18rem 0.38rem;
+      text-shadow: 0 0 6px var(--cc-glow);
+    }
+
+    /* ── AD SLOT ────────────────────────────────────────────────── */
+    #ad-slot { max-width: 728px; margin: 0 auto; padding: 1.5rem; text-align: center; min-height: 90px; position: relative; z-index: 10; }
+
+    /* ── APPS ───────────────────────────────────────────────────── */
+    .apps-empty {
+      border: 3px solid var(--bdr); background: var(--surf);
+      padding: 4rem; text-align: center; margin-top: 2rem;
+      box-shadow: inset 0 0 50px rgba(0,0,0,0.45);
+    }
+    .apps-empty p { font-family: var(--ps2); font-size: 0.52rem; color: var(--muted); line-height: 2.8; }
+
+    /* ── FOOTER ─────────────────────────────────────────────────── */
+    footer {
+      background: var(--surf); border-top: 3px solid var(--gold);
+      padding: 2.25rem 2rem; text-align: center;
+      position: relative; z-index: 10;
+      box-shadow: 0 0 35px rgba(255,215,0,0.15);
+    }
+    footer p { font-family: var(--ps2); font-size: 0.44rem; color: var(--muted); line-height: 3.2; letter-spacing: 0.06em; }
+    footer a { color: var(--gold); text-decoration: none; }
+    footer a:hover { text-shadow: 0 0 8px var(--gold); }
+
+    /* ── RESPONSIVE ─────────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      nav { padding: 0.9rem 1rem; }
+      .nav-links { display: none; }
+      .hero { min-height: 88vh; }
+      .stats-bar { gap: 2rem; }
+      .stat-val { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="boot"></div>
+  <canvas id="stars"></canvas>
+  <div class="vignette"></div>
+  <div class="scanlines"></div>
+  <div class="sweep-line"></div>
+
+  <nav>
+    <a class="logo" href="#"><em>BUILT</em>BYCREW</a>
+    <ul class="nav-links">
+      <li><a href="#how">QUEST LOG</a></li>
+      <li><a href="#crew">THE CREW</a></li>
+      <li><a href="#apps">BUILDS</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="hero-eye">▶ SYSTEM ONLINE — AUTONOMOUS MODE ACTIVE <span class="blink">_</span></div>
+
+      <div class="title-wrap" data-text="BUILTBYCREW">
+        <div class="hero-title">BUILTBYCREW</div>
+      </div>
+      <div class="hero-sub">ONE NEW APP. EVERY DAY.</div>
+
+      <div class="hero-deco">★ ◆ ★ ◆ ★ ◆ ★ ◆ ★</div>
+
+      <p class="hero-desc">
+        Six AI agents clock in at 6AM every morning. One pitches ideas. One rejects bad ones.
+        One writes the code. One tears it apart. One ships it live. One tweets about it.
+        Zero humans required.
+      </p>
+
+      <a class="cta" href="#crew">▶ MEET THE CREW</a>
+      <div class="hero-coin"><span class="blink">★</span> INSERT COIN TO CONTINUE <span class="blink">★</span></div>
+    </section>
+
+    <div class="ticker-wrap">
+      <div class="ticker-inner">
+        <span>★ BUILTBYCREW</span><span>✦ 6 AUTONOMOUS AGENTS</span>
+        <span>✦ 1 NEW APP EVERY DAY</span><span>✦ ZERO HUMANS REQUIRED</span>
+        <span>✦ IDEA → VALIDATE → BUILD → QA → DEPLOY → TWEET</span>
+        <span>✦ WWW.BUILTBYCREW.ONLINE</span>
+        <span>★ BUILTBYCREW</span><span>✦ 6 AUTONOMOUS AGENTS</span>
+        <span>✦ 1 NEW APP EVERY DAY</span><span>✦ ZERO HUMANS REQUIRED</span>
+        <span>✦ IDEA → VALIDATE → BUILD → QA → DEPLOY → TWEET</span>
+        <span>✦ WWW.BUILTBYCREW.ONLINE</span>
+      </div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat"><span class="stat-val" id="stat-apps">000</span><span class="stat-lbl">Apps Shipped</span></div>
+      <div class="stat"><span class="stat-val">006</span><span class="stat-lbl">Agents On Payroll</span></div>
+      <div class="stat"><span class="stat-val">000</span><span class="stat-lbl">Humans Involved</span></div>
+      <div class="stat"><span class="stat-val">∞</span><span class="stat-lbl">Coffee Consumed</span></div>
+    </div>
+
+    <section class="section" id="how">
+      <div class="eyebrow">// DAILY_MISSION.LOG</div>
+      <h2>THE QUEST LOG</h2>
+      <p class="sect-sub">Every morning at 06:00 the pipeline fires. Six agents run in sequence and don't stop until something new is live on the internet.</p>
+
+      <div class="quest-log">
+        <div class="quest-hdr">▶ MISSION_BRIEF.TXT — READ ONLY</div>
+        <div class="quest-step"><div class="qnum">01.</div><div><h3>IDEATION</h3><p>Spark reads the graveyard of every app ever built here and pitches something genuinely new. Niche utility only. No to-do lists. No calculators.</p></div></div>
+        <div class="quest-step"><div class="qnum">02.</div><div><h3>VALIDATION</h3><p>Judge plays devil's advocate. Too vague? Rejected. Near-duplicate? Rejected. Needs a server? Rejected. Only buildable, useful ideas pass.</p></div></div>
+        <div class="quest-step"><div class="qnum">03.</div><div><h3>BUILD</h3><p>Builder writes the whole app — HTML, CSS, JS — as one self-contained file. No frameworks. No CDNs. No servers. Just a file that works.</p></div></div>
+        <div class="quest-step"><div class="qnum">04.</div><div><h3>QUALITY REVIEW</h3><p>Inspector tears the build apart. Missing features, broken mobile layout, placeholder text — any flaw sends it back for another pass.</p></div></div>
+        <div class="quest-step"><div class="qnum">05.</div><div><h3>DEPLOY</h3><p>Hermes pushes to Vercel, polls until green, assigns the subdomain. No dashboard. No clicking. Ever.</p></div></div>
+        <div class="quest-step"><div class="qnum">06.</div><div><h3>LAUNCH &amp; FOLLOW-UP</h3><p>Buzz writes three tweets — day 0, day 3, day 7 — and posts them on schedule. Each under 280 chars. Each with the live URL.</p></div></div>
+      </div>
+    </section>
+
+    <div class="neon-rule"></div>
+
+    <section class="section" id="crew">
+      <div class="eyebrow">// CREW_MANIFEST.DAT</div>
+      <h2>SELECT YOUR FIGHTER</h2>
+      <p class="sect-sub">Nobody takes breaks. Nobody asks for equity. Nobody misses standup. Six specialists. One mission.</p>
+      <div class="crew-grid" id="crew-grid"></div>
+    </section>
+
+    <div id="ad-slot" aria-label="Advertisement"></div>
+
+    <section class="section" id="apps">
+      <div class="eyebrow">// ACHIEVEMENTS_UNLOCKED</div>
+      <h2>EVERYTHING WE'VE SHIPPED</h2>
+      <p class="sect-sub">Each app lives at its own subdomain under builtbycrew.online. Browse them, use them, share them.</p>
+      <div class="apps-empty" id="apps-container">
+        <p>NO BUILDS LOADED YET.</p>
+        <p>&nbsp;</p>
+        <p>FIRST APP INCOMING.</p>
+        <p>STAND BY<span class="blink">_</span></p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>BUILTBYCREW.ONLINE</p>
+    <p><a href="https://twitter.com/builtbycrew">@BUILTBYCREW ON X / TWITTER</a></p>
+    <p>NO HUMANS WERE HARMED IN THE MAKING OF THESE APPS.</p>
+    <p>INSERT COIN TO CONTINUE <span class="blink">_</span></p>
+  </footer>
+
+  <script>
+  (() => {
+    // Remove boot overlay after animation
+    const bootEl = document.getElementById('boot');
+    if (bootEl) bootEl.addEventListener('animationend', () => bootEl.remove());
+
+    // ── STARFIELD ─────────────────────────────────────────────────
+    const cvs = document.getElementById('stars');
+    const ctx = cvs.getContext('2d');
+
+    function resize() { cvs.width = window.innerWidth; cvs.height = window.innerHeight; }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const LAYERS = [
+      { n: 110, spd: 0.07, sz: 1,   aMin: 0.18, aMax: 0.45 },
+      { n: 65,  spd: 0.2,  sz: 1,   aMin: 0.38, aMax: 0.72 },
+      { n: 28,  spd: 0.48, sz: 2,   aMin: 0.6,  aMax: 1.0  },
+    ];
+
+    const stars = LAYERS.flatMap(l => Array.from({ length: l.n }, () => ({
+      x:    Math.random(),
+      y:    Math.random() * window.innerHeight,
+      spd:  l.spd,
+      sz:   l.sz,
+      aMin: l.aMin,
+      aMax: l.aMax,
+      ph:   Math.random() * Math.PI * 2,
+      frq:  0.015 + Math.random() * 0.025,
+      gold: Math.random() < 0.09,
+    })));
+
+    let tick = 0;
+    function frame() {
+      ctx.clearRect(0, 0, cvs.width, cvs.height);
+      tick++;
+      stars.forEach(s => {
+        s.y += s.spd;
+        if (s.y > cvs.height + 4) { s.y = -4; s.x = Math.random(); }
+        const a = s.aMin + (Math.sin(s.ph + tick * s.frq) * 0.5 + 0.5) * (s.aMax - s.aMin);
+        ctx.save();
+        ctx.globalAlpha = a;
+        ctx.fillStyle = s.gold ? '#ffd700' : '#ffffff';
+        ctx.fillRect(Math.round(s.x * cvs.width), Math.round(s.y), s.sz, s.sz);
+        ctx.restore();
+      });
+      requestAnimationFrame(frame);
+    }
+    frame();
+
+    // ── SPRITE RENDERER ───────────────────────────────────────────
+    const PAL = {
+      K:'#111111', S:'#ffc49b', Y:'#ffd700', P:'#a855f7',
+      B:'#3b82f6', R:'#ef4444', G:'#22c55e', N:'#8b5e3c',
+      O:'#f97316', L:'#94a3b8', T:'#14b8a6', W:'#f0f4f8',
+      C:'#06b6d4', E:'#1e293b',
+    };
+
+    function sprite(rows, sc) {
+      sc = sc || 2.5;
+      const ps = 5, cols = rows[0].length, h = rows.length;
+      let r = '';
+      rows.forEach((row, y) => {
+        [...row].forEach((ch, x) => {
+          if (ch !== '.' && PAL[ch])
+            r += `<rect x="${x*ps}" y="${y*ps}" width="${ps}" height="${ps}" fill="${PAL[ch]}"/>`;
+        });
+      });
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${cols*ps} ${h*ps}" width="${Math.round(cols*ps*sc)}" height="${Math.round(h*ps*sc)}" style="image-rendering:pixelated;display:block">${r}</svg>`;
+    }
+
+    // ── CREW DATA ─────────────────────────────────────────────────
+    const CREW = [
+      {
+        name:'SPARK', role:'Chief Idea Officer', level:'LVL 99',
+        color:'#a855f7', glow:'rgba(168,85,247,0.4)', hp:100,
+        bio:"Spark's entire personality is generating ideas. She reads every app ever built here, absorbs the topic brief, and pitches something new every morning. She handles rejection well — if an idea gets shot down, she's already on the next one.",
+        skills:['IDEATION','CREATIVITY','NICHE TARGETING'],
+        rows:[
+          '...YYYY..','..YYYYYY.','.YYYYYYY.',
+          '..KSSKK..', '.KSSSSK..', '.KSSSKK..',
+          '..KSSKK..', '...KKKK..',
+          '.KPPPPPPK','.KPPYPPPK','.KPPPPPPK',
+          '.KPP.PKK.','..KK.KK..','.KKK.KKK.',
+        ],
+      },
+      {
+        name:'JUDGE', role:'VP of Standards', level:'LVL 87',
+        color:'#ef4444', glow:'rgba(239,68,68,0.4)', hp:87,
+        bio:"Judge doesn't care about your feelings. Unique? Useful? Buildable? Scoped? Four questions, four chances to fail. If an idea is a recycled concept in a new costume, she'll catch it every time.",
+        skills:['CRITICAL THINKING','SCOPE REVIEW','ZERO FLUFF'],
+        rows:[
+          '..LLLLLL.','.KLLLLLLK',
+          '.KLKSSKLK','.KLKSSKLK','.KLL..LLK',
+          '.KLLLLLK.','..KLLLLK.',
+          '.KLLLLLLK','.KLLYLLK.','.KLLLLLLK',
+          '.KLL.LLK.','.KLL.LLK.',
+          '..KK.KK..','.KKK.KKK.',
+        ],
+      },
+      {
+        name:'BUILDER', role:'Lead Engineer', level:'LVL 95',
+        color:'#22c55e', glow:'rgba(34,197,94,0.4)', hp:95,
+        bio:"Builder ships. HTML, CSS, JavaScript — one self-contained file, no excuses. When QA sends things back with a punch list, he fixes every last item without complaint. He's never shipped the same bug twice.",
+        skills:['HTML/CSS/JS','MOBILE-FIRST','SELF-CONTAINED'],
+        rows:[
+          '..OOOOOO.','.KOOOOOOK','KOOOOOOOK',
+          '..KKSSKK.','.KSSSSKK.','.KSSSSKK.',
+          '..KSSKK..','...KKKK..',
+          '.KBBBBBBK','.KBBYBBBK','.KBBBBBBK',
+          '.KBB.BBK.','..KK.KK..','.KKK.KKK.',
+        ],
+      },
+      {
+        name:'INSPECTOR', role:'QA Lead', level:'LVL 91',
+        color:'#f97316', glow:'rgba(249,115,22,0.4)', hp:91,
+        bio:"Inspector reads the spec, then reads every line of the build looking for anything that doesn't match. She'd rather reject ten builds than ship one broken one.",
+        skills:['FEATURE PARITY','ACCESSIBILITY','MOBILE TEST'],
+        rows:[
+          'KNNNNNNNK','.KNNNNNNK','..KNNNNK.',
+          '..KSSKK..','.KSSSSK..','.KSSSKK..',
+          '..KSSKK..','...KKKK..',
+          '.KNNNNNNK','.KNNWNNNK','.KNNNNNNK',
+          '.KNN.NNK.','..KK.KK..','.KKK.KKK.',
+        ],
+      },
+      {
+        name:'HERMES', role:'Head of Operations', level:'LVL 88',
+        color:'#06b6d4', glow:'rgba(6,182,212,0.4)', hp:88,
+        bio:"Hermes doesn't touch Claude. He goes straight to the Vercel API, uploads the file, waits for green, assigns the subdomain, confirms the URL is live. Deterministic. Boring. Absolutely essential.",
+        skills:['VERCEL API','DNS/SUBDOMAINS','DEPLOY VERIFY'],
+        rows:[
+          '..WWWWWW.','.WWWWWWWW','KWWWWWWWK',
+          'KW.CC.WWK','KW.CC.WWK','.WWWWWWWW',
+          '..KBBBBK.','.KBBBBBBK','.KBBYBBBK',
+          '.KBBBBBBK','.KBT.TBBK','.KBB.BBK.',
+          '..KT.TKK.','.KKK.KKK.',
+        ],
+      },
+      {
+        name:'BUZZ', role:'Chief Marketing Officer', level:'LVL 83',
+        color:'#ffd700', glow:'rgba(255,215,0,0.4)', hp:83,
+        bio:"Buzz writes the story. Launch tweet on day 0, use-case hook on day 3, engagement question on day 7. Each under 280 characters, each with the live URL, each written like a human did it.",
+        skills:['COPYWRITING','TWITTER/X','DRIP CAMPAIGNS'],
+        rows:[
+          'RRRRRRRR.','.RYRYRYRR','..RRRRR..',
+          '..KSSKK..','.KSSSSKK.','.KSSSSKK.',
+          '..KSSKK..','...KKKK..',
+          '.KRRRRRRK','.KRYYRRRK','.KRRRRRRK',
+          '.KRR.RRK.','..KK.KK..','.KKK.KKK.',
+        ],
+      },
+    ];
+
+    // ── RENDER CARDS ──────────────────────────────────────────────
+    const grid = document.getElementById('crew-grid');
+    CREW.forEach((m, i) => {
+      const hpColor = m.hp > 70 ? '#39ff14' : m.hp > 40 ? '#ffd700' : '#ef4444';
+      const card = document.createElement('div');
+      card.className = 'crew-card';
+      card.style.cssText = `--cc:${m.color};--cc-glow:${m.glow}`;
+      card.innerHTML = `
+        <div class="card-bar">
+          <span class="card-bar-role">${m.role}</span>
+          <span class="card-bar-lvl">${m.level}</span>
+        </div>
+        <div class="sprite-stage">
+          <div class="sprite-wrap" style="animation-delay:${i*0.45}s">${sprite(m.rows,2.4)}</div>
+        </div>
+        <div class="card-body">
+          <div class="card-name">${m.name}</div>
+          <div class="hp-row">
+            <span class="hp-lbl">HP</span>
+            <div class="hp-track"><div class="hp-fill" style="width:${m.hp}%;background:${hpColor}"></div></div>
+            <span class="hp-num">${m.hp}/100</span>
+          </div>
+          <div class="card-bio">${m.bio}</div>
+          <div class="card-skills">${m.skills.map(s=>`<span class="skill">${s}</span>`).join('')}</div>
+        </div>`;
+      grid.appendChild(card);
+    });
+
+    // ── STATS COUNTER ─────────────────────────────────────────────
+    const shipped = parseInt(localStorage.getItem('builtbycrew_shipped') || '0', 10);
+    const el = document.getElementById('stat-apps');
+    if (el && shipped > 0) {
+      let cur = 0;
+      const t = setInterval(() => {
+        el.textContent = String(++cur).padStart(3,'0');
+        if (cur >= shipped) clearInterval(t);
+      }, 50);
+    }
+  })();
+  </script>
+</body>
+</html>
