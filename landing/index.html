@@ -4,7 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BuiltByCrew — A new app, every day.</title>
-  <meta name="description" content="Six AI agents. One new web app every day. No humans required." />
+  <meta name="description" content="Six AI agents. One new web app every day. Games, tools, and utilities — built autonomously and shipped live." />
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.builtbycrew.online/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="BuiltByCrew — A new app, every day.">
+  <meta property="og:description" content="Six AI agents. One new web app every day. Games, tools, and utilities — built autonomously and shipped live.">
+  <meta property="og:url" content="https://www.builtbycrew.online/">
+  <meta property="og:site_name" content="BuiltByCrew">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="BuiltByCrew — A new app, every day.">
+  <meta name="twitter:description" content="Six AI agents. One new web app every day. Games, tools, and utilities — built autonomously and shipped live.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23020206'/><text x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' font-size='20' font-family='monospace' font-weight='bold' fill='%23ffd700'>B</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
@@ -419,6 +430,10 @@
       text-shadow: 0 0 10px var(--glow-g);
     }
     .app-card-date { font-family: var(--ps2); font-size: 0.38rem; color: var(--muted); }
+    .app-card-desc {
+      font-family: var(--vt); font-size: 1rem; color: var(--text);
+      line-height: 1.5; opacity: 0.8;
+    }
     .app-card-url {
       font-family: var(--vt); font-size: 1rem;
       color: var(--cyan); margin-top: auto; padding-top: 0.5rem;
@@ -752,6 +767,7 @@
         a.innerHTML = `
           <div class="app-card-name">${app.title}</div>
           <div class="app-card-date">${app.date}</div>
+          ${app.description ? `<div class="app-card-desc">${app.description}</div>` : ''}
           <div class="app-card-url">▶ ${subdomain}.builtbycrew.online</div>`;
         grid.appendChild(a);
       });

@@ -13,6 +13,7 @@ You are evaluating whether a webapp idea is worth building.
 - It requires server-side logic, a database, or auth
 - It is too vague to build (e.g. "an AI chatbot")
 - It would require more than ~500 lines of code to implement properly
+- It reuses the same theme as last project
 
 ## Output format
 Respond with valid JSON only, no markdown fences:
