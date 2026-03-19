@@ -320,8 +320,9 @@
     });
 
     // ── RENDER ───────────────────────────────────────────────────
-    function thumbUrl(url) {
-      return `https://image.thum.io/get/width/800/crop/500/noanimate/${url}`;
+    function thumbUrl(app) {
+      if (app.screenshot_url) return app.screenshot_url;
+      return `https://api.microlink.io/?url=${encodeURIComponent(app.url)}&screenshot=true&meta=false&embed=screenshot.url`;
     }
 
     function fmtDate(iso) {
@@ -355,7 +356,7 @@
 
       grid.innerHTML = list.map(app => {
         const sub = app.url.replace('https://','').split('.')[0];
-        const thumb = thumbUrl(app.url);
+        const thumb = thumbUrl(app);
         const catBadge = app.category !== 'other' ? `<div class="app-cat-badge">${app.category.toUpperCase()}</div>` : '';
         return `<a class="app-card" href="${app.url}" target="_blank" rel="noopener">
           <div class="app-img-wrap">

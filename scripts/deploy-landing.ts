@@ -8,6 +8,8 @@ interface AppEntry {
   url: string;
   date: string;
   description?: string;
+  screenshot_url?: string;
+  category?: string;
 }
 
 const BASE = 'https://api.vercel.com';
@@ -136,6 +138,8 @@ async function fetchAppsFromGithub(): Promise<AppEntry[]> {
             url: meta.url,
             date: meta.date ?? repo.created_at?.slice(0, 10) ?? '',
             description: meta.description ?? '',
+            screenshot_url: meta.screenshot_url ?? '',
+            category: meta.category ?? 'other',
           });
         }
       } catch {
@@ -164,7 +168,7 @@ if (require.main === module) {
       const store = JSON.parse(fs.readFileSync(runsPath, 'utf-8'));
       (store.runs ?? [])
         .filter((r: any) => r.status === 'success' && r.url)
-        .forEach((r: any) => localApps.push({ title: r.idea, url: r.url, date: r.date.slice(0, 10), description: r.description ?? '' }));
+        .forEach((r: any) => localApps.push({ title: r.idea, url: r.url, date: r.date.slice(0, 10), description: r.description ?? '', screenshot_url: r.screenshot_url ?? '', category: r.category ?? 'other' }));
     }
 
     // Merge: GitHub is authoritative; local fills in anything missing (dedup by url)

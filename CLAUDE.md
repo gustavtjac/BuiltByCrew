@@ -35,6 +35,7 @@ Agent (validation)  → reads skills/VALIDATION.md, approves or rejects with rea
 Agent (dev)         → reads skills/FRONTEND.md + skills/CODING.md, builds the HTML
 Agent (QA)          → reads skills/QA.md, reviews the HTML, approves or lists issues
 Bash                → deploys HTML to Vercel, assigns subdomain
+Bash                → captures screenshot via microlink API, stores URL as `screenshot_url` in runs.json and meta.json
 Bash                → creates public GitHub repo under BuiltByCrew org, pushes index.html + meta.json + README
 Agent (marketing)   → reads skills/MARKETING.md, writes landing page description
 Agent (linkedin)    → reads skills/LINKEDIN.md, writes LinkedIn post text, stored as `linkedinPost` on the run
@@ -69,6 +70,12 @@ Must read and apply `skills/QA.md` before reviewing.
 
 **Ops** (Bash — no subagent needed)
 Deploys the HTML file to Vercel via REST API and assigns a subdomain `<shortName>.builtbycrew.online`. Confirms the URL is live before continuing. Uses `scripts/deploy-app.ts` or direct Vercel API calls.
+
+After confirming the URL is live, captures a screenshot by calling:
+```
+curl "https://api.microlink.io/?url=<appUrl>&screenshot=true&meta=false"
+```
+Extract `.data.screenshot.url` from the JSON response and store it as `screenshot_url` in both `data/runs.json` and `meta.json`. This URL is used as the app's thumbnail on the landing page and `/apps` page.
 
 Then creates a public GitHub repo under the `BuiltByCrew` org named after the slug. Pushes `index.html`, `meta.json`, and a generated `README.md` to the repo. Uses `scripts/create-github-repo.ts` (callable via `npm run deploy:github <slug>`). The `gh` CLI is used for repo creation and must be authenticated.
 

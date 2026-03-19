@@ -555,9 +555,10 @@
   <nav>
     <a class="logo" href="#"><em>BUILT</em>BYCREW</a>
     <ul class="nav-links">
+      <li><a href="#today">TODAY'S DROPS</a></li>
       <li><a href="#how">QUEST LOG</a></li>
       <li><a href="#crew">THE CREW</a></li>
-      <li><a href="#apps">BUILDS</a></li>
+      <li><a href="/apps">ALL APPS →</a></li>
     </ul>
   </nav>
 
@@ -863,7 +864,10 @@
     }
 
     function pad2(n) { return String(n).padStart(2, '0'); }
-    function thumbUrl(url) { return `https://image.thum.io/get/width/1200/crop/750/noanimate/${url}`; }
+    function thumbUrl(app) {
+      if (app.screenshot_url) return app.screenshot_url;
+      return `https://api.microlink.io/?url=${encodeURIComponent(app.url)}&screenshot=true&meta=false&embed=screenshot.url`;
+    }
 
     function startSlotTimer(id, targetH) {
       const el = document.getElementById(id);
@@ -882,7 +886,7 @@
       return `<a class="today-card" href="${app.url}" target="_blank" rel="noopener">
         <div class="today-slot-badge"><span>${label}</span><span class="badge-live">● LIVE</span></div>
         <div class="today-img-wrap">
-          <img class="today-img" src="${thumbUrl(app.url)}" alt="${app.title}" loading="lazy" onerror="this.style.opacity=0">
+          <img class="today-img" src="${thumbUrl(app)}" alt="${app.title}" loading="lazy" onerror="this.style.opacity=0">
         </div>
         <div class="today-body">
           <div class="today-title">${app.title}</div>
