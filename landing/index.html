@@ -451,6 +451,46 @@
     footer a { color: var(--gold); text-decoration: none; }
     footer a:hover { text-shadow: 0 0 8px var(--gold); }
 
+    /* ── COUNTDOWN ──────────────────────────────────────────────── */
+    .hero-countdown {
+      margin-top: 2rem;
+      padding: 1rem 2.5rem;
+      border: 3px solid var(--cyan);
+      box-shadow: 0 0 22px rgba(0,229,255,0.28), inset 0 0 20px rgba(0,0,0,0.5);
+      display: inline-block;
+      text-align: center;
+      background: rgba(0,229,255,0.04);
+      position: relative;
+    }
+    .hero-countdown::before {
+      content: '';
+      position: absolute; inset: -6px;
+      border: 1px solid rgba(0,229,255,0.12);
+      pointer-events: none;
+    }
+    .countdown-label {
+      font-family: var(--ps2); font-size: 0.4rem;
+      color: var(--cyan); letter-spacing: 0.22em;
+      margin-bottom: 0.65rem;
+      text-shadow: 0 0 8px var(--cyan);
+    }
+    .countdown-digits {
+      font-family: var(--ps2); font-size: clamp(1.4rem, 5vw, 2.2rem);
+      color: var(--gold); letter-spacing: 0.05em;
+      text-shadow: 0 0 18px var(--gold), 0 0 40px var(--glow-g);
+      line-height: 1;
+    }
+    .cd-sep {
+      color: var(--pink);
+      text-shadow: 0 0 10px var(--pink);
+      animation: blink 1s step-end infinite;
+    }
+    .countdown-next {
+      font-family: var(--ps2); font-size: 0.36rem;
+      color: var(--muted); margin-top: 0.6rem;
+      letter-spacing: 0.12em;
+    }
+
     /* ── RESPONSIVE ─────────────────────────────────────────────── */
     @media (max-width: 600px) {
       nav { padding: 0.9rem 1rem; }
@@ -496,6 +536,15 @@
       </p>
 
       <a class="cta" href="#crew">▶ MEET THE CREW</a>
+
+      <div class="hero-countdown">
+        <div class="countdown-label">▶ NEXT DROP IN</div>
+        <div class="countdown-digits">
+          <span id="cd-h">00</span><span class="cd-sep">:</span><span id="cd-m">00</span><span class="cd-sep">:</span><span id="cd-s">00</span>
+        </div>
+        <div class="countdown-next" id="cd-next">LOADING...</div>
+      </div>
+
       <div class="hero-coin"><span class="blink">★</span> INSERT COIN TO CONTINUE <span class="blink">★</span></div>
     </section>
 
@@ -774,6 +823,32 @@
       appsContainer.innerHTML = '';
       appsContainer.appendChild(grid);
     }
+
+    // ── COUNTDOWN TIMER ───────────────────────────────────────────
+    function updateCountdown() {
+      const now = new Date();
+      const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Europe/Copenhagen',
+        hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false,
+      }).formatToParts(now);
+      const get = type => parseInt(parts.find(p => p.type === type)?.value ?? '0');
+      const h = get('hour'), m = get('minute'), s = get('second');
+      const cphSecs = h * 3600 + m * 60 + s;
+
+      const nextHour = h < 6 ? 6 : h < 18 ? 18 : 6;
+      let diff = nextHour * 3600 - cphSecs;
+      if (diff <= 0) diff += 86400;
+
+      const pad = n => String(n).padStart(2, '0');
+      document.getElementById('cd-h').textContent = pad(Math.floor(diff / 3600));
+      document.getElementById('cd-m').textContent = pad(Math.floor((diff % 3600) / 60));
+      document.getElementById('cd-s').textContent = pad(diff % 60);
+
+      const nextEl = document.getElementById('cd-next');
+      if (nextEl) nextEl.textContent = nextHour === 6 ? 'MORNING DROP — 06:00 CET' : 'EVENING DROP — 18:00 CET';
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
 
     // ── STATS COUNTER ─────────────────────────────────────────────
     const shipped = apps.length;

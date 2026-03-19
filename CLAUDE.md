@@ -39,7 +39,6 @@ Bash                → creates public GitHub repo under BuiltByCrew org, pushes
 Agent (marketing)   → reads skills/MARKETING.md, writes landing page description
 Agent (linkedin)    → reads skills/LINKEDIN.md, writes LinkedIn post text, stored as `linkedinPost` on the run
 Bash                → runs `npm run post:linkedin <slug>` to post to LinkedIn via Zapier webhook
-Bash                → runs `npm run deploy:landing` to redeploy the landing page with the updated app list
 ```
 
 Each subagent receives structured input (prior outputs, skill content, run context) and returns structured output. The orchestrator (Claude Code) passes outputs forward and handles feedback loops.
@@ -152,13 +151,15 @@ scripts/         # deploy-landing.ts, deploy-app.ts
 
 ## Landing page
 
-After every successful app deployment, the landing page at `www.builtbycrew.online` must be redeployed to reflect the new app. Run:
+The landing page at `www.builtbycrew.online` is redeployed automatically by a server cron at **exactly 06:00 and 18:00 Copenhagen time** — not by the pipeline. This ensures new apps appear on the landing page at the public release times, even if the pipeline finishes early.
+
+**Do NOT run `npm run deploy:landing` at the end of the pipeline.** The pipeline's job ends after posting to LinkedIn. The landing page deploy is handled separately.
+
+To manually redeploy the landing page outside of the cron schedule:
 
 ```
 npm run deploy:landing
 ```
-
-This reads `data/runs.json`, injects all successful apps into the homepage, and redeploys to Vercel. Never skip this step — the landing page must always be in sync with the latest builds.
 
 ---
 
