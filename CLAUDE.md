@@ -16,7 +16,8 @@ When triggered, the pipeline must:
 3. Build the webapp as a self-contained HTML file
 4. Verify the result is functional and complete
 5. Deploy it live under a subdomain of `builtbycrew.online`
-6. Announce the launch on Twitter and follow up over the next week
+6. Create a public GitHub repo for the app under the `BuiltByCrew` org
+7. Announce the launch on Twitter and follow up over the next week
 
 ---
 
@@ -34,6 +35,7 @@ Agent (validation)  → reads skills/VALIDATION.md, approves or rejects with rea
 Agent (dev)         → reads skills/FRONTEND.md + skills/CODING.md, builds the HTML
 Agent (QA)          → reads skills/QA.md, reviews the HTML, approves or lists issues
 Bash                → deploys HTML to Vercel, assigns subdomain
+Bash                → creates public GitHub repo under BuiltByCrew org, pushes index.html + meta.json + README
 Agent (marketing)   → reads skills/MARKETING.md, writes 3 tweets
 Bash                → posts tweets, writes result to data/runs.json
 Bash                → runs `npm run deploy:landing` to redeploy the landing page with the updated app list
@@ -68,6 +70,8 @@ Must read and apply `skills/QA.md` before reviewing.
 **Ops** (Bash — no subagent needed)
 Deploys the HTML file to Vercel via REST API and assigns a subdomain `<shortName>.builtbycrew.online`. Confirms the URL is live before continuing. Uses `scripts/deploy-app.ts` or direct Vercel API calls.
 
+Then creates a public GitHub repo under the `BuiltByCrew` org named after the slug. Pushes `index.html`, `meta.json`, and a generated `README.md` to the repo. Uses `scripts/create-github-repo.ts` (callable via `npm run deploy:github <slug>`). The `gh` CLI is used for repo creation and must be authenticated.
+
 **Marketing agent** (subagent)
 Writes three tweets: a launch tweet for day 0, a use-case tweet for day 3, and an engagement tweet for day 7. Each must include the live URL and stay under 280 characters.
 
@@ -98,6 +102,7 @@ Every run must be persisted to `data/runs.json` with:
 - `shortName` — the subdomain slug
 - `status` — `success | failed | skipped`
 - `url` — live URL if deployed
+- `github_repo_url` — GitHub repo URL (e.g. `https://github.com/BuiltByCrew/<slug>`)
 - `tweets_posted` — boolean
 
 ---
@@ -122,6 +127,8 @@ Required:
 - `MAX_IDEA_RETRIES` (default 3)
 - `MAX_QA_RETRIES` (default 3)
 - `TOPIC_PREFERENCES` (optional)
+
+GitHub repo creation uses the `gh` CLI (must be authenticated via `gh auth login`). No extra env var needed — the org is hardcoded as `BuiltByCrew` in `scripts/create-github-repo.ts`.
 
 `ANTHROPIC_API_KEY` is not needed — all AI reasoning runs inside Claude Code.
 

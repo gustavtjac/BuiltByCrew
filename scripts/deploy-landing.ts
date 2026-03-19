@@ -95,18 +95,80 @@ export async function deployLanding(apps: AppEntry[] = []): Promise<void> {
   console.log(`[deploy-landing] Done. Live at https://www.${domain}`);
 }
 
+const GITHUB_ORG = 'BuiltByCrew';
+
+/**
+ * Fetch all app entries from the BuiltByCrew GitHub org by reading each repo's
+ * meta.json. This is the persistent source of truth — it works regardless of
+ * whether data/runs.json exists or is complete.
+ */
+async function fetchAppsFromGithub(): Promise<AppEntry[]> {
+  const apps: AppEntry[] = [];
+
+  try {
+    // List all repos in the org (up to 100; paginate if needed)
+    const { data: repos } = await axios.get(
+      `https://api.github.com/orgs/${GITHUB_ORG}/repos?type=public&per_page=100&sort=created&direction=desc`,
+      { headers: { Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' } }
+    );
+
+    for (const repo of repos) {
+      try {
+        const { data: meta } = await axios.get(
+          `https://raw.githubusercontent.com/${GITHUB_ORG}/${repo.name}/main/meta.json`
+        );
+        if (meta.url && meta.title) {
+          apps.push({
+            title: meta.title,
+            url: meta.url,
+            date: meta.date ?? repo.created_at?.slice(0, 10) ?? '',
+            description: meta.description ?? '',
+          });
+        }
+      } catch {
+        // Repo has no meta.json (e.g. the main BuiltByCrew repo itself) — skip it
+      }
+    }
+  } catch (err: any) {
+    console.warn('[deploy-landing] Could not fetch apps from GitHub:', err.message ?? err);
+  }
+
+  return apps;
+}
+
 // Run as standalone script
 if (require.main === module) {
-  const runsPath = path.resolve('data', 'runs.json');
-  let apps: AppEntry[] = [];
-  if (fs.existsSync(runsPath)) {
-    const store = JSON.parse(fs.readFileSync(runsPath, 'utf-8'));
-    apps = (store.runs ?? [])
-      .filter((r: any) => r.status === 'success' && r.url)
-      .map((r: any) => ({ title: r.idea, url: r.url, date: r.date.slice(0, 10), description: r.description ?? '' }));
-  }
-  console.log(`[deploy-landing] Found ${apps.length} successful apps`);
-  deployLanding(apps).catch(err => {
+  (async () => {
+    // Primary source: GitHub org repos (persistent across all runs and clones)
+    console.log(`[deploy-landing] Fetching apps from GitHub org ${GITHUB_ORG}...`);
+    const githubApps = await fetchAppsFromGithub();
+    console.log(`[deploy-landing] Found ${githubApps.length} apps on GitHub`);
+
+    // Supplement with local runs.json — catches apps whose repo push may have failed
+    const runsPath = path.resolve('data', 'runs.json');
+    const localApps: AppEntry[] = [];
+    if (fs.existsSync(runsPath)) {
+      const store = JSON.parse(fs.readFileSync(runsPath, 'utf-8'));
+      (store.runs ?? [])
+        .filter((r: any) => r.status === 'success' && r.url)
+        .forEach((r: any) => localApps.push({ title: r.idea, url: r.url, date: r.date.slice(0, 10), description: r.description ?? '' }));
+    }
+
+    // Merge: GitHub is authoritative; local fills in anything missing (dedup by url)
+    const seen = new Set(githubApps.map(a => a.url));
+    for (const app of localApps) {
+      if (!seen.has(app.url)) {
+        githubApps.push(app);
+        seen.add(app.url);
+      }
+    }
+
+    // Sort newest first by date
+    githubApps.sort((a, b) => b.date.localeCompare(a.date));
+
+    console.log(`[deploy-landing] Deploying with ${githubApps.length} total apps...`);
+    await deployLanding(githubApps);
+  })().catch(err => {
     console.error('[deploy-landing] Fatal:', err.message ?? err);
     process.exit(1);
   });
