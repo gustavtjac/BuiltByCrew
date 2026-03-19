@@ -161,6 +161,33 @@ if (require.main === module) {
     const githubApps = await fetchAppsFromGithub();
     console.log(`[deploy-landing] Found ${githubApps.length} apps on GitHub`);
 
+    // Read local apps/*/meta.json — these have the most accurate category data
+    const localMetaByUrl = new Map<string, AppEntry>();
+    const appsDir = path.resolve('apps');
+    if (fs.existsSync(appsDir)) {
+      for (const slug of fs.readdirSync(appsDir)) {
+        const metaPath = path.join(appsDir, slug, 'meta.json');
+        if (fs.existsSync(metaPath)) {
+          try {
+            const meta = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+            if (meta.url) localMetaByUrl.set(meta.url, meta);
+          } catch {}
+        }
+      }
+    }
+    console.log(`[deploy-landing] Found ${localMetaByUrl.size} apps in local apps/ directory`);
+
+    // Patch GitHub apps with local category if GitHub has 'other' but local has a real category
+    for (const app of githubApps) {
+      const local = localMetaByUrl.get(app.url);
+      if (local?.category && local.category !== 'other') {
+        app.category = local.category;
+      }
+      if (local?.screenshot_url && !app.screenshot_url) {
+        app.screenshot_url = local.screenshot_url;
+      }
+    }
+
     // Supplement with local runs.json — catches apps whose repo push may have failed
     const runsPath = path.resolve('data', 'runs.json');
     const localApps: AppEntry[] = [];
@@ -168,7 +195,10 @@ if (require.main === module) {
       const store = JSON.parse(fs.readFileSync(runsPath, 'utf-8'));
       (store.runs ?? [])
         .filter((r: any) => r.status === 'success' && r.url)
-        .forEach((r: any) => localApps.push({ title: r.idea, url: r.url, date: r.date.slice(0, 10), description: r.description ?? '', screenshot_url: r.screenshot_url ?? '', category: r.category ?? 'other' }));
+        .forEach((r: any) => {
+          const local = localMetaByUrl.get(r.url);
+          localApps.push({ title: r.idea, url: r.url, date: r.date.slice(0, 10), description: r.description ?? '', screenshot_url: r.screenshot_url ?? local?.screenshot_url ?? '', category: local?.category ?? r.category ?? 'other' });
+        });
     }
 
     // Merge: GitHub is authoritative; local fills in anything missing (dedup by url)
