@@ -21,7 +21,6 @@ Your job is to catch real bugs, not just tick boxes. Think like a user who will 
 **Structure**
 - The HTML does not start with `<!DOCTYPE html>`
 - External CDN scripts or stylesheets are referenced (Google Fonts via CSS `@import` is the only exception)
-- The `#ad-slot` div is missing
 
 **Features**
 - A feature described in the idea is absent from the code
