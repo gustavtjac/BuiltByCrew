@@ -827,9 +827,9 @@
     ];
 
     // ── RENDER CARDS ──────────────────────────────────────────────
-    const shipped = (window.__APPS__ || []).length;
+    const appCount = (window.__APPS__ || []).length;
     function calcHp(baseHp, seed) {
-      return Math.min(100, Math.max(1, baseHp + Math.round(Math.sin(shipped * seed) * 9)));
+      return Math.min(100, Math.max(1, baseHp + Math.round(Math.sin(appCount * seed) * 9)));
     }
 
     const grid = document.getElementById('crew-grid');
