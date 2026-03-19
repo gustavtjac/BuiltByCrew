@@ -27,7 +27,7 @@ You are writing content to announce and promote a newly launched webapp across t
 ---
 
 ## LinkedIn
-- `linkedinPost`: A professional but approachable post, 150–400 characters. Mention what problem it solves, that it's free and instant, and include the URL. Can use 1–2 relevant hashtags.
+- `linkedinPost`: A professional but approachable post, 150–400 characters. Mention what problem it solves, that it's free and instant, and include the URL. Always mention "Built by BuiltByCrew" and tag the company page with "builtbycrew" where natural. Can use 1–2 relevant hashtags.
 
 ---
 
