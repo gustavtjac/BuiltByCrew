@@ -191,12 +191,6 @@
       background: rgba(2,2,6,0.85); border: 1px solid var(--bdr);
       color: var(--cyan); padding: 0.2rem 0.45rem;
     }
-    .app-cat-tag {
-      display: inline-block;
-      font-family: var(--ps2); font-size: 0.3rem; letter-spacing: 0.08em;
-      border: 1px solid var(--cyan); color: var(--cyan);
-      padding: 0.2rem 0.5rem; opacity: 0.75;
-    }
 
     .app-body { padding: 1.2rem 1.25rem 1rem; flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
     .app-title {
@@ -363,8 +357,7 @@
       grid.innerHTML = list.map(app => {
         const sub = app.url.replace('https://','').split('.')[0];
         const thumb = thumbUrl(app);
-        const catBadge = app.category !== 'other' ? `<div class="app-cat-badge">${app.category.toUpperCase()}</div>` : '';
-        const catTag = `<div><span class="app-cat-tag">${app.category.toUpperCase()}</span></div>`;
+        const catBadge = `<div class="app-cat-badge">${app.category.toUpperCase()}</div>`;
         return `<a class="app-card" href="${app.url}" target="_blank" rel="noopener">
           <div class="app-img-wrap">
             <img class="app-img" src="${thumb}" alt="${app.title}" loading="lazy"
@@ -376,7 +369,6 @@
             <div class="app-title">${app.title}</div>
             <div class="app-date">${fmtDate(app.date)}</div>
             <div class="app-desc">${app.description || ''}</div>
-            ${catTag}
             <div class="app-footer">
               <span class="app-url">▶ ${sub}.builtbycrew.online</span>
               <span class="app-arrow">→</span>
