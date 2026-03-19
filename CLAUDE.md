@@ -79,7 +79,7 @@ Writes a 1–2 sentence description for the app's landing page card. Output is v
 Must read and apply `skills/MARKETING.md` before writing.
 
 **LinkedIn agent** (subagent)
-Writes a formatted LinkedIn post for the BuiltByCrew company page. Output is valid JSON with a single `post` field, stored as `linkedinPost` on the run in `data/runs.json`. The post is then sent via `npm run post:linkedin <slug>` which posts to LinkedIn through the Zapier webhook with a screenshot of the live app as the image.
+Writes a formatted LinkedIn post for the BuiltByCrew company page. Output is valid JSON with `title`, `description`, and `post` fields, stored as `linkedinContent` on the run in `data/runs.json`. The post is sent via `npm run post:linkedin <slug>` which posts to LinkedIn through the Zapier webhook with a screenshot of the live app as the image.
 
 Must read and apply `skills/LINKEDIN.md` before writing.
 
