@@ -4,8 +4,7 @@
   "description": "Autonomous webapp factory — orchestrated by Claude Code",
   "scripts": {
     "deploy:landing": "ts-node scripts/deploy-landing.ts",
-    "deploy:github": "ts-node scripts/create-github-repo.ts",
-    "post:social": "ts-node scripts/post-social.ts"
+    "deploy:github": "ts-node scripts/create-github-repo.ts"
   },
   "dependencies": {
     "axios": "^1.7.0",

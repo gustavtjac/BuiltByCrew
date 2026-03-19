@@ -17,7 +17,7 @@ When triggered, the pipeline must:
 4. Verify the result is functional and complete
 5. Deploy it live under a subdomain of `builtbycrew.online`
 6. Create a public GitHub repo for the app under the `BuiltByCrew` org
-7. Announce the launch on Reddit and LinkedIn
+7. Write a description for the landing page card
 
 ---
 
@@ -36,8 +36,7 @@ Agent (dev)         → reads skills/FRONTEND.md + skills/CODING.md, builds the 
 Agent (QA)          → reads skills/QA.md, reviews the HTML, approves or lists issues
 Bash                → deploys HTML to Vercel, assigns subdomain
 Bash                → creates public GitHub repo under BuiltByCrew org, pushes index.html + meta.json + README
-Agent (marketing)   → reads skills/MARKETING.md, writes Reddit post + LinkedIn post
-Bash                → runs `npm run post:social <slug>` to post to Reddit + LinkedIn, writes result to data/runs.json
+Agent (marketing)   → reads skills/MARKETING.md, writes landing page description
 Bash                → runs `npm run deploy:landing` to redeploy the landing page with the updated app list
 ```
 
@@ -73,12 +72,7 @@ Deploys the HTML file to Vercel via REST API and assigns a subdomain `<shortName
 Then creates a public GitHub repo under the `BuiltByCrew` org named after the slug. Pushes `index.html`, `meta.json`, and a generated `README.md` to the repo. Uses `scripts/create-github-repo.ts` (callable via `npm run deploy:github <slug>`). The `gh` CLI is used for repo creation and must be authenticated.
 
 **Marketing agent** (subagent)
-Writes content for two platforms:
-- **Reddit**: A self-post title + body for 1–2 relevant subreddits
-- **LinkedIn**: A professional post (150–400 chars)
-- **description**: A 1–2 sentence tagline for the runs.json card
-
-Output must be valid JSON matching the schema in `skills/MARKETING.md`. The marketing content is stored on the run as `marketingContent` and passed to `npm run post:social <slug>`.
+Writes a 1–2 sentence description for the app's landing page card. Output is valid JSON with a single `description` field, stored in `data/runs.json`.
 
 Must read and apply `skills/MARKETING.md` before writing.
 
@@ -108,10 +102,6 @@ Every run must be persisted to `data/runs.json` with:
 - `status` — `success | failed | skipped`
 - `url` — live URL if deployed
 - `github_repo_url` — GitHub repo URL (e.g. `https://github.com/BuiltByCrew/<slug>`)
-- `marketingContent` — full JSON output from the marketing agent (stored for use by post:social)
-- `tweets_posted` — boolean (true if day 0 tweet posted via Make.com)
-- `social` — object with `redditUrls`, `linkedinUrl`, `twitterPosted` from the posting run
-- `scheduledPosts` — array of `{ platform, day, text, postAt, posted }` for day 3/7 tweets
 
 ---
 
@@ -131,8 +121,6 @@ Required:
 - `VERCEL_TOKEN`
 - `VERCEL_SCOPE` (team or personal scope)
 - `CUSTOM_DOMAIN` (e.g. `builtbycrew.online`)
-- `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET`, `REDDIT_USERNAME`, `REDDIT_PASSWORD`
-- `LINKEDIN_ACCESS_TOKEN`, `LINKEDIN_AUTHOR_URN`
 - `MAX_IDEA_RETRIES` (default 3)
 - `MAX_QA_RETRIES` (default 3)
 - `TOPIC_PREFERENCES` (optional)
