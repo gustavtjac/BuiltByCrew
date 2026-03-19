@@ -397,47 +397,89 @@
     /* ── AD SLOT ────────────────────────────────────────────────── */
     #ad-slot { max-width: 728px; margin: 0 auto; padding: 1.5rem; text-align: center; min-height: 90px; position: relative; z-index: 10; }
 
-    /* ── APPS ───────────────────────────────────────────────────── */
-    .apps-empty {
-      border: 3px solid var(--bdr); background: var(--surf);
-      padding: 4rem; text-align: center; margin-top: 2rem;
-      box-shadow: inset 0 0 50px rgba(0,0,0,0.45);
+    /* ── TODAY'S DROPS ──────────────────────────────────────────── */
+    .today-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2rem; margin-top: 2.5rem;
     }
-    .apps-empty p { font-family: var(--ps2); font-size: 0.52rem; color: var(--muted); line-height: 2.8; }
-
-    .apps-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1.25rem; margin-top: 2.5rem;
-    }
-    .app-card {
-      background: var(--surf);
-      border: 3px solid var(--bdr);
-      box-shadow: 4px 4px 0 #000;
-      padding: 1.25rem 1.25rem 1rem;
+    .today-card {
+      background: var(--surf); border: 3px solid var(--gold);
+      box-shadow: 6px 6px 0 #000, 0 0 22px var(--glow-g);
+      display: flex; flex-direction: column; overflow: hidden;
       text-decoration: none; color: var(--text);
-      display: flex; flex-direction: column; gap: 0.5rem;
-      transition: transform 0.08s, box-shadow 0.08s, border-color 0.1s;
+      transition: transform 0.08s, box-shadow 0.08s;
     }
-    .app-card:hover {
+    .today-card:not(.unreleased):hover {
+      transform: translate(-4px,-4px);
+      box-shadow: 10px 10px 0 #000, 0 0 50px var(--glow-g);
+    }
+    .today-card.unreleased {
+      border-color: #333348; box-shadow: 4px 4px 0 #000;
+      opacity: 0.52; filter: grayscale(0.55); cursor: default;
+    }
+    .today-slot-badge {
+      background: var(--gold); color: #000;
+      font-family: var(--ps2); font-size: 0.4rem; letter-spacing: 0.1em;
+      padding: 0.42rem 0.9rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .today-card.unreleased .today-slot-badge { background: #333348; color: var(--muted); }
+    .badge-live  { color: var(--green); font-size: 0.37rem; }
+    .badge-pending { font-size: 0.37rem; }
+
+    .today-img-wrap {
+      width: 100%; aspect-ratio: 16/10;
+      background: var(--surf2); border-bottom: 3px solid var(--bdr);
+      position: relative; overflow: hidden;
+    }
+    .today-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .today-img-placeholder {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0.6rem;
+    }
+    .ph-icon  { font-family: var(--ps2); font-size: 1.4rem; color: var(--muted); opacity: 0.3; }
+    .ph-label { font-family: var(--ps2); font-size: 0.36rem; color: var(--muted); letter-spacing: 0.18em; opacity: 0.5; }
+    .slot-countdown {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0.4rem;
+      background: rgba(2,2,6,0.72);
+    }
+    .slot-cd-lbl  { font-family: var(--ps2); font-size: 0.34rem; color: var(--muted); letter-spacing: 0.18em; }
+    .slot-cd-dig  { font-family: var(--ps2); font-size: clamp(1rem,3.5vw,1.7rem); color: var(--muted); line-height: 1; }
+    .slot-cd-sub  { font-family: var(--ps2); font-size: 0.3rem; color: var(--muted); opacity: 0.5; letter-spacing: 0.12em; }
+
+    .today-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+    .today-title {
+      font-family: var(--ps2); font-size: 0.7rem;
+      color: var(--gold); line-height: 1.7; margin-bottom: 0.75rem;
+      text-shadow: 0 0 12px var(--glow-g);
+    }
+    .today-card.unreleased .today-title { color: #333348; text-shadow: none; }
+    .today-desc {
+      font-family: var(--vt); font-size: 1.3rem;
+      color: var(--text); line-height: 1.75; opacity: 0.85;
+      flex: 1; margin-bottom: 1rem;
+    }
+    .today-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 1rem; border-top: 1px solid var(--bdr); margin-top: auto;
+    }
+    .today-url   { font-family: var(--vt); font-size: 1.05rem; color: var(--cyan); }
+    .today-arrow { font-family: var(--ps2); font-size: 0.55rem; color: var(--gold); text-shadow: 0 0 10px var(--glow-g); }
+
+    /* ── VIEW ALL ───────────────────────────────────────────────── */
+    .view-all-wrap { text-align: center; padding: 1rem 2rem 4rem; position: relative; z-index: 10; }
+    .view-all-btn {
+      display: inline-block; font-family: var(--ps2); font-size: 0.6rem;
+      letter-spacing: 0.1em; color: var(--cyan); border: 3px solid var(--cyan);
+      padding: 1rem 2.5rem; text-decoration: none; box-shadow: 5px 5px 0 #000;
+      transition: transform 0.07s, box-shadow 0.07s;
+    }
+    .view-all-btn:hover {
       transform: translate(-3px,-3px);
-      box-shadow: 7px 7px 0 #000;
-      border-color: var(--gold);
-    }
-    .app-card-name {
-      font-family: var(--ps2); font-size: 0.58rem;
-      color: var(--gold); line-height: 1.6;
-      text-shadow: 0 0 10px var(--glow-g);
-    }
-    .app-card-date { font-family: var(--ps2); font-size: 0.38rem; color: var(--muted); }
-    .app-card-desc {
-      font-family: var(--vt); font-size: 1rem; color: var(--text);
-      line-height: 1.5; opacity: 0.8;
-    }
-    .app-card-url {
-      font-family: var(--vt); font-size: 1rem;
-      color: var(--cyan); margin-top: auto; padding-top: 0.5rem;
-      border-top: 1px solid var(--bdr);
+      box-shadow: 8px 8px 0 #000, 0 0 28px rgba(0,229,255,0.4);
     }
 
     /* ── FOOTER ─────────────────────────────────────────────────── */
@@ -492,6 +534,7 @@
     }
 
     /* ── RESPONSIVE ─────────────────────────────────────────────── */
+    @media (max-width: 700px) { .today-grid { grid-template-columns: 1fr; } }
     @media (max-width: 600px) {
       nav { padding: 0.9rem 1rem; }
       .nav-links { display: none; }
@@ -595,19 +638,16 @@
 
     <div id="ad-slot" aria-label="Advertisement"></div>
 
-    <section class="section" id="apps">
-      <div class="eyebrow">// ACHIEVEMENTS_UNLOCKED</div>
-      <h2>EVERYTHING WE'VE SHIPPED</h2>
-      <p class="sect-sub">Each app lives at its own subdomain under builtbycrew.online. Browse them, use them, share them.</p>
-      <div id="apps-container">
-        <div class="apps-empty">
-          <p>NO BUILDS LOADED YET.</p>
-          <p>&nbsp;</p>
-          <p>FIRST APP INCOMING.</p>
-          <p>STAND BY<span class="blink">_</span></p>
-        </div>
-      </div>
+    <section class="section" id="today">
+      <div class="eyebrow">// TODAY_DROPS.LOG</div>
+      <h2>TODAY'S BUILDS</h2>
+      <p class="sect-sub">Two apps ship every day — one at dawn, one at dusk. Designed, built, and deployed autonomously.</p>
+      <div class="today-grid" id="today-grid"></div>
     </section>
+
+    <div class="view-all-wrap">
+      <a class="view-all-btn" href="/apps">▶ VIEW ALL PAST APPS</a>
+    </div>
   </main>
 
   <footer>
@@ -800,28 +840,94 @@
       grid.appendChild(card);
     });
 
-    // ── APPS GRID ─────────────────────────────────────────────────
+    // ── TODAY'S DROPS ─────────────────────────────────────────────
     const apps = window.__APPS__ || [];
-    const appsContainer = document.getElementById('apps-container');
-    if (apps.length && appsContainer) {
-      const grid = document.createElement('div');
-      grid.className = 'apps-grid';
-      [...apps].reverse().forEach(app => {
-        const a = document.createElement('a');
-        a.className = 'app-card';
-        a.href = app.url;
-        a.target = '_blank';
-        a.rel = 'noopener';
-        const subdomain = app.url.replace('https://', '').split('.')[0];
-        a.innerHTML = `
-          <div class="app-card-name">${app.title}</div>
-          <div class="app-card-date">${app.date}</div>
-          ${app.description ? `<div class="app-card-desc">${app.description}</div>` : ''}
-          <div class="app-card-url">▶ ${subdomain}.builtbycrew.online</div>`;
-        grid.appendChild(a);
-      });
-      appsContainer.innerHTML = '';
-      appsContainer.appendChild(grid);
+
+    function getCph() {
+      const p = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Europe/Copenhagen',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
+      }).formatToParts(new Date());
+      const g = t => p.find(x => x.type === t)?.value ?? '00';
+      return { dateStr: `${g('year')}-${g('month')}-${g('day')}`, h: +g('hour'), m: +g('minute'), s: +g('second') };
+    }
+
+    function appCphDate(iso) {
+      const p = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Europe/Copenhagen',
+        year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hour12: false,
+      }).formatToParts(new Date(iso));
+      const g = t => p.find(x => x.type === t)?.value ?? '00';
+      return { dateStr: `${g('year')}-${g('month')}-${g('day')}`, h: +g('hour') };
+    }
+
+    function pad2(n) { return String(n).padStart(2, '0'); }
+    function thumbUrl(url) { return `https://image.thum.io/get/width/1200/crop/750/noanimate/${url}`; }
+
+    function startSlotTimer(id, targetH) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      function tick() {
+        const c = getCph();
+        let d = targetH * 3600 - (c.h * 3600 + c.m * 60 + c.s);
+        if (d <= 0) d += 86400;
+        el.innerHTML = `${pad2(Math.floor(d/3600))}<span class="cd-sep">:</span>${pad2(Math.floor((d%3600)/60))}<span class="cd-sep">:</span>${pad2(d%60)}`;
+      }
+      tick(); setInterval(tick, 1000);
+    }
+
+    function renderLive(app, label) {
+      const sub = app.url.replace('https://','').split('.')[0];
+      return `<a class="today-card" href="${app.url}" target="_blank" rel="noopener">
+        <div class="today-slot-badge"><span>${label}</span><span class="badge-live">● LIVE</span></div>
+        <div class="today-img-wrap">
+          <img class="today-img" src="${thumbUrl(app.url)}" alt="${app.title}" loading="lazy" onerror="this.style.opacity=0">
+        </div>
+        <div class="today-body">
+          <div class="today-title">${app.title}</div>
+          <div class="today-desc">${app.description || ''}</div>
+          <div class="today-footer">
+            <span class="today-url">▶ ${sub}.builtbycrew.online</span>
+            <span class="today-arrow">→</span>
+          </div>
+        </div>
+      </a>`;
+    }
+
+    function renderPending(label, targetH, cdId) {
+      setTimeout(() => startSlotTimer(cdId, targetH), 0);
+      return `<div class="today-card unreleased">
+        <div class="today-slot-badge"><span>${label}</span><span class="badge-pending">◌ PENDING</span></div>
+        <div class="today-img-wrap">
+          <div class="today-img-placeholder">
+            <div class="ph-icon">???</div>
+            <div class="ph-label">CLASSIFIED</div>
+          </div>
+          <div class="slot-countdown">
+            <div class="slot-cd-lbl">▶ DROPS IN</div>
+            <div class="slot-cd-dig" id="${cdId}">--:--:--</div>
+            <div class="slot-cd-sub">STAND BY...</div>
+          </div>
+        </div>
+        <div class="today-body">
+          <div class="today-title">??? CLASSIFIED ???</div>
+          <div class="today-desc">Another autonomous build is in progress. The agents are working through ideation, validation, and construction. Stand by for launch.</div>
+          <div class="today-footer"><span class="today-url">▶ ???.builtbycrew.online</span></div>
+        </div>
+      </div>`;
+    }
+
+    const cph = getCph();
+    const todayApps = apps.filter(a => appCphDate(a.date).dateStr === cph.dateStr);
+    const morningApp = todayApps.find(a => appCphDate(a.date).h < 12) || null;
+    const eveningApp = todayApps.find(a => appCphDate(a.date).h >= 12) || null;
+
+    const todayGrid = document.getElementById('today-grid');
+    if (todayGrid) {
+      const mHtml = (cph.h >= 6 && morningApp) ? renderLive(morningApp, '▶ MORNING DROP — 06:00') : renderPending('▶ MORNING DROP — 06:00', 6, 'slot-cd-am');
+      const eHtml = (cph.h >= 18 && eveningApp) ? renderLive(eveningApp, '▶ EVENING DROP — 18:00') : renderPending('▶ EVENING DROP — 18:00', 18, 'slot-cd-pm');
+      todayGrid.innerHTML = mHtml + eHtml;
     }
 
     // ── COUNTDOWN TIMER ───────────────────────────────────────────

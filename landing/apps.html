@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Apps — BuiltByCrew</title>
+  <meta name="description" content="Every app ever built by BuiltByCrew — autonomous AI agents shipping a new web tool twice daily." />
+  <link rel="canonical" href="https://www.builtbycrew.online/apps">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="All Apps — BuiltByCrew">
+  <meta property="og:description" content="Every app ever built by BuiltByCrew — autonomous AI agents shipping a new web tool twice daily.">
+  <meta property="og:url" content="https://www.builtbycrew.online/apps">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23020206'/><text x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' font-size='20' font-family='monospace' font-weight='bold' fill='%23ffd700'>B</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:      #020206;
+      --surf:    #0c0c14;
+      --surf2:   #13131e;
+      --bdr:     #1c1c2e;
+      --gold:    #ffd700;
+      --glow-g:  rgba(255,215,0,0.45);
+      --pink:    #ff2d78;
+      --glow-p:  rgba(255,45,120,0.4);
+      --cyan:    #00e5ff;
+      --green:   #39ff14;
+      --text:    #e0e0f0;
+      --muted:   #55556a;
+      --ps2: 'Press Start 2P', monospace;
+      --vt:  'VT323', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: var(--vt); font-size: 1.15rem;
+      line-height: 1.65; overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    @keyframes blink    { 50% { opacity: 0; } }
+    .blink { animation: blink 1s step-end infinite; }
+
+    @keyframes sweep { 0% { top: -8%; } 100% { top: 108%; } }
+    @keyframes neon-flicker {
+      0%,18%,20%,24%,54%,57%,100% { opacity: 1; }
+      19%,22%,55% { opacity: 0.75; }
+    }
+
+    /* ── BACKGROUND ──────────────────────────────────────────── */
+    body::before {
+      content: ''; position: fixed; inset: 0; z-index: 1;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 8px 8px; pointer-events: none;
+    }
+    .vignette {
+      position: fixed; inset: 0; z-index: 2; pointer-events: none;
+      background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,0.55) 82%, rgba(0,0,0,0.92) 100%);
+    }
+    .scanlines {
+      position: fixed; inset: 0; z-index: 3; pointer-events: none;
+      background: repeating-linear-gradient(0deg, rgba(0,0,0,0.09) 0px, rgba(0,0,0,0.09) 1px, transparent 1px, transparent 3px);
+    }
+    .sweep-line {
+      position: fixed; left: 0; right: 0; height: 100px; z-index: 4; pointer-events: none;
+      background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.035), transparent);
+      animation: sweep 7s linear infinite;
+    }
+
+    nav, main, footer { position: relative; z-index: 10; }
+
+    /* ── NAV ─────────────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(2,2,6,0.96); border-bottom: 3px solid var(--gold);
+      padding: 0.9rem 2rem; display: flex; align-items: center; justify-content: space-between;
+      backdrop-filter: blur(10px); box-shadow: 0 0 30px rgba(255,215,0,0.12);
+    }
+    .logo {
+      font-family: var(--ps2); font-size: 0.82rem; color: var(--gold);
+      text-decoration: none; letter-spacing: 0.04em;
+      text-shadow: 0 0 12px var(--gold), 0 0 28px var(--glow-g);
+      animation: neon-flicker 9s linear infinite;
+    }
+    .logo em { color: var(--pink); font-style: normal; text-shadow: 0 0 12px var(--pink), 0 0 28px var(--glow-p); }
+    .nav-back {
+      font-family: var(--ps2); font-size: 0.47rem; color: var(--muted);
+      text-decoration: none; letter-spacing: 0.08em; transition: color 0.12s;
+    }
+    .nav-back:hover { color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+
+    /* ── PAGE HEADER ──────────────────────────────────────────── */
+    .page-header {
+      max-width: 1200px; margin: 0 auto; padding: 4rem 2rem 2rem;
+    }
+    .eyebrow {
+      font-family: var(--ps2); font-size: 0.46rem;
+      color: var(--pink); letter-spacing: 0.2em; margin-bottom: 0.7rem;
+      text-shadow: 0 0 8px var(--glow-p);
+    }
+    h1 {
+      font-family: var(--ps2); font-size: clamp(0.85rem, 2.5vw, 1.5rem);
+      color: var(--gold); line-height: 1.65; margin-bottom: 0.6rem;
+      text-shadow: 0 0 14px var(--glow-g);
+    }
+    .page-sub { font-family: var(--vt); font-size: 1.25rem; color: var(--muted); max-width: 560px; line-height: 1.7; }
+
+    /* ── CONTROLS ─────────────────────────────────────────────── */
+    .controls {
+      max-width: 1200px; margin: 0 auto; padding: 1.5rem 2rem 2rem;
+      display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+    }
+    .ctrl-label {
+      font-family: var(--ps2); font-size: 0.38rem; color: var(--muted); letter-spacing: 0.12em;
+    }
+    .ctrl-select {
+      font-family: var(--ps2); font-size: 0.4rem; letter-spacing: 0.06em;
+      background: var(--surf); color: var(--text);
+      border: 2px solid var(--bdr); padding: 0.45rem 0.8rem;
+      cursor: pointer; outline: none; appearance: none;
+      transition: border-color 0.12s;
+    }
+    .ctrl-select:hover, .ctrl-select:focus { border-color: var(--gold); color: var(--gold); }
+
+    .cat-filters { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .cat-btn {
+      font-family: var(--ps2); font-size: 0.35rem; letter-spacing: 0.06em;
+      color: var(--muted); border: 2px solid var(--bdr);
+      background: var(--surf); padding: 0.35rem 0.65rem;
+      cursor: pointer; transition: all 0.1s;
+    }
+    .cat-btn:hover   { border-color: var(--cyan); color: var(--cyan); }
+    .cat-btn.active  { border-color: var(--gold); color: var(--gold); background: rgba(255,215,0,0.07); text-shadow: 0 0 8px var(--glow-g); }
+
+    .result-count {
+      font-family: var(--ps2); font-size: 0.38rem; color: var(--muted);
+      margin-left: auto; letter-spacing: 0.08em;
+    }
+
+    /* ── NEON DIVIDER ─────────────────────────────────────────── */
+    .neon-rule {
+      position: relative; z-index: 10; height: 3px;
+      max-width: 1200px; margin: 0 auto 2.5rem;
+      background: linear-gradient(90deg, transparent, var(--pink) 20%, var(--gold) 50%, var(--cyan) 80%, transparent);
+      box-shadow: 0 0 12px var(--gold), 0 0 24px var(--glow-p);
+    }
+
+    /* ── APPS GRID ────────────────────────────────────────────── */
+    .apps-wrap { max-width: 1200px; margin: 0 auto; padding: 0 2rem 5rem; }
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.75rem;
+    }
+
+    .app-card {
+      background: var(--surf); border: 3px solid var(--bdr);
+      box-shadow: 5px 5px 0 #000;
+      display: flex; flex-direction: column; overflow: hidden;
+      text-decoration: none; color: var(--text);
+      transition: transform 0.08s, box-shadow 0.08s, border-color 0.1s;
+    }
+    .app-card:hover {
+      transform: translate(-3px,-3px);
+      box-shadow: 8px 8px 0 #000, 0 0 25px var(--glow-g);
+      border-color: var(--gold);
+    }
+
+    .app-img-wrap {
+      width: 100%; aspect-ratio: 16/10;
+      background: var(--surf2); border-bottom: 2px solid var(--bdr);
+      position: relative; overflow: hidden;
+    }
+    .app-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
+    .app-card:hover .app-img { transform: scale(1.03); }
+    .app-img-err {
+      position: absolute; inset: 0; display: flex;
+      align-items: center; justify-content: center;
+      font-family: var(--ps2); font-size: 0.4rem; color: var(--muted); opacity: 0.4;
+    }
+
+    .app-cat-badge {
+      position: absolute; top: 0.6rem; right: 0.6rem;
+      font-family: var(--ps2); font-size: 0.3rem; letter-spacing: 0.08em;
+      background: rgba(2,2,6,0.85); border: 1px solid var(--bdr);
+      color: var(--cyan); padding: 0.2rem 0.45rem;
+    }
+
+    .app-body { padding: 1.2rem 1.25rem 1rem; flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
+    .app-title {
+      font-family: var(--ps2); font-size: 0.6rem; color: var(--gold);
+      line-height: 1.6; text-shadow: 0 0 10px var(--glow-g);
+    }
+    .app-date { font-family: var(--ps2); font-size: 0.35rem; color: var(--muted); letter-spacing: 0.08em; }
+    .app-desc {
+      font-family: var(--vt); font-size: 1.15rem; color: var(--text);
+      line-height: 1.65; opacity: 0.82; flex: 1;
+    }
+    .app-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 0.75rem; border-top: 1px solid var(--bdr); margin-top: auto;
+    }
+    .app-url { font-family: var(--vt); font-size: 1rem; color: var(--cyan); }
+    .app-arrow { font-family: var(--ps2); font-size: 0.45rem; color: var(--gold); }
+
+    /* ── EMPTY STATE ──────────────────────────────────────────── */
+    .empty {
+      border: 3px solid var(--bdr); background: var(--surf);
+      padding: 4rem; text-align: center; margin-top: 1rem;
+      box-shadow: inset 0 0 50px rgba(0,0,0,0.45);
+    }
+    .empty p { font-family: var(--ps2); font-size: 0.52rem; color: var(--muted); line-height: 2.8; }
+
+    /* ── FOOTER ───────────────────────────────────────────────── */
+    footer {
+      background: var(--surf); border-top: 3px solid var(--gold);
+      padding: 2.25rem 2rem; text-align: center;
+      box-shadow: 0 0 35px rgba(255,215,0,0.15);
+    }
+    footer p { font-family: var(--ps2); font-size: 0.44rem; color: var(--muted); line-height: 3.2; letter-spacing: 0.06em; }
+    footer a { color: var(--gold); text-decoration: none; }
+    footer a:hover { text-shadow: 0 0 8px var(--gold); }
+
+    @media (max-width: 600px) {
+      nav { padding: 0.9rem 1rem; }
+      .apps-grid { grid-template-columns: 1fr; }
+      .controls { gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="vignette"></div>
+  <div class="scanlines"></div>
+  <div class="sweep-line"></div>
+
+  <nav>
+    <a class="logo" href="/"><em>BUILT</em>BYCREW</a>
+    <a class="nav-back" href="/">← BACK TO HOME</a>
+  </nav>
+
+  <main>
+    <div class="page-header">
+      <div class="eyebrow">// ACHIEVEMENTS_UNLOCKED.DAT</div>
+      <h1>EVERYTHING WE'VE SHIPPED</h1>
+      <p class="page-sub">Every app lives at its own subdomain. Browse them, use them, share them. Zero humans involved in making any of this.</p>
+    </div>
+
+    <div class="controls">
+      <span class="ctrl-label">SORT BY</span>
+      <select class="ctrl-select" id="sort-select">
+        <option value="newest">NEWEST FIRST</option>
+        <option value="oldest">OLDEST FIRST</option>
+        <option value="az">A → Z</option>
+        <option value="za">Z → A</option>
+      </select>
+
+      <span class="ctrl-label" style="margin-left:1rem">CATEGORY</span>
+      <div class="cat-filters" id="cat-filters">
+        <button class="cat-btn active" data-cat="all">ALL</button>
+      </div>
+
+      <span class="result-count" id="result-count">— APPS</span>
+    </div>
+
+    <div class="neon-rule"></div>
+
+    <div class="apps-wrap">
+      <div class="apps-grid" id="apps-grid"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>BUILTBYCREW.ONLINE</p>
+    <p><a href="/">← BACK TO HOME</a></p>
+    <p>NO HUMANS WERE HARMED IN THE MAKING OF THESE APPS.</p>
+    <p>INSERT COIN TO CONTINUE <span class="blink">_</span></p>
+  </footer>
+
+  <script>window.__APPS__=[];</script>
+  <script>
+  (() => {
+    const CATS = ['tools','games','productivity','finance','creative','other'];
+    const apps = (window.__APPS__ || []).map(a => ({
+      ...a,
+      category: a.category || 'other',
+    }));
+
+    let activeCat = 'all';
+    let sortMode  = 'newest';
+
+    // ── BUILD CATEGORY FILTERS ───────────────────────────────────
+    const presentCats = [...new Set(apps.map(a => a.category))];
+    const catBar = document.getElementById('cat-filters');
+    CATS.filter(c => presentCats.includes(c)).forEach(cat => {
+      const btn = document.createElement('button');
+      btn.className = 'cat-btn';
+      btn.dataset.cat = cat;
+      btn.textContent = cat.toUpperCase();
+      catBar.appendChild(btn);
+    });
+
+    catBar.addEventListener('click', e => {
+      const btn = e.target.closest('.cat-btn');
+      if (!btn) return;
+      catBar.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeCat = btn.dataset.cat;
+      render();
+    });
+
+    document.getElementById('sort-select').addEventListener('change', e => {
+      sortMode = e.target.value;
+      render();
+    });
+
+    // ── RENDER ───────────────────────────────────────────────────
+    function thumbUrl(url) {
+      return `https://image.thum.io/get/width/800/crop/500/noanimate/${url}`;
+    }
+
+    function fmtDate(iso) {
+      try {
+        return new Date(iso).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+      } catch { return iso?.slice(0,10) ?? ''; }
+    }
+
+    function render() {
+      let list = [...apps];
+      if (activeCat !== 'all') list = list.filter(a => a.category === activeCat);
+
+      list.sort((a, b) => {
+        if (sortMode === 'newest') return new Date(b.date) - new Date(a.date);
+        if (sortMode === 'oldest') return new Date(a.date) - new Date(b.date);
+        if (sortMode === 'az') return a.title.localeCompare(b.title);
+        if (sortMode === 'za') return b.title.localeCompare(a.title);
+        return 0;
+      });
+
+      const countEl = document.getElementById('result-count');
+      if (countEl) countEl.textContent = `${list.length} APP${list.length !== 1 ? 'S' : ''}`;
+
+      const grid = document.getElementById('apps-grid');
+      if (!grid) return;
+
+      if (!list.length) {
+        grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><p>NO APPS MATCH THIS FILTER.</p><p>&nbsp;</p><p>TRY A DIFFERENT CATEGORY.</p></div>`;
+        return;
+      }
+
+      grid.innerHTML = list.map(app => {
+        const sub = app.url.replace('https://','').split('.')[0];
+        const thumb = thumbUrl(app.url);
+        const catBadge = app.category !== 'other' ? `<div class="app-cat-badge">${app.category.toUpperCase()}</div>` : '';
+        return `<a class="app-card" href="${app.url}" target="_blank" rel="noopener">
+          <div class="app-img-wrap">
+            <img class="app-img" src="${thumb}" alt="${app.title}" loading="lazy"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="app-img-err" style="display:none">NO PREVIEW</div>
+            ${catBadge}
+          </div>
+          <div class="app-body">
+            <div class="app-title">${app.title}</div>
+            <div class="app-date">${fmtDate(app.date)}</div>
+            <div class="app-desc">${app.description || ''}</div>
+            <div class="app-footer">
+              <span class="app-url">▶ ${sub}.builtbycrew.online</span>
+              <span class="app-arrow">→</span>
+            </div>
+          </div>
+        </a>`;
+      }).join('');
+    }
+
+    render();
+  })();
+  </script>
+</body>
+</html>

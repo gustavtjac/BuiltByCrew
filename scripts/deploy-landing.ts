@@ -53,6 +53,14 @@ export async function deployLanding(apps: AppEntry[] = []): Promise<void> {
     `window.__APPS__=${JSON.stringify(apps)};`
   );
 
+  // Inject apps data into apps page HTML
+  const appsPagePath = path.resolve('landing', 'apps.html');
+  let appsHtml = fs.readFileSync(appsPagePath, 'utf-8');
+  appsHtml = appsHtml.replace(
+    /window\.__APPS__\s*=\s*\[.*?\];/s,
+    `window.__APPS__=${JSON.stringify(apps)};`
+  );
+
   console.log(`[deploy-landing] Deploying with ${apps.length} apps...`);
 
   // Deploy via REST API
@@ -66,6 +74,11 @@ export async function deployLanding(apps: AppEntry[] = []): Promise<void> {
         {
           file: 'index.html',
           data: Buffer.from(html).toString('base64'),
+          encoding: 'base64',
+        },
+        {
+          file: 'apps/index.html',
+          data: Buffer.from(appsHtml).toString('base64'),
           encoding: 'base64',
         },
       ],
