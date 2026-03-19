@@ -102,12 +102,11 @@ export async function deployLanding(apps: AppEntry[] = []): Promise<void> {
     `window.__APPS__=${JSON.stringify(apps)};`
   );
 
-  // Inject OG image from latest app screenshot
-  const latestScreenshot = apps.find(a => a.screenshot_url)?.screenshot_url ?? '';
-  if (latestScreenshot) {
-    html = html.replace(/<meta property="og:image" content="[^"]*">/, `<meta property="og:image" content="${latestScreenshot}">`);
-    html = html.replace(/<meta name="twitter:image" content="[^"]*">/, `<meta name="twitter:image" content="${latestScreenshot}">`);
-  }
+  // Branded OG image — stable PNG generated from og-image.html (re-run if og-image.html changes)
+  const OG_IMAGE_URL = 'https://iad.microlink.io/Q216ISaI2WCAbnO4w0KLPmLkVHGqXqp-qeidpE6-xzvHLE11pcIvUyFsJLGOIb_Spwlji6vTuUdEehq71XvebQ.png';
+  html = html.replace(/<meta property="og:image" content="[^"]*">/, `<meta property="og:image" content="${OG_IMAGE_URL}">`);
+  html = html.replace(/<meta name="twitter:image" content="[^"]*">/, `<meta name="twitter:image" content="${OG_IMAGE_URL}">`);
+
 
   // Inject apps data into apps page HTML
   const appsPagePath = path.resolve('landing', 'apps.html');
@@ -141,6 +140,11 @@ export async function deployLanding(apps: AppEntry[] = []): Promise<void> {
         {
           file: 'apps/index.html',
           data: Buffer.from(appsHtml).toString('base64'),
+          encoding: 'base64',
+        },
+        {
+          file: 'og-image.html',
+          data: Buffer.from(fs.readFileSync(path.resolve('landing', 'og-image.html'))).toString('base64'),
           encoding: 'base64',
         },
         {

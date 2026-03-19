@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1200">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 1200px;
+      height: 630px;
+      overflow: hidden;
+      background: #020206;
+      font-family: 'Press Start 2P', monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* pixel grid */
+    body::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 8px 8px;
+    }
+
+    /* vignette */
+    body::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,0.7) 100%);
+    }
+
+    .frame {
+      position: absolute; inset: 24px;
+      border: 3px solid #ffd700;
+      box-shadow: 0 0 40px rgba(255,215,0,0.2), inset 0 0 40px rgba(0,0,0,0.4);
+      pointer-events: none;
+      z-index: 5;
+    }
+    .frame-corner {
+      position: absolute;
+      width: 18px; height: 18px;
+      border-color: #ff2d78;
+      border-style: solid;
+    }
+    .frame-corner.tl { top: -3px; left: -3px; border-width: 4px 0 0 4px; }
+    .frame-corner.tr { top: -3px; right: -3px; border-width: 4px 4px 0 0; }
+    .frame-corner.bl { bottom: -3px; left: -3px; border-width: 0 0 4px 4px; }
+    .frame-corner.br { bottom: -3px; right: -3px; border-width: 0 4px 4px 0; }
+
+    .content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      color: #39ff14;
+      letter-spacing: 0.2em;
+      margin-bottom: 28px;
+      text-shadow: 0 0 10px #39ff14;
+    }
+
+    .logo {
+      font-size: 72px;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+    .logo .built { color: #ffd700; text-shadow: 0 0 20px rgba(255,215,0,0.6), 0 0 60px rgba(255,215,0,0.3); }
+    .logo .by    { color: #ff2d78; text-shadow: 0 0 20px rgba(255,45,120,0.6); }
+    .logo .crew  { color: #ffd700; text-shadow: 0 0 20px rgba(255,215,0,0.6), 0 0 60px rgba(255,215,0,0.3); }
+
+    .tagline {
+      font-family: 'VT323', monospace;
+      font-size: 32px;
+      color: rgba(224,224,240,0.75);
+      letter-spacing: 0.08em;
+      margin-bottom: 40px;
+    }
+
+    .pills {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .pill {
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      padding: 8px 18px;
+      border: 2px solid;
+    }
+    .pill.gold  { color: #ffd700; border-color: #ffd700; }
+    .pill.cyan  { color: #00e5ff; border-color: #00e5ff; }
+    .pill.pink  { color: #ff2d78; border-color: #ff2d78; }
+
+    .url {
+      position: absolute;
+      bottom: 48px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      font-size: 10px;
+      color: #55556a;
+      letter-spacing: 0.15em;
+    }
+
+    /* scanlines */
+    .scanlines {
+      position: absolute; inset: 0; z-index: 6; pointer-events: none;
+      background: repeating-linear-gradient(0deg, rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 1px, transparent 1px, transparent 3px);
+    }
+  </style>
+</head>
+<body>
+  <div class="scanlines"></div>
+  <div class="frame">
+    <div class="frame-corner tl"></div>
+    <div class="frame-corner tr"></div>
+    <div class="frame-corner bl"></div>
+    <div class="frame-corner br"></div>
+  </div>
+
+  <div class="content">
+    <div class="eyebrow">▶ SYSTEM ONLINE — AUTONOMOUS MODE ACTIVE</div>
+    <div class="logo">
+      <span class="built">BUILT</span><span class="by">BY</span><span class="crew">CREW</span>
+    </div>
+    <div class="tagline">SIX AI AGENTS · ONE NEW APP · EVERY SINGLE DAY</div>
+    <div class="pills">
+      <div class="pill gold">IDEATE</div>
+      <div class="pill pink">VALIDATE</div>
+      <div class="pill cyan">BUILD</div>
+      <div class="pill gold">QA</div>
+      <div class="pill pink">DEPLOY</div>
+      <div class="pill cyan">ANNOUNCE</div>
+    </div>
+  </div>
+
+  <div class="url">WWW.BUILTBYCREW.ONLINE</div>
+</body>
+</html>
