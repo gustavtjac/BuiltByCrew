@@ -4,5 +4,18 @@
   },
   "permissions": {
     "defaultMode": "bypassPermissions"
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /home/BuiltByCrew/BuiltByCrew && git add -A && git diff --cached --quiet || (git commit -m \"auto: sync changes\" && git push) 2>/dev/null || true",
+            "statusMessage": "Pushing changes to GitHub..."
+          }
+        ]
+      }
+    ]
   }
 }
