@@ -5,21 +5,10 @@ import path from 'path';
 
 export interface MarketingContent {
   description: string;
-  day0Tweet: string;
-  day3Tweet: string;
-  day7Tweet: string;
   redditTitle: string;
   redditBody: string;
   redditSubreddits: string[];
   linkedinPost: string;
-}
-
-interface ScheduledPost {
-  platform: 'twitter';
-  day: number;
-  text: string;
-  postAt: string; // YYYY-MM-DD
-  posted: boolean;
 }
 
 // --- Reddit ---
@@ -94,66 +83,18 @@ async function postToLinkedIn(text: string): Promise<string> {
   return url;
 }
 
-// --- Twitter via Make.com webhook ---
-
-async function postToTwitter(text: string): Promise<void> {
-  const { MAKE_WEBHOOK_URL } = process.env;
-  if (!MAKE_WEBHOOK_URL) {
-    console.warn('[twitter] MAKE_WEBHOOK_URL not set — skipping');
-    return;
-  }
-  await axios.post(MAKE_WEBHOOK_URL, { text });
-  console.log('[twitter] Tweet sent via Make.com webhook');
-}
-
-// --- Scheduled post checker (runs at start of every pipeline run) ---
-
-export async function postDueScheduled(): Promise<void> {
-  const runsPath = path.resolve('data', 'runs.json');
-  if (!fs.existsSync(runsPath)) return;
-
-  const store = JSON.parse(fs.readFileSync(runsPath, 'utf-8'));
-  const today = new Date().toISOString().slice(0, 10);
-  let changed = false;
-
-  for (const run of store.runs ?? []) {
-    for (const post of run.scheduledPosts ?? []) {
-      if (!post.posted && post.postAt <= today) {
-        try {
-          await postToTwitter(post.text);
-          post.posted = true;
-          changed = true;
-          console.log(`[scheduled] Posted day ${post.day} tweet for ${run.shortName}`);
-        } catch (err: any) {
-          console.error(`[scheduled] Failed for ${run.shortName} day ${post.day}:`, err.message);
-        }
-      }
-    }
-  }
-
-  if (changed) {
-    fs.writeFileSync(runsPath, JSON.stringify(store, null, 2));
-    console.log('[scheduled] runs.json updated');
-  }
-}
-
 // --- Main export ---
 
 export async function postSocial(
   slug: string,
   content: MarketingContent,
-  runDate: string,
 ): Promise<{
   redditUrls: string[];
   linkedinUrl: string | null;
-  twitterPosted: boolean;
-  scheduledPosts: ScheduledPost[];
 }> {
   const results = {
     redditUrls: [] as string[],
     linkedinUrl: null as string | null,
-    twitterPosted: false,
-    scheduledPosts: [] as ScheduledPost[],
   };
 
   // Reddit
@@ -174,63 +115,35 @@ export async function postSocial(
     console.error('[linkedin] Failed:', err.message);
   }
 
-  // Twitter — day 0 immediately via Make.com
-  try {
-    await postToTwitter(content.day0Tweet);
-    results.twitterPosted = true;
-  } catch (err: any) {
-    console.error('[twitter] Failed day 0 tweet:', err.message);
-  }
-
-  // Twitter — day 3 and day 7 stored for scheduled posting
-  const base = new Date(runDate);
-  const addDays = (d: Date, n: number) => {
-    const r = new Date(d);
-    r.setDate(r.getDate() + n);
-    return r.toISOString().slice(0, 10);
-  };
-
-  results.scheduledPosts = [
-    { platform: 'twitter', day: 3, text: content.day3Tweet, postAt: addDays(base, 3), posted: false },
-    { platform: 'twitter', day: 7, text: content.day7Tweet, postAt: addDays(base, 7), posted: false },
-  ];
-
   return results;
 }
 
 // --- Standalone entry point ---
-// Usage:
-//   ts-node scripts/post-social.ts          — runs scheduled check only
-//   ts-node scripts/post-social.ts <slug>   — runs scheduled check + posts for <slug>
+// Usage: ts-node scripts/post-social.ts <slug>
 
 if (require.main === module) {
-  postDueScheduled()
-    .then(async () => {
-      const slug = process.argv[2];
-      if (!slug) {
-        console.log('[social] Scheduled check complete. Pass a slug to post for a specific run.');
-        return;
-      }
+  const slug = process.argv[2];
+  if (!slug) {
+    console.error('Usage: ts-node scripts/post-social.ts <slug>');
+    process.exit(1);
+  }
 
-      const runsPath = path.resolve('data', 'runs.json');
-      const store = JSON.parse(fs.readFileSync(runsPath, 'utf-8'));
-      const run = store.runs?.find((r: any) => r.shortName === slug);
-      if (!run) {
-        console.error(`No run found for slug: ${slug}`);
-        process.exit(1);
-      }
-      if (!run.marketingContent) {
-        console.error('No marketingContent on run — was the marketing agent run?');
-        process.exit(1);
-      }
+  const runsPath = path.resolve('data', 'runs.json');
+  const store = JSON.parse(fs.readFileSync(runsPath, 'utf-8'));
+  const run = store.runs?.find((r: any) => r.shortName === slug);
+  if (!run) {
+    console.error(`No run found for slug: ${slug}`);
+    process.exit(1);
+  }
+  if (!run.marketingContent) {
+    console.error('No marketingContent on run — was the marketing agent run?');
+    process.exit(1);
+  }
 
-      const socialResults = await postSocial(slug, run.marketingContent, run.date);
-
+  postSocial(slug, run.marketingContent)
+    .then(socialResults => {
       run.social = socialResults;
-      run.tweets_posted = socialResults.twitterPosted;
-      run.scheduledPosts = socialResults.scheduledPosts;
       fs.writeFileSync(runsPath, JSON.stringify(store, null, 2));
-
       console.log('[social] Done:', JSON.stringify(socialResults, null, 2));
     })
     .catch((err: any) => {

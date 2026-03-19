@@ -1,21 +1,12 @@
 # MARKETING Skill
 
-You are writing content to announce and promote a newly launched webapp across three platforms: Twitter/X (via Make.com), Reddit, and LinkedIn.
+You are writing content to announce and promote a newly launched webapp across two platforms: Reddit and LinkedIn.
 
 ## General rules
 - The live URL must appear in every piece of content.
 - Write in a direct, friendly tone. No corporate speak.
 - Never make claims the app cannot support (e.g. "the best", "the only").
 - No placeholder text — all content must be final and ready to post.
-
----
-
-## Twitter/X (via Make.com)
-- Each tweet must be ≤ 280 characters including the URL.
-- Maximum 2 hashtags per tweet.
-- **Day 0 (launch)**: Announce what the tool does and invite people to try it. Lead with the value.
-- **Day 3 (use case)**: Show a specific scenario where the tool saves time or solves a problem.
-- **Day 7 (engagement)**: Ask a question or share a tip that invites replies or reuse.
 
 ---
 
@@ -44,9 +35,6 @@ You are writing content to announce and promote a newly launched webapp across t
 Respond with valid JSON only, no markdown fences:
 {
   "description": "1-2 sentence tagline for the app card on the landing page",
-  "day0Tweet": "...",
-  "day3Tweet": "...",
-  "day7Tweet": "...",
   "redditTitle": "...",
   "redditBody": "...",
   "redditSubreddits": ["SideProject", "webdev"],

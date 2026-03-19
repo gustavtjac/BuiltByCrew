@@ -17,7 +17,7 @@ When triggered, the pipeline must:
 4. Verify the result is functional and complete
 5. Deploy it live under a subdomain of `builtbycrew.online`
 6. Create a public GitHub repo for the app under the `BuiltByCrew` org
-7. Announce the launch on Twitter/X (via Make.com), Reddit, and LinkedIn
+7. Announce the launch on Reddit and LinkedIn
 
 ---
 
@@ -36,9 +36,8 @@ Agent (dev)         → reads skills/FRONTEND.md + skills/CODING.md, builds the 
 Agent (QA)          → reads skills/QA.md, reviews the HTML, approves or lists issues
 Bash                → deploys HTML to Vercel, assigns subdomain
 Bash                → creates public GitHub repo under BuiltByCrew org, pushes index.html + meta.json + README
-Bash                → runs `npm run post:scheduled` to post any due day-3/day-7 tweets from prior runs
-Agent (marketing)   → reads skills/MARKETING.md, writes tweets + Reddit post + LinkedIn post
-Bash                → runs `npm run post:social <slug>` to post to all platforms, writes result to data/runs.json
+Agent (marketing)   → reads skills/MARKETING.md, writes Reddit post + LinkedIn post
+Bash                → runs `npm run post:social <slug>` to post to Reddit + LinkedIn, writes result to data/runs.json
 Bash                → runs `npm run deploy:landing` to redeploy the landing page with the updated app list
 ```
 
@@ -74,8 +73,7 @@ Deploys the HTML file to Vercel via REST API and assigns a subdomain `<shortName
 Then creates a public GitHub repo under the `BuiltByCrew` org named after the slug. Pushes `index.html`, `meta.json`, and a generated `README.md` to the repo. Uses `scripts/create-github-repo.ts` (callable via `npm run deploy:github <slug>`). The `gh` CLI is used for repo creation and must be authenticated.
 
 **Marketing agent** (subagent)
-Writes content for three platforms:
-- **Twitter/X**: Three tweets (day 0 launch, day 3 use-case, day 7 engagement) — each ≤280 chars including URL
+Writes content for two platforms:
 - **Reddit**: A self-post title + body for 1–2 relevant subreddits
 - **LinkedIn**: A professional post (150–400 chars)
 - **description**: A 1–2 sentence tagline for the runs.json card
@@ -133,7 +131,6 @@ Required:
 - `VERCEL_TOKEN`
 - `VERCEL_SCOPE` (team or personal scope)
 - `CUSTOM_DOMAIN` (e.g. `builtbycrew.online`)
-- `MAKE_WEBHOOK_URL` (Make.com webhook — triggers Twitter/X post, no direct API key needed)
 - `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET`, `REDDIT_USERNAME`, `REDDIT_PASSWORD`
 - `LINKEDIN_ACCESS_TOKEN`, `LINKEDIN_AUTHOR_URN`
 - `MAX_IDEA_RETRIES` (default 3)
