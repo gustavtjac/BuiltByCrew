@@ -30,7 +30,8 @@ When triggered, the pipeline must:
 When the user says **"run the pipeline"** (or the webhook triggers it), Claude Code executes the following sequence using the `Agent` tool — one subagent per phase:
 
 ```
-Agent (ideation)    → reads skills/IDEATION.md, generates idea + shortName
+Bash                → read data/runs.json to determine next run ID (max existing numeric ID + 1) and collect all existing shortNames for uniqueness check
+Agent (ideation)    → reads skills/IDEATION.md, generates idea + shortName (must not match any existing shortName)
 Agent (validation)  → reads skills/VALIDATION.md, approves or rejects with reason
 Agent (dev)         → reads skills/FRONTEND.md + skills/CODING.md, builds the HTML
 Agent (QA)          → reads skills/QA.md, reviews the HTML, approves or lists issues
@@ -102,20 +103,27 @@ Must read and apply `skills/LINKEDIN.md` before writing.
 
 Each app gets a creative short subdomain — not a slugified title. The idea agent is responsible for generating it as `shortName`. It should be memorable, relevant, and ideally one compound word or two short words joined (e.g. `splitwise`, `commitfmt`, `keymap`, `budgetly`). Max 20 characters.
 
+**Before accepting a shortName, the orchestrator must verify it does not already exist** in `data/runs.json` (check `shortName` field of all runs). If it collides, the idea agent must generate a new one.
+
 ---
 
 ## Data
 
+`data/runs.json` is the pipeline log. `apps/<slug>/meta.json` is the public-facing data for each app. **Both must be kept in sync** — the same fields must appear in both. GitHub `meta.json` is the authoritative source for the landing page deploy.
+
 Every run must be persisted to `data/runs.json` with:
-- `id` — unique run identifier
-- `date` — ISO timestamp
+- `id` — unique run identifier, auto-incremented from highest existing ID (e.g. if max is `run_003`, next is `run_004`)
+- `date` — full ISO 8601 timestamp (e.g. `2026-03-19T18:00:00.000Z`). **Never truncate to a date-only string** — the time component determines morning vs evening slot on the landing page.
 - `idea` — the idea title
 - `description` — 1–2 sentence tagline written by the marketing agent, shown on the landing page card
 - `shortName` — the subdomain slug
 - `status` — `success | failed | skipped`
 - `url` — live URL if deployed
 - `github_repo_url` — GitHub repo URL (e.g. `https://github.com/BuiltByCrew/<slug>`)
-- `category` — one of: `tools`, `games`, `productivity`, `finance`, `creative`, `other`. Assigned by the idea agent based on the app's primary purpose. Used for filtering on the `/apps` page.
+- `screenshot_url` — microlink screenshot URL
+- `category` — one of: `tools`, `games`, `productivity`, `finance`, `creative`, `other`. Assigned by the idea agent. Used for filtering on the `/apps` page.
+
+`apps/<slug>/meta.json` must include all of: `title`, `slug`, `description`, `url`, `date` (full ISO timestamp), `category`, `screenshot_url`, `builtBy`, `builtByUrl`.
 
 ---
 

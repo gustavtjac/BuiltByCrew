@@ -37,6 +37,53 @@ async function waitForReady(token: string, teamId: string, deploymentId: string)
   throw new Error('Deployment timed out after 3 minutes');
 }
 
+function escapeXml(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function generateRss(apps: AppEntry[], domain: string): string {
+  const items = apps.map(a => `
+  <item>
+    <title>${escapeXml(a.title)}</title>
+    <link>${escapeXml(a.url)}</link>
+    <guid isPermaLink="true">${escapeXml(a.url)}</guid>
+    <description>${escapeXml(a.description ?? '')}</description>
+    <pubDate>${new Date(a.date).toUTCString()}</pubDate>
+    ${a.screenshot_url ? `<enclosure url="${escapeXml(a.screenshot_url)}" type="image/png" length="0"/>` : ''}
+  </item>`).join('');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>BuiltByCrew — A new app every day</title>
+    <link>https://www.${domain}</link>
+    <description>Six AI agents. One new web app every day. Games, tools, and utilities — built autonomously and shipped live.</description>
+    <language>en-us</language>
+    <atom:link href="https://www.${domain}/rss.xml" rel="self" type="application/rss+xml"/>
+    ${items}
+  </channel>
+</rss>`;
+}
+
+function generateSitemap(apps: AppEntry[], domain: string): string {
+  const staticUrls = [
+    `https://www.${domain}/`,
+    `https://www.${domain}/apps`,
+  ];
+  const appUrls = apps.map(a => a.url);
+  const allUrls = [...staticUrls, ...appUrls];
+
+  const urlEntries = allUrls.map(url => `
+  <url>
+    <loc>${escapeXml(url)}</loc>
+  </url>`).join('');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  ${urlEntries}
+</urlset>`;
+}
+
 export async function deployLanding(apps: AppEntry[] = []): Promise<void> {
   const token = process.env.VERCEL_TOKEN;
   const teamId = process.env.VERCEL_SCOPE ?? process.env.VERCEL_TEAM_ID ?? '';
@@ -55,6 +102,13 @@ export async function deployLanding(apps: AppEntry[] = []): Promise<void> {
     `window.__APPS__=${JSON.stringify(apps)};`
   );
 
+  // Inject OG image from latest app screenshot
+  const latestScreenshot = apps.find(a => a.screenshot_url)?.screenshot_url ?? '';
+  if (latestScreenshot) {
+    html = html.replace(/<meta property="og:image" content="[^"]*">/, `<meta property="og:image" content="${latestScreenshot}">`);
+    html = html.replace(/<meta name="twitter:image" content="[^"]*">/, `<meta name="twitter:image" content="${latestScreenshot}">`);
+  }
+
   // Inject apps data into apps page HTML
   const appsPagePath = path.resolve('landing', 'apps.html');
   let appsHtml = fs.readFileSync(appsPagePath, 'utf-8');
@@ -62,6 +116,12 @@ export async function deployLanding(apps: AppEntry[] = []): Promise<void> {
     /window\.__APPS__\s*=\s*\[.*?\];/s,
     `window.__APPS__=${JSON.stringify(apps)};`
   );
+
+  // Generate RSS feed
+  const rss = generateRss(apps, domain);
+
+  // Generate sitemap
+  const sitemap = generateSitemap(apps, domain);
 
   console.log(`[deploy-landing] Deploying with ${apps.length} apps...`);
 
@@ -81,6 +141,16 @@ export async function deployLanding(apps: AppEntry[] = []): Promise<void> {
         {
           file: 'apps/index.html',
           data: Buffer.from(appsHtml).toString('base64'),
+          encoding: 'base64',
+        },
+        {
+          file: 'rss.xml',
+          data: Buffer.from(rss).toString('base64'),
+          encoding: 'base64',
+        },
+        {
+          file: 'sitemap.xml',
+          data: Buffer.from(sitemap).toString('base64'),
           encoding: 'base64',
         },
       ],

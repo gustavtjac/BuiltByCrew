@@ -11,6 +11,8 @@ interface AppMeta {
   description: string;
   url: string;
   date: string;
+  category?: string;
+  screenshot_url?: string;
 }
 
 function buildReadme(p: { title: string; slug: string; description: string; url: string; date: string; repoUrl: string }): string {
@@ -80,7 +82,7 @@ export async function createGithubRepo(meta: AppMeta): Promise<string> {
   }
 
   // Write meta.json into the app dir
-  const metaJson = {
+  const metaJson: Record<string, string> = {
     title,
     slug,
     description,
@@ -89,6 +91,8 @@ export async function createGithubRepo(meta: AppMeta): Promise<string> {
     builtBy: 'BuiltByCrew',
     builtByUrl: 'https://builtbycrew.online',
   };
+  if (meta.category) metaJson.category = meta.category;
+  if (meta.screenshot_url) metaJson.screenshot_url = meta.screenshot_url;
   fs.writeFileSync(path.join(appDir, 'meta.json'), JSON.stringify(metaJson, null, 2));
 
   // Write README
@@ -135,7 +139,9 @@ if (require.main === module) {
     title: run_.idea,
     description: run_.description,
     url: run_.url,
-    date: run_.date.slice(0, 10),
+    date: run_.date,
+    category: run_.category,
+    screenshot_url: run_.screenshot_url,
   }).catch(err => {
     console.error('[github] Fatal:', err.message ?? err);
     process.exit(1);

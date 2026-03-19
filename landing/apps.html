@@ -138,6 +138,15 @@
     .cat-btn:hover   { border-color: var(--cyan); color: var(--cyan); }
     .cat-btn.active  { border-color: var(--gold); color: var(--gold); background: rgba(255,215,0,0.07); text-shadow: 0 0 8px var(--glow-g); }
 
+    .search-input {
+      font-family: var(--ps2); font-size: 0.4rem; letter-spacing: 0.06em;
+      background: var(--surf); color: var(--text);
+      border: 2px solid var(--bdr); padding: 0.45rem 0.8rem;
+      outline: none; width: 220px; transition: border-color 0.12s;
+    }
+    .search-input::placeholder { color: var(--muted); }
+    .search-input:focus { border-color: var(--cyan); color: var(--cyan); }
+
     .result-count {
       font-family: var(--ps2); font-size: 0.38rem; color: var(--muted);
       margin-left: auto; letter-spacing: 0.08em;
@@ -252,7 +261,9 @@
     </div>
 
     <div class="controls">
-      <span class="ctrl-label">SORT BY</span>
+      <input class="search-input" id="search-input" type="search" placeholder="SEARCH APPS..." autocomplete="off" spellcheck="false" />
+
+      <span class="ctrl-label" style="margin-left:0.5rem">SORT BY</span>
       <select class="ctrl-select" id="sort-select">
         <option value="newest">NEWEST FIRST</option>
         <option value="oldest">OLDEST FIRST</option>
@@ -291,8 +302,9 @@
       category: a.category || 'other',
     }));
 
-    let activeCat = 'all';
-    let sortMode  = 'newest';
+    let activeCat  = 'all';
+    let sortMode   = 'newest';
+    let searchQuery = '';
 
     // ── BUILD CATEGORY FILTERS ───────────────────────────────────
     const presentCats = [...new Set(apps.map(a => a.category))];
@@ -319,6 +331,11 @@
       render();
     });
 
+    document.getElementById('search-input').addEventListener('input', e => {
+      searchQuery = e.target.value.trim().toLowerCase();
+      render();
+    });
+
     // ── RENDER ───────────────────────────────────────────────────
     function thumbUrl(app) {
       if (app.screenshot_url) return app.screenshot_url;
@@ -334,6 +351,10 @@
     function render() {
       let list = [...apps];
       if (activeCat !== 'all') list = list.filter(a => a.category === activeCat);
+      if (searchQuery) list = list.filter(a =>
+        a.title.toLowerCase().includes(searchQuery) ||
+        (a.description ?? '').toLowerCase().includes(searchQuery)
+      );
 
       list.sort((a, b) => {
         if (sortMode === 'newest') return new Date(b.date) - new Date(a.date);
