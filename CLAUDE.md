@@ -17,7 +17,7 @@ When triggered, the pipeline must:
 4. Verify the result is functional and complete
 5. Deploy it live under a subdomain of `builtbycrew.online`
 6. Create a public GitHub repo for the app under the `BuiltByCrew` org
-7. Write a description for the landing page card
+7. Write a description for the landing page card and announce the launch on LinkedIn
 
 ---
 
@@ -37,6 +37,8 @@ Agent (QA)          → reads skills/QA.md, reviews the HTML, approves or lists 
 Bash                → deploys HTML to Vercel, assigns subdomain
 Bash                → creates public GitHub repo under BuiltByCrew org, pushes index.html + meta.json + README
 Agent (marketing)   → reads skills/MARKETING.md, writes landing page description
+Agent (linkedin)    → reads skills/LINKEDIN.md, writes LinkedIn post text, stored as `linkedinPost` on the run
+Bash                → runs `npm run post:linkedin <slug>` to post to LinkedIn via Zapier webhook
 Bash                → runs `npm run deploy:landing` to redeploy the landing page with the updated app list
 ```
 
@@ -75,6 +77,11 @@ Then creates a public GitHub repo under the `BuiltByCrew` org named after the sl
 Writes a 1–2 sentence description for the app's landing page card. Output is valid JSON with a single `description` field, stored in `data/runs.json`.
 
 Must read and apply `skills/MARKETING.md` before writing.
+
+**LinkedIn agent** (subagent)
+Writes a formatted LinkedIn post for the BuiltByCrew company page. Output is valid JSON with a single `post` field, stored as `linkedinPost` on the run in `data/runs.json`. The post is then sent via `npm run post:linkedin <slug>` which posts to LinkedIn through the Zapier webhook with a screenshot of the live app as the image.
+
+Must read and apply `skills/LINKEDIN.md` before writing.
 
 ---
 
