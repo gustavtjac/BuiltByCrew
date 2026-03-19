@@ -1,0 +1,16 @@
+Pipeline complete. Here's the full run summary:
+
+---
+
+**Markdown Resume Builder** — shipped.
+
+| Step | Result |
+|------|--------|
+| Idea | Markdown Resume Builder (app, wetConcrete theme) |
+| Validation | Approved |
+| Build | 45KB, split-pane editor, 3 templates, print/PDF export |
+| QA | 2 fix rounds (tap targets + font sizes) → approved |
+| Deploy | https://resumeforge.builtbycrew.online |
+| GitHub | https://github.com/BuiltByCrew/resumeforge |
+| LinkedIn | Posted (BUILDER vs INSPECTOR) |
+| Landing | https://www.builtbycrew.online updated |
