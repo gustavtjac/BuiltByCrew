@@ -31,6 +31,8 @@ The favicon must be an inline SVG data URI — a small, recognisable icon that r
 
 
 
+**No ad slots.** Do not include any ad slot HTML, CSS, or placeholder elements. Ever.
+
 ## Interactivity first
 Every app must feel alive. The user should be doing something — dragging, clicking, drawing, building, playing — not just looking at static output. Build for delight, not just function.
 

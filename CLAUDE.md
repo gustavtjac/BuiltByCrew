@@ -61,7 +61,7 @@ Decides whether the idea is worth building. Considers uniqueness, usefulness, an
 Must read and apply `skills/VALIDATION.md` before validating.
 
 **Dev agent** (subagent)
-Builds the webapp. Output must be a complete, working, self-contained HTML file — no placeholders, no broken features, no external dependencies. Must include a slot for ads. If QA returns issues, it fixes exactly those issues.
+Builds the webapp. Output must be a complete, working, self-contained HTML file — no placeholders, no broken features, no external dependencies. No ad slots. If QA returns issues, it fixes exactly those issues.
 
 Must read and apply `frontend-design`skill `skills/FRONTEND.md` and `skills/CODING.md` before building.
 
