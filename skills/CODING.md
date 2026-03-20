@@ -30,6 +30,19 @@ When the idea is a sandbox (physics/generative-art playground), apply these addi
 - Add subtle on-screen hints (bottom-left, small, themed) like "click to attract · drag to push" — one line, disappears after 5 seconds.
 - No UI panels, no settings menus, no buttons unless absolutely essential. The canvas IS the UI.
 
+## Daily puzzle apps (category: puzzle)
+When the idea is a daily puzzle (Wordle/Contexto-style), apply these additional rules:
+
+- **Date seed**: derive today's puzzle deterministically from the current date. Use `new Date().toISOString().slice(0,10)` as the seed string; hash or index into your puzzle data with it. Never use `Math.random()` — the puzzle must be identical for all players on the same day.
+- **All puzzle data embedded**: word lists, answer sets, puzzle configs — everything ships inside the HTML. No fetch calls for content.
+- **Attempt state in localStorage**: save the player's guesses and completion status under a namespaced key that includes the date (e.g. `bycrew_<slug>_2026-03-20`). On load, restore state so a partial game survives a refresh.
+- **Streak tracking**: store `currentStreak`, `bestStreak`, and `lastWonDate` in localStorage. Update on win/lose.
+- **Share button**: on win or game over, show a "Copy result" button that writes a spoiler-free emoji summary to the clipboard (e.g. `Puzzle #42 ⬛🟨🟩🟩🟩 4/6`). Use `navigator.clipboard.writeText()` with a fallback.
+- **Countdown to next puzzle**: on the win/loss screen, show a live countdown (updated every second) to midnight local time when the next puzzle unlocks.
+- **Puzzle number**: derive a stable puzzle number from the date (days since a fixed epoch, e.g. 2026-01-01) and display it in the UI (e.g. "Puzzle #79").
+- **Mobile-first keyboard**: for word puzzles, render an on-screen keyboard in addition to supporting physical keyboard input. Minimum key tap target: 44px.
+- **Animations**: tile flip on guess reveal (CSS 3D transform), row shake on invalid guess, celebration burst on win.
+
 ## Performance
 - Keep the total file size under 150 KB.
 - No blocking operations on the main thread; use `requestAnimationFrame` for animations.

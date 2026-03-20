@@ -5,8 +5,9 @@ You are generating ideas for small, delightful single-page web applications. Eve
 - **A smart little app** — a niche utility that solves a specific recurring annoyance in a clever way. Not yet another to-do list or calculator. Think tools a developer, designer, or curious person would actually bookmark.
 - **A fun little game** — a simple but engaging browser game. Could be a puzzle, arcade, word game, idle clicker, or anything that's instantly playable with no install and no login.
 - **A sandbox** — a physics or generative-art playground. No goal, no score, no win condition. Just a beautiful interactive canvas the user can mess with indefinitely. Must be visually stunning and immediately captivating. Think particle systems, fluid dynamics, gravity wells, reaction-diffusion, cloth simulation, emergent behaviour, generative music visualisers, or procedural drawing tools.
+- **A daily puzzle** — a Wordle/Contexto-style daily challenge. One puzzle per day, seeded by date so everyone gets the same puzzle. Has a clear win/fail state, a limited number of attempts or a scoring system, and a shareable result (emoji grid or score string copied to clipboard). Should be completable in 2–5 minutes and create a "come back tomorrow" pull.
 
-Rotate across all three types over time. If the last two builds were apps and games, lean toward a sandbox. Never do the same type twice in a row.
+Rotate across all four types over time. Never do the same type twice in a row.
 
 ## Rules
 - Must be a self-contained HTML file with embedded CSS and JavaScript — no server-side code, no external API calls requiring auth.
@@ -18,6 +19,7 @@ Rotate across all three types over time. If the last two builds were apps and ga
 - For apps: solves something specific, has at least 2 interactive features, saves time or removes friction
 - For games: instantly understandable, fun within 10 seconds, has a win/lose condition or score
 - For sandboxes: visually jaw-dropping within 2 seconds, endlessly playable, no instructions needed — the interaction is self-evident. The user should want to screenshot it.
+- For daily puzzles: one fresh puzzle per day (date-seeded), completable in 2–5 minutes, shareable result that makes people want to compare scores, streak tracked in localStorage
 - Either way: no login required, no persistent backend, shareable with a link
 
 ## Sandbox idea guidance
@@ -33,6 +35,28 @@ Bad sandbox ideas (avoid):
 - Anything that requires reading instructions
 - Anything with a score, level, or goal
 - Anything static — if the user doesn't touch it, nothing should happen (or it should auto-evolve beautifully)
+
+## Daily puzzle idea guidance
+Good puzzle concepts:
+- **Word/language puzzles** — semantic guessing (like Contexto: guess a word by semantic similarity), anagram chains, hidden-word deduction, crossword-lite, definition guessing
+- **Logic/deduction** — nonograms, Mastermind-style code breaking, constraint puzzles, Sudoku variants with a twist
+- **Pattern recognition** — sequence puzzles, odd-one-out with a reveal, visual pattern completion
+- **Knowledge/trivia puzzles** — guess the year from an event, identify a country from its outline, spot the fake statistic
+- **Creative twists on Wordle** — but with a completely different domain (e.g. guess the CSS color, guess the emoji meaning, guess the programming language from a snippet)
+
+The mechanic must be fully self-contained — all puzzle data (word lists, puzzle seeds, answers) embedded in the HTML file itself. No API calls for puzzle content.
+
+Required features for every puzzle:
+- **Date seed**: today's puzzle is determined by the current date — same answer for everyone on the same day
+- **Attempt tracking**: limited guesses or a scoring system that rewards fewer attempts
+- **Shareable result**: a "Share" button that copies a spoiler-free emoji/text summary to clipboard (e.g. `Puzzle #42: ⬛🟨🟩🟩🟩 — 4/6`)
+- **Streak counter**: localStorage tracks current streak and best streak, shown on the win/lose screen
+- **Come-back hook**: show the time until tomorrow's puzzle on the win/lose screen
+
+Bad puzzle ideas (avoid):
+- Puzzles that require a backend or live data (e.g. "today's top news story")
+- Anything that takes more than 5 minutes to complete
+- Pure trivia with no deduction — the player should feel clever, not just lucky
 
 ## Interactivity requirement
 **Every idea must have a strong interactive core.** The user should be doing something — dragging, clicking, typing, drawing, building, playing — not just reading or viewing static output. Ask yourself: "Would someone screenshot this and share it?" If not, rethink the idea.
@@ -100,7 +124,7 @@ Respond with valid JSON only, no markdown fences, no commentary:
   "title": "Short human-readable name (max 6 words)",
   "description": "2-3 sentences describing what the app/game does and its key features.",
   "slug": "creativeshortname",
-  "category": "app" | "game" | "sandbox",
+  "category": "app" | "game" | "sandbox" | "puzzle",
   "theme": {
     "name": "themeIdentifier",
     "description": "2 sentences describing the visual direction — colors, fonts, mood, key UI motifs.",
