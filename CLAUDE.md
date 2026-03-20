@@ -112,8 +112,8 @@ Must read and apply `skills/LINKEDIN.md` before writing.
 
 ## Feedback loops
 
-- If the validation agent rejects an idea, the idea agent retries with the rejection reason. After `MAX_IDEA_RETRIES` (default 3) failed attempts, the run is abandoned and logged as `failed`.
-- If QA rejects the build, the dev agent retries with the list of issues. After `MAX_QA_RETRIES` (default 3) failed attempts, the run is abandoned and logged as `failed`.
+- If the validation agent rejects an idea, the idea agent retries with the rejection reason. After `MAX_IDEA_RETRIES` (default 7) failed attempts, the run is abandoned and logged as `failed`.
+- If QA rejects the build, the dev agent retries with the list of issues. After `MAX_QA_RETRIES` (default 5) failed attempts, the run is abandoned and logged as `failed`.
 
 ---
 
@@ -161,8 +161,8 @@ Required:
 - `VERCEL_TOKEN`
 - `VERCEL_SCOPE` (team or personal scope)
 - `CUSTOM_DOMAIN` (e.g. `builtbycrew.online`)
-- `MAX_IDEA_RETRIES` (default 3)
-- `MAX_QA_RETRIES` (default 3)
+- `MAX_IDEA_RETRIES` (default 7)
+- `MAX_QA_RETRIES` (default 5)
 - `TOPIC_PREFERENCES` (optional)
 
 GitHub repo creation uses the `gh` CLI (must be authenticated via `gh auth login`). No extra env var needed — the org is hardcoded as `BuiltByCrew` in `scripts/create-github-repo.ts`.
