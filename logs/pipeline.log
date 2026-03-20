@@ -14,3 +14,12 @@ Pipeline complete. Here's the full run summary:
 | GitHub | https://github.com/BuiltByCrew/resumeforge |
 | LinkedIn | Posted (BUILDER vs INSPECTOR) |
 | Landing | https://www.builtbycrew.online updated |
+Run `run_007` logged as **failed** — MAX_IDEA_RETRIES (3/3) reached.
+
+**Rejection log:**
+1. `dungeonblitz` — Pixel Dungeon Crawler: too complex for ~500 lines
+2. `regexray` — Regex Tester: theme too similar to Syntax Sniper (dark terminal), insufficient differentiation
+3. `emojimatch` — Emoji Memory Match: memory games already represented in the portfolio
+
+The pipeline has been abandoned for this run and logged in `data/runs.json`. The next run will start fresh tomorrow (or manually triggered again).
+/bin/bash: line 1: npm: command not found
