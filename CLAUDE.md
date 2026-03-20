@@ -73,9 +73,20 @@ Must read and apply `skills/QA.md` before reviewing.
 **Ops** (Bash — no subagent needed)
 Deploys the HTML file to Vercel via REST API and assigns a subdomain `<shortName>.builtbycrew.online`. Confirms the URL is live before continuing. Uses `scripts/deploy-app.ts` or direct Vercel API calls.
 
-After confirming the URL is live, captures a screenshot by calling:
+After confirming the deployment is ready, **poll the live subdomain URL until it returns HTTP 200 before screenshotting**. Use this exact loop — do not skip it:
+```bash
+for i in $(seq 1 24); do
+  STATUS=$(curl -o /dev/null -s -w "%{http_code}" "https://<shortName>.builtbycrew.online")
+  if [ "$STATUS" = "200" ]; then break; fi
+  echo "Waiting for DNS... ($STATUS) attempt $i/24"
+  sleep 10
+done
 ```
-curl "https://api.microlink.io/?url=<appUrl>&screenshot=true&meta=false"
+This retries every 10 seconds for up to 4 minutes. Only proceed to screenshot once a 200 is confirmed.
+
+Then capture the screenshot:
+```
+curl "https://api.microlink.io/?url=<appUrl>&screenshot=true&meta=false&force=true"
 ```
 Extract `.data.screenshot.url` from the JSON response and store it as `screenshot_url` in both `data/runs.json` and `meta.json`. This URL is used as the app's thumbnail on the landing page and `/apps` page.
 
