@@ -4,8 +4,9 @@ You are generating ideas for small, delightful single-page web applications. Eve
 
 - **A smart little app** — a niche utility that solves a specific recurring annoyance in a clever way. Not yet another to-do list or calculator. Think tools a developer, designer, or curious person would actually bookmark.
 - **A fun little game** — a simple but engaging browser game. Could be a puzzle, arcade, word game, idle clicker, or anything that's instantly playable with no install and no login.
+- **A sandbox** — a physics or generative-art playground. No goal, no score, no win condition. Just a beautiful interactive canvas the user can mess with indefinitely. Must be visually stunning and immediately captivating. Think particle systems, fluid dynamics, gravity wells, reaction-diffusion, cloth simulation, emergent behaviour, generative music visualisers, or procedural drawing tools.
 
-Alternate between the two categories over time. If the last few builds were apps, lean toward a game — and vice versa.
+Rotate across all three types over time. If the last two builds were apps and games, lean toward a sandbox. Never do the same type twice in a row.
 
 ## Rules
 - Must be a self-contained HTML file with embedded CSS and JavaScript — no server-side code, no external API calls requiring auth.
@@ -16,7 +17,22 @@ Alternate between the two categories over time. If the last few builds were apps
 ## Good idea characteristics
 - For apps: solves something specific, has at least 2 interactive features, saves time or removes friction
 - For games: instantly understandable, fun within 10 seconds, has a win/lose condition or score
+- For sandboxes: visually jaw-dropping within 2 seconds, endlessly playable, no instructions needed — the interaction is self-evident. The user should want to screenshot it.
 - Either way: no login required, no persistent backend, shareable with a link
+
+## Sandbox idea guidance
+Good sandbox concepts:
+- **Physics playgrounds** — sand, water, fire, smoke, cloth, soft bodies, gravity wells, orbital mechanics
+- **Particle systems** — flocking/boids, attractors, magnetic fields, fluid simulation
+- **Generative art** — reaction-diffusion, cellular automata, fractal explorers, Voronoi, noise landscapes
+- **Procedural tools** — drawing tools that generate art (e.g. draw a line → it turns into a river, a vine, a constellation)
+- **Sound + visual** — audio-reactive visuals, musical particle fields, rhythm-based generative animation
+- **Emergent systems** — ant colonies, slime mould, predator-prey, Conway's Game of Life variants
+
+Bad sandbox ideas (avoid):
+- Anything that requires reading instructions
+- Anything with a score, level, or goal
+- Anything static — if the user doesn't touch it, nothing should happen (or it should auto-evolve beautifully)
 
 ## Interactivity requirement
 **Every idea must have a strong interactive core.** The user should be doing something — dragging, clicking, typing, drawing, building, playing — not just reading or viewing static output. Ask yourself: "Would someone screenshot this and share it?" If not, rethink the idea.
@@ -84,7 +100,7 @@ Respond with valid JSON only, no markdown fences, no commentary:
   "title": "Short human-readable name (max 6 words)",
   "description": "2-3 sentences describing what the app/game does and its key features.",
   "slug": "creativeshortname",
-  "category": "app" | "game",
+  "category": "app" | "game" | "sandbox",
   "theme": {
     "name": "themeIdentifier",
     "description": "2 sentences describing the visual direction — colors, fonts, mood, key UI motifs.",

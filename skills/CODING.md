@@ -18,6 +18,18 @@ You are writing production-quality JavaScript embedded in an HTML file.
 - Entrance animations: key elements should animate in on load using CSS `@keyframes` with staggered `animation-delay`.
 - Every button needs a physical press feel: `transform: scale(0.96)` on `:active` minimum.
 
+## Sandbox apps (category: sandbox)
+When the idea is a sandbox (physics/generative-art playground), apply these additional rules:
+
+- Use a full-viewport `<canvas>` element as the primary surface — no fixed-width containers.
+- Drive everything with a `requestAnimationFrame` loop from the first frame. The canvas must never be static.
+- Implement mouse AND touch interaction — drag, tap, swipe. The user's cursor/finger should visibly affect the simulation immediately.
+- Aim for visual beauty over accuracy: smooth blending, colour gradients, motion blur (`ctx.globalAlpha` trails), and glow effects (`ctx.shadowBlur`) are encouraged.
+- Particle counts and simulation steps must be capped to maintain 60fps on a mid-range device. Prefer quality over quantity — 200 beautiful particles beat 2000 ugly ones.
+- Include at least one ambient behaviour that runs without user input (auto-evolving, drifting, pulsing) so the canvas is alive even if the user just watches.
+- Add subtle on-screen hints (bottom-left, small, themed) like "click to attract · drag to push" — one line, disappears after 5 seconds.
+- No UI panels, no settings menus, no buttons unless absolutely essential. The canvas IS the UI.
+
 ## Performance
 - Keep the total file size under 150 KB.
 - No blocking operations on the main thread; use `requestAnimationFrame` for animations.

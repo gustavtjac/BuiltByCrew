@@ -51,7 +51,7 @@ Each subagent receives structured input (prior outputs, skill content, run conte
 ## Agents
 
 **Idea agent** (subagent)
-Generates a fresh webapp idea. Must never repeat an idea already in `data/runs.json`. Targets practical, niche utility tools simple enough to build in one HTML file. Also generates a `shortName` — a creative 1–2 word slug like `commitfmt`, `budgetsplit`, or `keymap` — used as the subdomain. Also assigns a `category` from: `tools`, `games`, `productivity`, `finance`, `creative`, `other`.
+Generates a fresh webapp idea. Must never repeat an idea already in `data/runs.json`. Targets practical, niche utility tools simple enough to build in one HTML file. Also generates a `shortName` — a creative 1–2 word slug like `commitfmt`, `budgetsplit`, or `keymap` — used as the subdomain. Also assigns a `category` from: `tools`, `games`, `productivity`, `finance`, `creative`, `sandbox`, `other`.
 
 Must read and apply `skills/IDEATION.md` before generating.
 
@@ -128,7 +128,7 @@ Every run must be persisted to `data/runs.json` with:
 - `url` — live URL if deployed
 - `github_repo_url` — GitHub repo URL (e.g. `https://github.com/BuiltByCrew/<slug>`)
 - `screenshot_url` — microlink screenshot URL
-- `category` — one of: `tools`, `games`, `productivity`, `finance`, `creative`, `other`. Assigned by the idea agent. Used for filtering on the `/apps` page.
+- `category` — one of: `tools`, `games`, `productivity`, `finance`, `creative`, `sandbox`, `other`. Assigned by the idea agent. Used for filtering on the `/apps` page.
 
 `apps/<slug>/meta.json` must include all of: `title`, `slug`, `description`, `url`, `date` (full ISO timestamp), `category`, `screenshot_url`, `builtBy`, `builtByUrl`.
 
