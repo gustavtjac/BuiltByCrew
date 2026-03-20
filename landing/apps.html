@@ -128,15 +128,7 @@
     }
     .ctrl-select:hover, .ctrl-select:focus { border-color: var(--gold); color: var(--gold); }
 
-    .cat-filters { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-    .cat-btn {
-      font-family: var(--ps2); font-size: 0.35rem; letter-spacing: 0.06em;
-      color: var(--muted); border: 2px solid var(--bdr);
-      background: var(--surf); padding: 0.35rem 0.65rem;
-      cursor: pointer; transition: all 0.1s;
-    }
-    .cat-btn:hover   { border-color: var(--cyan); color: var(--cyan); }
-    .cat-btn.active  { border-color: var(--gold); color: var(--gold); background: rgba(255,215,0,0.07); text-shadow: 0 0 8px var(--glow-g); }
+    .cat-select-wrap { display: flex; align-items: center; gap: 0.75rem; }
 
     .search-input {
       font-family: var(--ps2); font-size: 0.4rem; letter-spacing: 0.06em;
@@ -272,9 +264,9 @@
       </select>
 
       <span class="ctrl-label" style="margin-left:1rem">CATEGORY</span>
-      <div class="cat-filters" id="cat-filters">
-        <button class="cat-btn active" data-cat="all">ALL</button>
-      </div>
+      <select class="ctrl-select" id="cat-select">
+        <option value="all">ALL</option>
+      </select>
 
       <span class="result-count" id="result-count">— APPS</span>
     </div>
@@ -296,7 +288,6 @@
   <script>window.__APPS__=[];</script>
   <script>
   (() => {
-    const CATS = ['tools','games','productivity','finance','creative','other'];
     const apps = (window.__APPS__ || []).map(a => ({
       ...a,
       category: a.category || 'other',
@@ -306,23 +297,18 @@
     let sortMode   = 'newest';
     let searchQuery = '';
 
-    // ── BUILD CATEGORY FILTERS ───────────────────────────────────
-    const presentCats = [...new Set(apps.map(a => a.category))];
-    const catBar = document.getElementById('cat-filters');
-    CATS.filter(c => presentCats.includes(c)).forEach(cat => {
-      const btn = document.createElement('button');
-      btn.className = 'cat-btn';
-      btn.dataset.cat = cat;
-      btn.textContent = cat.toUpperCase();
-      catBar.appendChild(btn);
+    // ── BUILD CATEGORY DROPDOWN DYNAMICALLY ──────────────────────
+    const presentCats = [...new Set(apps.map(a => a.category))].sort();
+    const catSelect = document.getElementById('cat-select');
+    presentCats.forEach(cat => {
+      const opt = document.createElement('option');
+      opt.value = cat;
+      opt.textContent = cat.toUpperCase();
+      catSelect.appendChild(opt);
     });
 
-    catBar.addEventListener('click', e => {
-      const btn = e.target.closest('.cat-btn');
-      if (!btn) return;
-      catBar.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeCat = btn.dataset.cat;
+    catSelect.addEventListener('change', e => {
+      activeCat = e.target.value;
       render();
     });
 
