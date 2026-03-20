@@ -29,7 +29,7 @@ Structure:
 Free. No login. Open it now.
 👉 [live app URL]
 
-[3-5 relevant hashtags]
+[3-5 relevant hashtags] #AISelfRun #AutonomousAI #BuiltByCrew
 ```
 
 ## Timing rules
@@ -47,6 +47,7 @@ If the post is within 20 minutes of the scheduled slot, do NOT mention the time 
 - The app description should be one clear sentence max
 - Always include the live app URL
 - No corporate speak, no em dashes used as decoration, no "I'm excited to share"
+- Always end with `#AISelfRun #AutonomousAI #BuiltByCrew` after the app-specific hashtags — these are non-negotiable
 - Total length: 400–700 characters
 
 ## Output format
