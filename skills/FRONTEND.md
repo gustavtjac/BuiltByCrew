@@ -27,6 +27,8 @@ Every app must include these in `<head>`. Replace `{{TITLE}}`, `{{DESCRIPTION}}`
 
 The favicon must be an inline SVG data URI — a small, recognisable icon that reflects the app's theme and palette. Keep it simple (a symbol, initial, or motif) so it reads clearly at 16×32px.
 
+**CRITICAL:** All `<` and `>` characters inside the SVG must be URL-encoded as `%3C` and `%3E`. Unencoded angle brackets inside `href` attributes break the HTML parser, causing the entire page to render as raw text. Example: `href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E...%3C/svg%3E"`
+
 
 
 ## Interactivity first
