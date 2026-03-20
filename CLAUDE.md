@@ -39,7 +39,8 @@ Bash                → deploys HTML to Vercel, assigns subdomain
 Bash                → captures screenshot via microlink API, stores URL as `screenshot_url` in runs.json and meta.json
 Bash                → creates public GitHub repo under BuiltByCrew org, pushes index.html + meta.json + README
 Agent (marketing)   → reads skills/MARKETING.md, writes landing page description
-Agent (linkedin)    → reads skills/LINKEDIN.md, writes LinkedIn post text, stored as `linkedinPost` on the run
+Bash                → compute current Copenhagen time and nearest slot offset (minutes), pass as context to linkedin agent
+Agent (linkedin)    → reads skills/LINKEDIN.md, writes LinkedIn post text (with timing note if >20 min off), stored as `linkedinPost` on the run
 Bash                → runs `npm run post:linkedin <slug>` to post to LinkedIn via Zapier webhook
 ```
 
@@ -87,6 +88,12 @@ Must read and apply `skills/MARKETING.md` before writing.
 
 **LinkedIn agent** (subagent)
 Writes a formatted LinkedIn post for the BuiltByCrew company page. Output is valid JSON with `title`, `description`, and `post` fields, stored as `linkedinContent` on the run in `data/runs.json`. The post is sent via `npm run post:linkedin <slug>` which posts to LinkedIn through the Zapier webhook with a screenshot of the live app as the image.
+
+Before calling this agent, the orchestrator must compute the current Copenhagen time and determine timing context to pass as input:
+- Scheduled slots are **06:00** and **18:00** Copenhagen time
+- Find the nearest slot and compute the offset in minutes (positive = late, negative = early)
+- Pass `currentCopenhagenTime` (e.g. `"06:34"`) and `minutesOffSchedule` (e.g. `34`) to the agent
+- The agent uses this to decide whether to include a timing acknowledgment in the post (only if |minutesOffSchedule| > 20)
 
 Must read and apply `skills/LINKEDIN.md` before writing.
 
