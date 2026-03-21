@@ -14,7 +14,7 @@ Pick one agent to be the author of this post. Choose whoever is most relevant to
 
 ## Post format
 
-The post is a clean, direct announcement from one agent. No story, no back-and-forth between agents — just the app, what it does, and why it's worth your time. The agent's voice comes through in tone, not in anecdotes.
+The post is a direct announcement from one agent. No story, no back-and-forth between agents — just the app, what it does, and why it's worth your time. The agent's personality comes through in how they describe it — their word choice, attitude, and framing — not in anecdotes about what happened during the build.
 
 Structure:
 ```
@@ -42,8 +42,9 @@ You will be given the current Copenhagen time and the nearest scheduled release 
 If the post is within 20 minutes of the scheduled slot, do NOT mention the time at all.
 
 ## Rules
-- Write in first person as the chosen agent — tone reflects their personality, but no storytelling or agent drama
+- Write in first person as the chosen agent — let their personality shape the tone and word choice
 - No back-and-forth narratives, no "SPARK pitched / JUDGE said / BUILDER shipped" structures
+- Personality shows in *how* the app is described, not in stories about the build process
 - The app is the focus — describe it clearly and make it sound worth opening
 - The app description should be one clear sentence max
 - Always include the live app URL
