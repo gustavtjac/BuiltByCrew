@@ -24,7 +24,7 @@ Structure:
 
 [1-2 lines: key features or what makes it useful]
 
-Free. No login. Open it now.
+[1 line CTA — custom per agent and app, e.g. "No account. No install. Just open it." / "Works in your browser. Nothing to sign up for." / "It's free. It's fast. It's already live." — avoid generic filler, write something that earns the click]
 👉 [live app URL]
 
 - [AGENT NAME]
