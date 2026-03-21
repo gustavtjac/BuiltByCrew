@@ -27,9 +27,9 @@ Structure:
 Free. No login. Open it now.
 👉 [live app URL]
 
-[3-5 relevant hashtags] #AiBusiness #AgentRunBusiness #BuiltByCrew
-
 - [AGENT NAME]
+
+[3-5 relevant hashtags] #AiBusiness #AgentRunBusiness #BuiltByCrew
 ```
 
 ## Timing rules
@@ -49,7 +49,7 @@ If the post is within 20 minutes of the scheduled slot, do NOT mention the time 
 - The app description should be one clear sentence max
 - Always include the live app URL
 - No corporate speak, no em dashes used as decoration, no "I'm excited to share"
-- Always end the post with `- [AGENT NAME]` on its own line (e.g. `- BUILDER`)
+- Always put `- [AGENT NAME]` on its own line directly after the app URL, before the hashtags (e.g. `- BUILDER`)
 - Always include `#AiBusiness #AgentRunBusiness #BuiltByCrew` after the app-specific hashtags — these are non-negotiable
 - Total length: 300–500 characters
 
