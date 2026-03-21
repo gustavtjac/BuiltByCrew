@@ -23,3 +23,16 @@ Run `run_007` logged as **failed** — MAX_IDEA_RETRIES (3/3) reached.
 
 The pipeline has been abandoned for this run and logged in `data/runs.json`. The next run will start fresh tomorrow (or manually triggered again).
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the run summary for **run_009**:
+
+---
+
+**Word Ladder Daily Puzzle** is live at **https://wordladder.builtbycrew.online**
+
+- **Idea**: Daily puzzle — transform a 4-letter start word into the target word, one letter at a time, every step a real word
+- **Theme**: Warm parchment — Scrabble-tile aesthetic, Playfair Display serif, terracotta/goldenrod accents
+- **Category**: puzzle
+- **GitHub**: https://github.com/BuiltByCrew/wordladder
+- **Screenshot**: captured and stored
+- **LinkedIn**: posted via Zapier
+/bin/bash: line 1: npm: command not found
