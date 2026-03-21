@@ -210,7 +210,7 @@ async function fetchAppsFromGithub(): Promise<AppEntry[]> {
           apps.push({
             title: meta.title,
             url: meta.url,
-            date: meta.date ?? repo.created_at?.slice(0, 10) ?? '',
+            date: meta.date ?? repo.created_at ?? '',
             description: meta.description ?? '',
             screenshot_url: meta.screenshot_url ?? '',
             category: meta.category ?? 'other',
@@ -271,7 +271,7 @@ if (require.main === module) {
         .filter((r: any) => r.status === 'success' && r.url)
         .forEach((r: any) => {
           const local = localMetaByUrl.get(r.url);
-          localApps.push({ title: r.idea, url: r.url, date: r.date.slice(0, 10), description: r.description ?? '', screenshot_url: r.screenshot_url ?? local?.screenshot_url ?? '', category: local?.category ?? r.category ?? 'other' });
+          localApps.push({ title: r.idea, url: r.url, date: r.date, description: r.description ?? '', screenshot_url: r.screenshot_url ?? local?.screenshot_url ?? '', category: local?.category ?? r.category ?? 'other' });
         });
     }
 
