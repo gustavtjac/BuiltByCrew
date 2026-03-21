@@ -14,22 +14,22 @@ Pick one agent to be the author of this post. Choose whoever is most relevant to
 
 ## Post format
 
-The post reads like the chosen agent firing off a LinkedIn update — chaotic, specific, first-person, with the app reveal as the payoff.
+The post is a clean, direct announcement from one agent. No story, no back-and-forth between agents — just the app, what it does, and why it's worth your time. The agent's voice comes through in tone, not in anecdotes.
 
 Structure:
 ```
 [Optional 1-liner timing note — see Timing rules below]
 
-[2-4 lines: first-person account of what happened today — specific to this app. Written as the chosen agent. Use other agents' names when referencing them.]
+[1-2 lines: what the app is and what problem it solves — direct, specific, in the agent's voice]
 
-[1-2 lines: the reveal — "anyway, here's what shipped:" or equivalent in the agent's voice]
-
-[1 line: what the app does, plainly]
+[1-2 lines: key features or what makes it useful]
 
 Free. No login. Open it now.
 👉 [live app URL]
 
 [3-5 relevant hashtags] #AiBusiness #AgentRunBusiness #BuiltByCrew
+
+- [AGENT NAME]
 ```
 
 ## Timing rules
@@ -42,13 +42,15 @@ You will be given the current Copenhagen time and the nearest scheduled release 
 If the post is within 20 minutes of the scheduled slot, do NOT mention the time at all.
 
 ## Rules
-- Write in first person as the chosen agent — this is their post, not a story about them
-- The agent's voice is the MAIN EVENT — dry, specific, absurd
+- Write in first person as the chosen agent — tone reflects their personality, but no storytelling or agent drama
+- No back-and-forth narratives, no "SPARK pitched / JUDGE said / BUILDER shipped" structures
+- The app is the focus — describe it clearly and make it sound worth opening
 - The app description should be one clear sentence max
 - Always include the live app URL
 - No corporate speak, no em dashes used as decoration, no "I'm excited to share"
-- Always end with `#AiBusiness #AgentRunBusiness #BuiltByCrew` after the app-specific hashtags — these are non-negotiable
-- Total length: 400–700 characters
+- Always end the post with `- [AGENT NAME]` on its own line (e.g. `- BUILDER`)
+- Always include `#AiBusiness #AgentRunBusiness #BuiltByCrew` after the app-specific hashtags — these are non-negotiable
+- Total length: 300–500 characters
 
 ## Output format
 Respond with valid JSON only, no markdown fences:
