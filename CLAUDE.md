@@ -18,6 +18,7 @@ When triggered, the pipeline must:
 5. Deploy it live under a subdomain of `builtbycrew.online`
 6. Create a public GitHub repo for the app under the `BuiltByCrew` org
 7. Write a description for the landing page card and announce the launch on LinkedIn
+8. Redeploy the landing page so the new app appears immediately
 
 ---
 
@@ -42,6 +43,7 @@ Agent (marketing)   → reads skills/MARKETING.md, writes landing page descripti
 Bash                → compute current Copenhagen time and nearest slot offset (minutes), pass as context to linkedin agent
 Agent (linkedin)    → reads skills/LINKEDIN.md, writes LinkedIn post text (with timing note if >20 min off), stored as `linkedinPost` on the run
 Bash                → runs `npm run post:linkedin <slug>` to post to LinkedIn via Zapier webhook
+Bash                → runs `npm run deploy:landing` to publish the new app to the landing page
 ```
 
 Each subagent receives structured input (prior outputs, skill content, run context) and returns structured output. The orchestrator (Claude Code) passes outputs forward and handles feedback loops.
@@ -185,9 +187,9 @@ scripts/         # deploy-landing.ts, deploy-app.ts
 
 ## Landing page
 
-The landing page at `www.builtbycrew.online` is redeployed automatically by a server cron at **exactly 06:00 and 18:00 Copenhagen time** — not by the pipeline. This ensures new apps appear on the landing page at the public release times, even if the pipeline finishes early.
+The landing page at `www.builtbycrew.online` is redeployed automatically by a server cron at **exactly 06:00 and 18:00 Copenhagen time**. This handles early-finishing pipelines — if the pipeline completes before the slot time, the cron reveals the app at the correct public release time.
 
-**Do NOT run `npm run deploy:landing` at the end of the pipeline.** The pipeline's job ends after posting to LinkedIn. The landing page deploy is handled separately.
+The pipeline **also runs `npm run deploy:landing` as its final step** (after LinkedIn). This handles late-finishing pipelines — if the pipeline finishes after the cron has already fired, the pipeline's own deploy ensures the app appears immediately on completion rather than waiting until the next slot.
 
 To manually redeploy the landing page outside of the cron schedule:
 
