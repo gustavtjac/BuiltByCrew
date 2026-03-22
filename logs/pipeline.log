@@ -36,3 +36,26 @@ Pipeline complete. Here's the run summary for **run_009**:
 - **Screenshot**: captured and stored
 - **LinkedIn**: posted via Zapier
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the full run summary:
+
+---
+
+**run_010 — Tip & Split Calculator**
+
+- **Live at**: https://tabsplit.builtbycrew.online
+- **GitHub**: https://github.com/BuiltByCrew/tabsplit
+- **Category**: finance
+- **Theme**: papercraft (kraft paper receipt aesthetic, Special Elite + Courier New)
+
+**Pipeline steps completed:**
+1. Ideation — `tabsplit` generated
+2. Validation — approved
+3. Dev — built with all 7 features (presets, custom tip, people counter, rolling numbers, rounding, share button, receipt styling)
+4. QA — rejected (5 issues), fixed, re-approved
+5. Deploy — live on Vercel with subdomain assigned
+6. Screenshot — captured via Microlink
+7. GitHub — repo created and files pushed
+8. Marketing — description written
+9. LinkedIn — posted via Zapier (BUILDER's voice)
+10. Landing page — redeployed with 9 successful apps
+/bin/bash: line 1: npm: command not found
