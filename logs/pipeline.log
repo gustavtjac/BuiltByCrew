@@ -59,3 +59,17 @@ Pipeline complete. Here's the full run summary:
 9. LinkedIn — posted via Zapier (BUILDER's voice)
 10. Landing page — redeployed with 9 successful apps
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the run summary:
+
+---
+
+**run_011 — Regex Raid — Daily Regex Puzzle**
+
+- **Live:** https://regexraid.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/regexraid
+- **Category:** puzzle
+- **Idea retries:** 2 (landmark silhouette rejected for asset size; regex raid approved)
+- **QA retries:** 1 (tap targets + setInterval leak + puzzle data bug — all fixed)
+- **LinkedIn:** posted via INSPECTOR
+- **Landing page:** redeployed with 17 apps
+/bin/bash: line 1: npm: command not found

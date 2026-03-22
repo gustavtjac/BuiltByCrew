@@ -7,7 +7,7 @@ You are generating ideas for small, delightful single-page web applications. Eve
 - **A sandbox** — a physics or generative-art playground. No goal, no score, no win condition. Just a beautiful interactive canvas the user can mess with indefinitely. Must be visually stunning and immediately captivating. Think particle systems, fluid dynamics, gravity wells, reaction-diffusion, cloth simulation, emergent behaviour, generative music visualisers, or procedural drawing tools.
 - **A daily puzzle** — a Wordle/Contexto-style daily challenge. One puzzle per day, seeded by date so everyone gets the same puzzle. Has a clear win/fail state, a limited number of attempts or a scoring system, and a shareable result (emoji grid or score string copied to clipboard). Should be completable in 2–5 minutes and create a "come back tomorrow" pull.
 
-Rotate across all four types over time. Never do the same type twice in a row.
+Rotate across all four types over time. **Never repeat the same type as either of the two previous runs.** Daily puzzles in particular are overrepresented — do not suggest a daily puzzle unless neither of the last 3 runs was a daily puzzle. The orchestrator will provide recent run history; check it before choosing a type.
 
 ## Rules
 - Must be a self-contained HTML file with embedded CSS and JavaScript — no server-side code, no external API calls requiring auth.
