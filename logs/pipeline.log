@@ -73,3 +73,17 @@ Pipeline complete. Here's the run summary:
 - **LinkedIn:** posted via INSPECTOR
 - **Landing page:** redeployed with 17 apps
 /bin/bash: line 1: npm: command not found
+Pipeline complete! Here's the summary for **run_012**:
+
+---
+
+**Murmuration — Flock Sandbox**
+- **Live:** https://murmurate.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/murmurate
+- **Category:** sandbox
+- **Theme:** cottagepunk — parchment background, earthy greens, naturalist field-notebook feel
+
+**What was built:** 260 flocking birds with a classic boids algorithm (separation, alignment, cohesion) on a full-viewport canvas. Click to startle the flock, drag to herd them. Wing-beat animation, aged parchment texture with grain noise, warm ochre trail smear. IM Fell English serif font throughout.
+
+**Pipeline status:** ✓ Idea → ✓ Validation → ✓ Build → ✓ QA → ✓ Deploy → ✓ Screenshot → ✓ GitHub → ✓ Marketing → ✓ LinkedIn → ✓ Landing page
+/bin/bash: line 1: npm: command not found
