@@ -115,3 +115,18 @@ Pipeline complete! Here's a summary of run_014:
 - **LinkedIn**: posted via BUZZ
 - **Landing page**: redeployed with 20 apps total
 /bin/bash: line 1: npm: command not found
+Pipeline complete. **run_015** shipped successfully.
+
+---
+
+**Invoice Timer & Day Rate Calculator** is live at **https://dayrate.builtbycrew.online**
+
+- **Design**: Obsidian/gold editorial theme — pure black background, raw gold numerals in Courier New, Playfair Display headings, heavy ruled lines. Looks like a premium financial instrument.
+- **Features**: Live earnings timer, hourly/day rate toggle, task/client log, daily target tracker, print-ready invoice modal, clipboard export, localStorage persistence
+- **GitHub**: https://github.com/BuiltByCrew/dayrate
+- **Category**: finance
+- **LinkedIn**: posted via BUZZ
+- **Landing page**: redeployed with 21 apps total
+
+**Pipeline:** ✓ Idea → ✓ Validation → ✓ Build → ✓ QA → ✓ Deploy → ✓ Screenshot → ✓ GitHub → ✓ Marketing → ✓ LinkedIn → ✓ Landing page
+/bin/bash: line 1: npm: command not found
