@@ -102,3 +102,16 @@ Pipeline complete. **run_013** shipped successfully.
 - GitHub repo: [BuiltByCrew/fontpair](https://github.com/BuiltByCrew/fontpair)
 - LinkedIn posted, landing page redeployed with 19 apps total
 /bin/bash: line 1: npm: command not found
+Pipeline complete! Here's a summary of run_014:
+
+---
+
+**Balloon Pop Frenzy** is live at **https://balloonpop.builtbycrew.online**
+
+- **Game**: Colorful SVG balloons float upward in a sunny carnival setting — click/tap to pop before they escape
+- **Theme**: sunny-carnival (sky blue, vivid colors, festive bunting, Nunito font)
+- **GitHub**: https://github.com/BuiltByCrew/balloonpop
+- **Screenshot**: captured and stored
+- **LinkedIn**: posted via BUZZ
+- **Landing page**: redeployed with 20 apps total
+/bin/bash: line 1: npm: command not found
