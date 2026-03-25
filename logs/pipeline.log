@@ -145,3 +145,14 @@ Features: real-time ratio simplification, aspect ratio lock, 6-format letterbox/
 
 Landing page redeployed with 22 apps. LinkedIn posted.
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the summary:
+
+**run_017 — Liquid Terrain: Fluid Sand Sculptor**
+
+- **Live app**: https://sandflow.builtbycrew.online
+- **GitHub**: https://github.com/BuiltByCrew/sandflow
+- **Category**: sandbox
+- **What it does**: Falling-sand cellular automata simulation — pour sand, water, and stone onto a canvas. Sand piles and avalanches, water flows and carves channels. Brush size control, clear button, full touch support.
+- **LinkedIn**: Posted
+- **Landing page**: Redeployed — sandflow now live at https://www.builtbycrew.online
+/bin/bash: line 1: npm: command not found
