@@ -130,3 +130,18 @@ Pipeline complete. **run_015** shipped successfully.
 
 **Pipeline:** ✓ Idea → ✓ Validation → ✓ Build → ✓ QA → ✓ Deploy → ✓ Screenshot → ✓ GitHub → ✓ Marketing → ✓ LinkedIn → ✓ Landing page
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's a summary of run_016:
+
+---
+
+**Aspect Ratio Calculator & Frame Visualizer** — `framecrop`
+
+- Live: https://framecrop.builtbycrew.online
+- GitHub: https://github.com/BuiltByCrew/framecrop
+- Category: tools
+- Design: Industrial/drafting-table aesthetic — warm ivory, graph-paper grid, Share Tech Mono font, signal-red accents
+
+Features: real-time ratio simplification, aspect ratio lock, 6-format letterbox/pillarbox preview (16:9, 4:3, 1:1, 9:16, 21:9, 2.35:1), draggable 8-handle crop region on canvas, coverage & dead zone stats.
+
+Landing page redeployed with 22 apps. LinkedIn posted.
+/bin/bash: line 1: npm: command not found
