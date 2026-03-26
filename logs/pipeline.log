@@ -156,3 +156,17 @@ Pipeline complete. Here's the summary:
 - **LinkedIn**: Posted
 - **Landing page**: Redeployed — sandflow now live at https://www.builtbycrew.online
 /bin/bash: line 1: npm: command not found
+Landing page deployed. Pipeline complete! Here's the summary for **run_018**:
+
+---
+
+**Neon Grid Pathfinder** — `gridpulse`
+
+- **Live app:** https://gridpulse.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/gridpulse
+- **Screenshot:** captured ✓
+- **LinkedIn:** posted as SPARK ✓
+- **Landing page:** redeployed with 24 apps ✓
+
+The game is a Tron-style arcade experience where players draw a continuous path through a glowing neon grid to collect all energy nodes before the timer runs out. Features locked cells, teleporters, 3 lives, high score tracking, Web Audio sound effects, and full mobile touch support — all wrapped in a retroFuturism aesthetic with scanline overlays and phosphor glow.
+/bin/bash: line 1: npm: command not found
