@@ -183,3 +183,13 @@ Pipeline complete. Here's a summary of **run_019**:
 - **LinkedIn:** Posted by INSPECTOR
 - **Landing page:** Redeployed with 25 apps
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's a summary of **run_020**:
+
+**Lichen Bloom — Reaction-Diffusion Canvas**
+- Live: https://lichenbloom.builtbycrew.online
+- GitHub: https://github.com/BuiltByCrew/lichenbloom
+- Category: sandbox
+- Features: Gray-Scott RD simulation, 6 presets (Coral, Maze, Spots, Worms, Fingerprint, Mitosis), 4 color palettes, drag-to-seed, live f/k sliders, PNG download, pause/resume
+- Aesthetic: Clinical-industrial dark — near-black with acid-green accent, Bebas Neue + Space Mono
+- LinkedIn posted, landing page live with 26 apps
+/bin/bash: line 1: npm: command not found
