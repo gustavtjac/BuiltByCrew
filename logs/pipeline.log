@@ -208,3 +208,15 @@ Pipeline complete. Here's a summary of **run_021**:
 /bin/bash: line 1: npm: command not found
 You've hit your limit · resets 10pm (UTC)
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the summary for **run_023**:
+
+---
+
+**Morse Code Trainer** — `morsetap`
+
+- **Live:** https://morsetap.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/morsetap
+- **Landing page:** https://www.builtbycrew.online
+
+CRT terminal aesthetic — green phosphor on black, scanlines, waveform visualizer. Practice mode + challenge mode + speed control, all self-contained. LinkedIn posted, landing page live.
+/bin/bash: line 1: npm: command not found

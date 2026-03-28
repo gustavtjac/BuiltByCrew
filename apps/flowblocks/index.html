@@ -1,0 +1,2255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pomodoro Flow Builder — flowblocks</title>
+  <meta name="description" content="A visual work session planner. Drag and stack focus sprints, breaks, and custom intervals into a daily flow sequence. Hit play and the app counts down each block with ambient sound cues.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://flowblocks.builtbycrew.online/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Pomodoro Flow Builder — flowblocks">
+  <meta property="og:description" content="A visual work session planner. Drag and stack focus sprints, breaks, and custom intervals into a daily flow sequence.">
+  <meta property="og:url" content="https://flowblocks.builtbycrew.online/">
+  <meta property="og:site_name" content="BuiltByCrew">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Pomodoro Flow Builder — flowblocks">
+  <meta name="twitter:description" content="A visual work session planner. Drag and stack focus sprints, breaks, and custom intervals into a daily flow sequence.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%234a6741'/%3E%3Crect x='7' y='9' width='18' height='5' rx='2' fill='%23f5e6c8'/%3E%3Crect x='7' y='17' width='12' height='4' rx='2' fill='%23c4714a'/%3E%3C/svg%3E">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
+
+    :root {
+      --cream: #f7f0e3;
+      --parchment: #ede4cf;
+      --parchment-dark: #ddd0b3;
+      --ink: #2c2416;
+      --ink-muted: #6b5a3e;
+      --ink-faint: #a8936d;
+      --forest: #3d5e38;
+      --forest-light: #4a7343;
+      --forest-pale: #d4e6cf;
+      --terracotta: #c4714a;
+      --terracotta-light: #d4896a;
+      --terracotta-pale: #f0ddd3;
+      --gold: #c49a3c;
+      --gold-pale: #f5e9cc;
+      --shadow-soft: rgba(44, 36, 22, 0.12);
+      --shadow-medium: rgba(44, 36, 22, 0.2);
+      --radius: 10px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--cream);
+      color: var(--ink);
+      font-family: 'Lora', Georgia, 'Times New Roman', serif;
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse at 20% 10%, rgba(196,161,60,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 90%, rgba(196,113,74,0.07) 0%, transparent 50%);
+    }
+
+    /* Paper texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      opacity: 0.6;
+    }
+
+    .app-wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 16px 80px;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 36px 0 24px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      border-bottom: 1.5px solid var(--parchment-dark);
+      margin-bottom: 32px;
+      animation: fadeDown 0.6s ease both;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .header-logo {
+      width: 44px;
+      height: 44px;
+      background: var(--forest);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 8px;
+      flex-shrink: 0;
+    }
+
+    .header-logo span {
+      display: block;
+      background: var(--cream);
+      border-radius: 2px;
+      width: 100%;
+    }
+
+    .header-logo span:nth-child(1) { height: 8px; }
+    .header-logo span:nth-child(2) { height: 6px; width: 70%; }
+    .header-logo span:nth-child(3) { height: 6px; width: 50%; background: var(--terracotta-light); }
+
+    .header-title h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .header-title p {
+      font-size: 0.8rem;
+      color: var(--ink-muted);
+      font-style: italic;
+      margin-top: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      padding: 9px 18px;
+      border-radius: 6px;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      line-height: 1;
+      min-height: 44px;
+      white-space: nowrap;
+      letter-spacing: 0.01em;
+    }
+
+    .btn:active { transform: scale(0.96); }
+
+    .btn-primary {
+      background: var(--forest);
+      color: var(--cream);
+      border-color: var(--forest);
+      box-shadow: 0 2px 8px rgba(61,94,56,0.3);
+    }
+    .btn-primary:hover {
+      background: var(--forest-light);
+      border-color: var(--forest-light);
+      box-shadow: 0 4px 16px rgba(61,94,56,0.4);
+      transform: translateY(-1px);
+    }
+    .btn-primary:active { transform: scale(0.96) translateY(0); }
+
+    .btn-danger {
+      background: var(--terracotta);
+      color: #fff;
+      border-color: var(--terracotta);
+      box-shadow: 0 2px 8px rgba(196,113,74,0.3);
+    }
+    .btn-danger:hover {
+      background: var(--terracotta-light);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(196,113,74,0.4);
+    }
+    .btn-danger:active { transform: scale(0.96) translateY(0); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--ink-muted);
+      border-color: var(--parchment-dark);
+    }
+    .btn-outline:hover {
+      border-color: var(--ink-muted);
+      color: var(--ink);
+      background: var(--parchment);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--ink-muted);
+      border-color: transparent;
+      padding: 9px 12px;
+    }
+    .btn-ghost:hover {
+      background: var(--parchment);
+      color: var(--ink);
+    }
+
+    .btn-sm {
+      font-size: 0.75rem;
+      padding: 6px 12px;
+      min-height: 44px;
+    }
+
+    /* ── Main layout ── */
+    .main-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    @media (max-width: 720px) {
+      .main-layout { grid-template-columns: 1fr; }
+    }
+
+    /* ── Palette Panel ── */
+    .palette-panel {
+      background: var(--parchment);
+      border-radius: var(--radius);
+      border: 1.5px solid var(--parchment-dark);
+      padding: 20px;
+      animation: fadeRight 0.5s ease 0.1s both;
+      position: sticky;
+      top: 16px;
+    }
+
+    .panel-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--parchment-dark);
+    }
+
+    .palette-blocks {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* ── Block cards (palette + sequence) ── */
+    .block-card {
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: grab;
+      user-select: none;
+      transition: all 0.18s ease;
+      position: relative;
+      border: 1.5px solid transparent;
+    }
+
+    .block-card:active { cursor: grabbing; }
+
+    .block-card:hover {
+      transform: translateX(3px) translateY(-1px);
+      box-shadow: 0 4px 14px var(--shadow-medium);
+    }
+
+    .block-card.type-focus {
+      background: var(--forest-pale);
+      border-color: #b8d4b2;
+    }
+    .block-card.type-short {
+      background: var(--gold-pale);
+      border-color: #e0cfa0;
+    }
+    .block-card.type-long {
+      background: var(--terracotta-pale);
+      border-color: #e5c8ba;
+    }
+    .block-card.type-custom {
+      background: #e8e4f5;
+      border-color: #c9c3e0;
+    }
+
+    .block-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .type-focus .block-icon { background: var(--forest); }
+    .type-short .block-icon { background: var(--gold); }
+    .type-long .block-icon { background: var(--terracotta); }
+    .type-custom .block-icon { background: #7b6cbf; }
+
+    .block-info { flex: 1; min-width: 0; }
+
+    .block-name {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .block-duration {
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+      margin-top: 1px;
+    }
+
+    .block-drag-handle {
+      color: var(--ink-faint);
+      font-size: 14px;
+      flex-shrink: 0;
+      opacity: 0.6;
+    }
+
+    /* Palette block: show "drag" hint */
+    .palette-panel .block-card::before {
+      content: '＋ drag';
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.68rem;
+      color: var(--ink-faint);
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    .palette-panel .block-card:hover::before { opacity: 1; }
+
+    /* ── Sequence area ── */
+    .sequence-panel {
+      animation: fadeLeft 0.5s ease 0.15s both;
+    }
+
+    .sequence-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .sequence-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .total-time-badge {
+      font-size: 0.8rem;
+      color: var(--ink-muted);
+      background: var(--parchment);
+      border: 1px solid var(--parchment-dark);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-style: italic;
+    }
+
+    .drop-zone {
+      min-height: 180px;
+      border-radius: var(--radius);
+      border: 2px dashed var(--parchment-dark);
+      padding: 12px;
+      background: rgba(247, 240, 227, 0.5);
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .drop-zone.drag-over {
+      border-color: var(--forest);
+      background: rgba(212, 230, 207, 0.3);
+      box-shadow: inset 0 0 20px rgba(61,94,56,0.08);
+    }
+
+    .drop-zone-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--ink-faint);
+      padding: 40px 20px;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .drop-zone-empty svg { opacity: 0.4; }
+
+    .drop-zone-empty p {
+      font-size: 0.85rem;
+      font-style: italic;
+      line-height: 1.5;
+    }
+
+    /* Sequence block has extra controls */
+    .sequence-block {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1.5px solid transparent;
+      transition: all 0.18s ease;
+      cursor: grab;
+      user-select: none;
+      animation: blockIn 0.25s ease both;
+      position: relative;
+    }
+
+    .sequence-block:active { cursor: grabbing; }
+
+    @keyframes blockIn {
+      from { opacity: 0; transform: translateX(-12px) scale(0.97); }
+      to { opacity: 1; transform: translateX(0) scale(1); }
+    }
+
+    .sequence-block.type-focus { background: var(--forest-pale); border-color: #b8d4b2; }
+    .sequence-block.type-short { background: var(--gold-pale); border-color: #e0cfa0; }
+    .sequence-block.type-long { background: var(--terracotta-pale); border-color: #e5c8ba; }
+    .sequence-block.type-custom { background: #e8e4f5; border-color: #c9c3e0; }
+
+    .sequence-block.active-block {
+      box-shadow: 0 0 0 2.5px var(--forest), 0 4px 20px rgba(61,94,56,0.25);
+      transform: scale(1.01);
+    }
+
+    .sequence-block.completed-block {
+      opacity: 0.45;
+    }
+
+    .sequence-block-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .type-focus .sequence-block-icon { background: var(--forest); }
+    .type-short .sequence-block-icon { background: var(--gold); }
+    .type-long .sequence-block-icon { background: var(--terracotta); }
+    .type-custom .sequence-block-icon { background: #7b6cbf; }
+
+    .sequence-block-info { flex: 1; min-width: 0; }
+
+    .sequence-block-name {
+      font-size: 0.83rem;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .sequence-block-time {
+      font-size: 0.72rem;
+      color: var(--ink-muted);
+    }
+
+    .sequence-block-actions {
+      display: flex;
+      gap: 4px;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .sequence-block:hover .sequence-block-actions { opacity: 1; }
+
+    /* On touch devices (no hover support), always show action buttons */
+    @media (hover: none) {
+      .sequence-block-actions { opacity: 1; }
+    }
+
+    .seq-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 5px;
+      border: 1px solid var(--parchment-dark);
+      background: var(--cream);
+      color: var(--ink-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      transition: all 0.14s;
+    }
+    .seq-btn:hover { background: var(--parchment); color: var(--ink); }
+    .seq-btn.del:hover { background: var(--terracotta-pale); color: var(--terracotta); border-color: var(--terracotta); }
+    .seq-btn:active { transform: scale(0.9); }
+
+    .sequence-block .drag-dots {
+      color: var(--ink-faint);
+      font-size: 12px;
+      cursor: grab;
+    }
+
+    /* ── Timer section ── */
+    .timer-section {
+      margin-top: 28px;
+      animation: fadeUp 0.5s ease 0.25s both;
+    }
+
+    .timer-card {
+      background: var(--parchment);
+      border-radius: var(--radius);
+      border: 1.5px solid var(--parchment-dark);
+      padding: 32px 24px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timer-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(to right, var(--forest), var(--terracotta), var(--gold));
+      border-radius: 10px 10px 0 0;
+    }
+
+    .timer-block-label {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--ink);
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+
+    .timer-block-label.idle { color: var(--ink-faint); font-style: italic; }
+
+    /* Progress ring */
+    .ring-container {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      flex-shrink: 0;
+    }
+
+    .ring-svg {
+      width: 180px;
+      height: 180px;
+      transform: rotate(-90deg);
+    }
+
+    .ring-bg {
+      fill: none;
+      stroke: var(--parchment-dark);
+      stroke-width: 8;
+    }
+
+    .ring-progress {
+      fill: none;
+      stroke: var(--forest);
+      stroke-width: 8;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.9s cubic-bezier(0.4, 0, 0.2, 1),
+                  stroke 0.3s ease;
+    }
+
+    .ring-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .timer-display {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      transition: color 0.3s;
+    }
+
+    .timer-display.urgent { color: var(--terracotta); }
+
+    .timer-sub {
+      font-size: 0.7rem;
+      color: var(--ink-faint);
+      font-style: italic;
+      text-align: center;
+    }
+
+    /* Progress bar for overall session */
+    .session-progress-bar {
+      width: 100%;
+      height: 6px;
+      background: var(--parchment-dark);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .session-progress-fill {
+      height: 100%;
+      background: linear-gradient(to right, var(--forest), var(--terracotta));
+      border-radius: 3px;
+      transition: width 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 0%;
+    }
+
+    .timer-controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .play-btn {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 2.5px solid var(--forest);
+      background: var(--forest);
+      color: var(--cream);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      transition: all 0.18s ease;
+      box-shadow: 0 3px 14px rgba(61,94,56,0.35);
+    }
+    .play-btn:hover {
+      background: var(--forest-light);
+      transform: scale(1.06);
+      box-shadow: 0 5px 20px rgba(61,94,56,0.45);
+    }
+    .play-btn:active { transform: scale(0.94); }
+
+    .block-counter {
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      font-style: italic;
+    }
+
+    /* ── Templates ── */
+    .templates-section {
+      margin-top: 28px;
+      animation: fadeUp 0.5s ease 0.3s both;
+    }
+
+    .templates-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .template-card {
+      background: var(--parchment);
+      border: 1.5px solid var(--parchment-dark);
+      border-radius: 8px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .template-card:hover {
+      border-color: var(--forest);
+      box-shadow: 0 4px 14px var(--shadow-soft);
+      transform: translateY(-2px);
+    }
+    .template-card:active { transform: scale(0.97); }
+
+    .template-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 5px;
+    }
+
+    .template-desc {
+      font-size: 0.74rem;
+      color: var(--ink-muted);
+      font-style: italic;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+
+    .template-blocks-preview {
+      display: flex;
+      gap: 3px;
+      flex-wrap: wrap;
+    }
+
+    .template-pip {
+      width: 16px;
+      height: 8px;
+      border-radius: 2px;
+    }
+    .pip-focus { background: var(--forest); }
+    .pip-short { background: var(--gold); }
+    .pip-long { background: var(--terracotta); }
+    .pip-custom { background: #7b6cbf; }
+
+    /* ── Share section ── */
+    .share-bar {
+      margin-top: 20px;
+      padding: 14px 16px;
+      background: var(--parchment);
+      border: 1.5px solid var(--parchment-dark);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      animation: fadeUp 0.5s ease 0.35s both;
+    }
+
+    .share-url-input {
+      flex: 1;
+      min-width: 140px;
+      font-family: 'Lora', Georgia, serif;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      background: var(--cream);
+      border: 1px solid var(--parchment-dark);
+      border-radius: 6px;
+      padding: 8px 12px;
+      outline: none;
+      cursor: text;
+    }
+
+    .share-url-input:focus { border-color: var(--forest); }
+
+    .copy-feedback {
+      font-size: 0.75rem;
+      color: var(--forest);
+      font-style: italic;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .copy-feedback.show { opacity: 1; }
+
+    /* ── Custom block modal ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(44, 36, 22, 0.45);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal-box {
+      background: var(--cream);
+      border-radius: var(--radius);
+      padding: 28px;
+      width: 100%;
+      max-width: 360px;
+      box-shadow: 0 20px 60px rgba(44,36,22,0.35);
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.25s ease;
+    }
+    .modal-overlay.open .modal-box {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1.5px solid var(--parchment-dark);
+      background: var(--parchment);
+      font-family: 'Lora', Georgia, serif;
+      font-size: 0.9rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.18s;
+    }
+    .form-input:focus { border-color: var(--forest); }
+
+    .color-options {
+      display: flex;
+      gap: 8px;
+    }
+
+    .color-chip {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2.5px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .color-chip:hover, .color-chip.selected {
+      border-color: var(--ink);
+      transform: scale(1.1);
+    }
+    .color-chip.selected { box-shadow: 0 0 0 3px var(--cream), 0 0 0 5px var(--ink); }
+
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+    /* ── Completion overlay ── */
+    .completion-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(61,94,56,0.92);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 32px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s;
+    }
+    .completion-overlay.show { opacity: 1; pointer-events: all; }
+
+    .completion-icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+      animation: bounceIn 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0.3); opacity: 0; }
+      60% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .completion-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 8px;
+    }
+
+    .completion-subtitle {
+      font-size: 0.95rem;
+      color: rgba(245,224,200,0.8);
+      font-style: italic;
+      margin-bottom: 28px;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeRight {
+      from { opacity: 0; transform: translateX(-16px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes fadeLeft {
+      from { opacity: 0; transform: translateX(16px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0 rgba(61,94,56,0.4); }
+      70% { box-shadow: 0 0 0 12px rgba(61,94,56,0); }
+      100% { box-shadow: 0 0 0 0 rgba(61,94,56,0); }
+    }
+
+    .play-btn.playing { animation: pulse-ring 2s ease infinite; }
+
+    /* ── Particle canvas ── */
+    #particle-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    #particle-canvas.active { opacity: 1; }
+
+    /* ── Sound toggle ── */
+    .sound-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      user-select: none;
+    }
+    .sound-toggle input { accent-color: var(--forest); }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 28px 0 16px;
+      font-size: 0.75rem;
+      color: var(--ink-faint);
+      border-top: 1px solid var(--parchment-dark);
+      margin-top: 40px;
+    }
+    footer a { color: var(--ink-muted); text-decoration: none; }
+    footer a:hover { color: var(--ink); }
+
+    /* ── Tooltips ── */
+    [data-tip] { position: relative; }
+    [data-tip]::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--ink);
+      color: var(--cream);
+      font-size: 0.7rem;
+      padding: 4px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s;
+      font-family: 'Lora', Georgia, serif;
+    }
+    [data-tip]:hover::after { opacity: 1; }
+
+    /* edit label inline */
+    .sequence-block-name[contenteditable="true"] {
+      outline: 1px dashed var(--forest);
+      border-radius: 3px;
+      padding: 1px 4px;
+    }
+
+    @media (max-width: 520px) {
+      .header-title h1 { font-size: 1.3rem; }
+      .timer-display { font-size: 2rem; }
+      .ring-container { width: 150px; height: 150px; }
+      .ring-svg { width: 150px; height: 150px; }
+    }
+  </style>
+</head>
+<body>
+<canvas id="particle-canvas"></canvas>
+
+<div class="app-wrapper">
+  <header>
+    <div class="header-brand">
+      <div class="header-logo" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="header-title">
+        <h1>Flow Builder</h1>
+        <p>Design your focus session, block by block</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <label class="sound-toggle" data-tip="Toggle ambient sounds">
+        <input type="checkbox" id="sound-toggle" checked aria-label="Enable sounds">
+        <span>🔔 Sounds</span>
+      </label>
+      <button class="btn btn-outline btn-sm" id="clear-btn" aria-label="Clear all blocks">Clear all</button>
+      <button class="btn btn-outline btn-sm" id="save-template-btn" aria-label="Save as template">Save template</button>
+    </div>
+  </header>
+
+  <div class="main-layout">
+    <!-- Palette panel -->
+    <aside class="palette-panel" aria-label="Block palette">
+      <div class="panel-title">Block Types</div>
+      <div class="palette-blocks" id="palette">
+        <div class="block-card type-focus" draggable="true" data-type="focus" role="button" tabindex="0" aria-label="Focus Sprint — drag to add">
+          <div class="block-icon">🌿</div>
+          <div class="block-info">
+            <div class="block-name">Focus Sprint</div>
+            <div class="block-duration" data-palette-dur="focus">25 min</div>
+          </div>
+          <span class="block-drag-handle" aria-hidden="true">⠿</span>
+        </div>
+        <div class="block-card type-short" draggable="true" data-type="short" role="button" tabindex="0" aria-label="Short Break — drag to add">
+          <div class="block-icon">☕</div>
+          <div class="block-info">
+            <div class="block-name">Short Break</div>
+            <div class="block-duration" data-palette-dur="short">5 min</div>
+          </div>
+          <span class="block-drag-handle" aria-hidden="true">⠿</span>
+        </div>
+        <div class="block-card type-long" draggable="true" data-type="long" role="button" tabindex="0" aria-label="Long Break — drag to add">
+          <div class="block-icon">🌅</div>
+          <div class="block-info">
+            <div class="block-name">Long Break</div>
+            <div class="block-duration" data-palette-dur="long">15 min</div>
+          </div>
+          <span class="block-drag-handle" aria-hidden="true">⠿</span>
+        </div>
+        <div class="block-card type-custom" draggable="true" data-type="custom" role="button" tabindex="0" aria-label="Custom Block — drag to add">
+          <div class="block-icon">✦</div>
+          <div class="block-info">
+            <div class="block-name">Custom Block</div>
+            <div class="block-duration">tap to configure</div>
+          </div>
+          <span class="block-drag-handle" aria-hidden="true">⠿</span>
+        </div>
+      </div>
+
+      <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--parchment-dark);">
+        <div class="panel-title" style="font-size:0.78rem;">Block Durations</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <label style="font-size:0.8rem;color:var(--ink-muted);">
+            🌿 Focus
+            <input type="number" id="dur-focus" value="25" min="1" max="120" style="width:54px;margin-left:8px;padding:4px 6px;border:1px solid var(--parchment-dark);border-radius:4px;background:var(--cream);font-family:inherit;font-size:0.8rem;" aria-label="Focus sprint duration in minutes"> min
+          </label>
+          <label style="font-size:0.8rem;color:var(--ink-muted);">
+            ☕ Short
+            <input type="number" id="dur-short" value="5" min="1" max="60" style="width:54px;margin-left:8px;padding:4px 6px;border:1px solid var(--parchment-dark);border-radius:4px;background:var(--cream);font-family:inherit;font-size:0.8rem;" aria-label="Short break duration in minutes"> min
+          </label>
+          <label style="font-size:0.8rem;color:var(--ink-muted);">
+            🌅 Long
+            <input type="number" id="dur-long" value="15" min="1" max="120" style="width:54px;margin-left:8px;padding:4px 6px;border:1px solid var(--parchment-dark);border-radius:4px;background:var(--cream);font-family:inherit;font-size:0.8rem;" aria-label="Long break duration in minutes"> min
+          </label>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Right column -->
+    <div>
+      <!-- Sequence -->
+      <div class="sequence-panel">
+        <div class="sequence-header">
+          <div class="sequence-header-left">
+            <div class="panel-title" style="margin-bottom:0;">Your Flow</div>
+            <div class="total-time-badge" id="total-time-badge">0 min total</div>
+          </div>
+        </div>
+        <div class="drop-zone" id="drop-zone" role="list" aria-label="Sequence drop zone">
+          <div class="drop-zone-empty" id="empty-hint">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="4" y="8" width="32" height="10" rx="3" fill="currentColor" opacity="0.4"/>
+              <rect x="4" y="22" width="22" height="10" rx="3" fill="currentColor" opacity="0.25"/>
+            </svg>
+            <p>Drag blocks here to build your session.<br>Or click a block type to add it quickly.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timer -->
+      <div class="timer-section">
+        <div class="panel-title">Session Timer</div>
+        <div class="timer-card" id="timer-card">
+          <div class="timer-block-label idle" id="timer-block-label">No blocks in queue</div>
+          <div class="ring-container" aria-hidden="true">
+            <svg class="ring-svg" viewBox="0 0 180 180">
+              <circle class="ring-bg" cx="90" cy="90" r="76"/>
+              <circle class="ring-progress" id="ring-progress" cx="90" cy="90" r="76" stroke-dasharray="477.5" stroke-dashoffset="477.5"/>
+            </svg>
+            <div class="ring-inner">
+              <div class="timer-display" id="timer-display">--:--</div>
+              <div class="timer-sub" id="timer-sub">ready</div>
+            </div>
+          </div>
+          <div class="session-progress-bar" aria-label="Session progress">
+            <div class="session-progress-fill" id="session-progress-fill"></div>
+          </div>
+          <div class="timer-controls">
+            <button class="btn btn-outline btn-sm" id="prev-btn" aria-label="Previous block" title="Previous block" disabled>⏮</button>
+            <button class="play-btn" id="play-btn" aria-label="Play" title="Start / Pause" disabled>▶</button>
+            <button class="btn btn-outline btn-sm" id="next-btn" aria-label="Skip to next block" title="Skip" disabled>⏭</button>
+            <button class="btn btn-outline btn-sm" id="reset-btn" aria-label="Reset session" title="Reset" disabled>↺</button>
+          </div>
+          <div class="block-counter" id="block-counter">—</div>
+        </div>
+      </div>
+
+      <!-- Share bar -->
+      <div class="share-bar">
+        <span style="font-size:0.8rem;color:var(--ink-muted);white-space:nowrap;">🔗 Share flow:</span>
+        <input type="text" class="share-url-input" id="share-url-input" readonly aria-label="Share URL for your session">
+        <button class="btn btn-outline btn-sm" id="copy-share-btn" aria-label="Copy share link">Copy</button>
+        <span class="copy-feedback" id="copy-feedback" aria-live="polite">Copied!</span>
+        <button class="btn btn-outline btn-sm" id="load-url-btn" aria-label="Load session from URL">Load from URL</button>
+      </div>
+
+      <!-- Templates -->
+      <div class="templates-section">
+        <div class="panel-title">Templates</div>
+        <div class="templates-grid" id="templates-grid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Custom Block Modal -->
+<div class="modal-overlay" id="custom-modal" role="dialog" aria-modal="true" aria-labelledby="modal-heading">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-heading">Custom Block</div>
+    <div class="form-group">
+      <label class="form-label" for="custom-name">Name</label>
+      <input type="text" class="form-input" id="custom-name" placeholder="e.g. Reading, Exercise…" maxlength="40">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="custom-duration">Duration (minutes)</label>
+      <input type="number" class="form-input" id="custom-duration" value="10" min="1" max="180">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Colour</label>
+      <div class="color-options" id="color-options">
+        <div class="color-chip selected" data-color="#7b6cbf" style="background:#7b6cbf;" tabindex="0" role="radio" aria-checked="true" aria-label="Purple"></div>
+        <div class="color-chip" data-color="#4a7343" style="background:#4a7343;" tabindex="0" role="radio" aria-checked="false" aria-label="Green"></div>
+        <div class="color-chip" data-color="#c4714a" style="background:#c4714a;" tabindex="0" role="radio" aria-checked="false" aria-label="Terracotta"></div>
+        <div class="color-chip" data-color="#c49a3c" style="background:#c49a3c;" tabindex="0" role="radio" aria-checked="false" aria-label="Gold"></div>
+        <div class="color-chip" data-color="#4a7080" style="background:#4a7080;" tabindex="0" role="radio" aria-checked="false" aria-label="Teal"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" id="modal-cancel">Cancel</button>
+      <button class="btn btn-primary" id="modal-confirm">Add Block</button>
+    </div>
+  </div>
+</div>
+
+<!-- Completion overlay -->
+<div class="completion-overlay" id="completion-overlay" role="alertdialog" aria-label="Session complete">
+  <div class="completion-icon">🌿</div>
+  <div class="completion-title">Session Complete!</div>
+  <div class="completion-subtitle">Well done — you finished your entire flow.</div>
+  <button class="btn btn-primary" id="completion-close-btn" style="background:var(--cream);color:var(--forest);border-color:var(--cream);">Back to Flow Builder</button>
+</div>
+
+<footer>
+  <span>Built by <a href="https://builtbycrew.online/" target="_blank" rel="noopener">BuiltByCrew</a> — a new app every day</span>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/BuiltByCrew/flowblocks" target="_blank" rel="noopener" aria-label="View source on GitHub">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="vertical-align:middle">
+      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+    </svg>
+  </a>
+  &nbsp;·&nbsp;
+  <a href="https://buymeacoffee.com/builtbycrew" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+</footer>
+
+<script>
+(() => {
+  'use strict';
+
+  // ── State ────────────────────────────────────────────────────────────────
+  const STORAGE_KEY = 'appfactory_flowblocks_state';
+  const TEMPLATES_KEY = 'appfactory_flowblocks_templates';
+
+  let sequence = [];       // [{id, type, name, duration, color?, emoji?}]
+  let nextId = 1;
+
+  // Timer state
+  let timerState = 'idle'; // idle | running | paused | complete
+  let currentBlockIndex = 0;
+  let secondsLeft = 0;
+  let totalSecondsForBlock = 0;
+  let timerInterval = null;
+  let sessionTotalSeconds = 0;
+  let sessionElapsedSeconds = 0;
+
+  // Custom block pending config
+  let pendingCustomDrop = null;
+  let pendingCustomColor = '#7b6cbf';
+
+  // Drag state
+  let dragType = null;   // 'palette' | 'sequence'
+  let dragData = null;   // {type} or {id}
+  let dragEl = null;
+  let dragOverIndex = null;
+
+  // Audio context
+  let audioCtx = null;
+
+  // ── Block type configs ────────────────────────────────────────────────────
+  const BLOCK_CONFIGS = {
+    focus:  { name: 'Focus Sprint', emoji: '🌿', color: '#3d5e38', defaultDur: 25 },
+    short:  { name: 'Short Break',  emoji: '☕', color: '#c49a3c', defaultDur: 5  },
+    long:   { name: 'Long Break',   emoji: '🌅', color: '#c4714a', defaultDur: 15 },
+    custom: { name: 'Custom Block', emoji: '✦', color: '#7b6cbf', defaultDur: 10 },
+  };
+
+  const RING_CIRCUMFERENCE = 477.5;
+
+  // ── Built-in templates ───────────────────────────────────────────────────
+  const BUILTIN_TEMPLATES = [
+    {
+      id: 'classic-pomodoro',
+      name: 'Classic Pomodoro',
+      desc: '4 × 25 min focus with short breaks',
+      blocks: [
+        {type:'focus'},{type:'short'},{type:'focus'},{type:'short'},
+        {type:'focus'},{type:'short'},{type:'focus'},{type:'long'},
+      ]
+    },
+    {
+      id: 'deep-work',
+      name: 'Deep Work',
+      desc: '2 × 50 min sessions with a long break',
+      blocks: [
+        {type:'focus',dur:50},{type:'long',dur:20},{type:'focus',dur:50},{type:'long',dur:20},
+      ]
+    },
+    {
+      id: 'sprint-flow',
+      name: 'Sprint Flow',
+      desc: 'Alternating 15 min sprints and 5 min breaks',
+      blocks: [
+        {type:'focus',dur:15},{type:'short'},{type:'focus',dur:15},{type:'short'},
+        {type:'focus',dur:15},{type:'short'},{type:'focus',dur:15},{type:'long'},
+      ]
+    },
+    {
+      id: 'gentle-start',
+      name: 'Gentle Start',
+      desc: 'Short sessions to ease into the day',
+      blocks: [
+        {type:'short',dur:5},{type:'focus',dur:15},{type:'short'},{type:'focus',dur:20},{type:'long'},
+      ]
+    },
+  ];
+
+  // ── DOM refs ──────────────────────────────────────────────────────────────
+  const dropZone          = document.getElementById('drop-zone');
+  const emptyHint         = document.getElementById('empty-hint');
+  const totalTimeBadge    = document.getElementById('total-time-badge');
+  const timerBlockLabel   = document.getElementById('timer-block-label');
+  const timerDisplay      = document.getElementById('timer-display');
+  const timerSub          = document.getElementById('timer-sub');
+  const ringProgress      = document.getElementById('ring-progress');
+  const sessionFill       = document.getElementById('session-progress-fill');
+  const playBtn           = document.getElementById('play-btn');
+  const prevBtn           = document.getElementById('prev-btn');
+  const nextBtn           = document.getElementById('next-btn');
+  const resetBtn          = document.getElementById('reset-btn');
+  const blockCounter      = document.getElementById('block-counter');
+  const customModal       = document.getElementById('custom-modal');
+  const customName        = document.getElementById('custom-name');
+  const customDuration    = document.getElementById('custom-duration');
+  const colorOptions      = document.getElementById('color-options');
+  const modalCancel       = document.getElementById('modal-cancel');
+  const modalConfirm      = document.getElementById('modal-confirm');
+  const shareUrlInput     = document.getElementById('share-url-input');
+  const copyShareBtn      = document.getElementById('copy-share-btn');
+  const copyFeedback      = document.getElementById('copy-feedback');
+  const loadUrlBtn        = document.getElementById('load-url-btn');
+  const clearBtn          = document.getElementById('clear-btn');
+  const saveTemplateBtn   = document.getElementById('save-template-btn');
+  const templatesGrid     = document.getElementById('templates-grid');
+  const completionOverlay = document.getElementById('completion-overlay');
+  const completionClose   = document.getElementById('completion-close-btn');
+  const soundToggle       = document.getElementById('sound-toggle');
+  const durFocus          = document.getElementById('dur-focus');
+  const durShort          = document.getElementById('dur-short');
+  const durLong           = document.getElementById('dur-long');
+  const particleCanvas    = document.getElementById('particle-canvas');
+
+  // ── Audio ─────────────────────────────────────────────────────────────────
+  function getAudioCtx() {
+    if (!audioCtx) {
+      try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+    }
+    return audioCtx;
+  }
+
+  function playTone({ frequency = 440, duration = 0.3, type = 'sine', gain = 0.18, attack = 0.01, decay = 0.15 } = {}) {
+    if (!soundToggle.checked) return;
+    const ctx = getAudioCtx();
+    if (!ctx) return;
+    const osc = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    osc.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    osc.type = type;
+    osc.frequency.value = frequency;
+    gainNode.gain.setValueAtTime(0, ctx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(gain, ctx.currentTime + attack);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + duration + 0.05);
+  }
+
+  function playChime(notes, spacing = 0.12) {
+    if (!soundToggle.checked) return;
+    notes.forEach((freq, i) => {
+      setTimeout(() => playTone({ frequency: freq, duration: 0.5, gain: 0.14 }), i * spacing * 1000);
+    });
+  }
+
+  function playSoundForType(type) {
+    const sounds = {
+      focus:  () => playChime([523, 659, 784], 0.1),
+      short:  () => playChime([784, 659], 0.12),
+      long:   () => playChime([523, 659, 784, 1047], 0.1),
+      custom: () => playChime([659, 784], 0.1),
+    };
+    (sounds[type] || sounds.custom)();
+  }
+
+  function playTickSound() {
+    playTone({ frequency: 880, duration: 0.06, gain: 0.05, type: 'triangle' });
+  }
+
+  function playCompletionSound() {
+    if (!soundToggle.checked) return;
+    const notes = [523, 659, 784, 1047, 1319];
+    notes.forEach((f, i) => {
+      setTimeout(() => playTone({ frequency: f, duration: 0.6, gain: 0.16 }), i * 130);
+    });
+  }
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  function getDur(type, overrideDur) {
+    if (overrideDur != null) return overrideDur;
+    const el = { focus: durFocus, short: durShort, long: durLong }[type];
+    return el ? parseInt(el.value, 10) : BLOCK_CONFIGS[type]?.defaultDur ?? 10;
+  }
+
+  function makeBlock(type, overrides = {}) {
+    const cfg = BLOCK_CONFIGS[type] || BLOCK_CONFIGS.custom;
+    return {
+      id: nextId++,
+      type,
+      name: overrides.name || cfg.name,
+      duration: overrides.duration ?? getDur(type, overrides.dur),
+      color: overrides.color || cfg.color,
+      emoji: overrides.emoji || cfg.emoji,
+    };
+  }
+
+  function formatTime(secs) {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
+
+  function totalMinutes() {
+    return sequence.reduce((a, b) => a + b.duration, 0);
+  }
+
+  function saveState() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ sequence, nextId }));
+    } catch(e) {}
+  }
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const s = JSON.parse(raw);
+      if (Array.isArray(s.sequence)) {
+        sequence = s.sequence;
+        nextId = s.nextId || sequence.length + 1;
+      }
+    } catch(e) {}
+  }
+
+  // ── Sequence rendering ───────────────────────────────────────────────────
+  function renderSequence() {
+    // Remove existing sequence blocks
+    const existing = dropZone.querySelectorAll('.sequence-block');
+    existing.forEach(el => el.remove());
+
+    emptyHint.style.display = sequence.length === 0 ? 'flex' : 'none';
+
+    sequence.forEach((block, index) => {
+      const el = createSequenceBlockEl(block, index);
+      dropZone.appendChild(el);
+    });
+
+    updateTotalTimeBadge();
+    updateShareUrl();
+    updateTimerForCurrentBlock();
+    updateTimerControls();
+    saveState();
+  }
+
+  function createSequenceBlockEl(block, index) {
+    const el = document.createElement('div');
+    el.className = `sequence-block type-${block.type}`;
+    el.setAttribute('role', 'listitem');
+    el.setAttribute('draggable', 'true');
+    el.dataset.id = block.id;
+    el.dataset.index = index;
+
+    if (timerState !== 'idle' && index === currentBlockIndex) el.classList.add('active-block');
+    if (timerState !== 'idle' && index < currentBlockIndex) el.classList.add('completed-block');
+
+    const iconBg = block.color || BLOCK_CONFIGS[block.type]?.color || '#7b6cbf';
+
+    el.innerHTML = `
+      <span class="drag-dots" aria-hidden="true">⠿</span>
+      <div class="sequence-block-icon" style="background:${iconBg};">${block.emoji || BLOCK_CONFIGS[block.type]?.emoji || '✦'}</div>
+      <div class="sequence-block-info">
+        <div class="sequence-block-name" contenteditable="false" data-id="${block.id}">${sanitizeText(block.name)}</div>
+        <div class="sequence-block-time">${block.duration} min</div>
+      </div>
+      <div class="sequence-block-actions">
+        <button class="seq-btn" data-action="edit" data-id="${block.id}" title="Edit" aria-label="Edit block">✎</button>
+        <button class="seq-btn" data-action="dup" data-id="${block.id}" title="Duplicate" aria-label="Duplicate block">⧉</button>
+        <button class="seq-btn del" data-action="del" data-id="${block.id}" title="Remove" aria-label="Remove block">✕</button>
+      </div>
+    `;
+
+    // Drag events (sequence reorder)
+    el.addEventListener('dragstart', onSeqDragStart);
+    el.addEventListener('dragend', onSeqDragEnd);
+
+    // Action buttons
+    el.querySelectorAll('.seq-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const action = btn.dataset.action;
+        const id = parseInt(btn.dataset.id, 10);
+        if (action === 'del') removeBlock(id);
+        else if (action === 'dup') duplicateBlock(id);
+        else if (action === 'edit') openEditModal(id);
+      });
+    });
+
+    // Double-click name to edit inline
+    const nameEl = el.querySelector('.sequence-block-name');
+    nameEl.addEventListener('dblclick', () => {
+      nameEl.contentEditable = 'true';
+      nameEl.focus();
+    });
+    nameEl.addEventListener('blur', () => {
+      nameEl.contentEditable = 'false';
+      const id = parseInt(nameEl.dataset.id, 10);
+      const newName = nameEl.textContent.trim().slice(0, 40) || block.name;
+      const b = sequence.find(x => x.id === id);
+      if (b) {
+        b.name = newName;
+        nameEl.textContent = newName;
+        saveState();
+        updateTimerForCurrentBlock();
+      }
+    });
+    nameEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); nameEl.blur(); }
+      if (e.key === 'Escape') { nameEl.textContent = block.name; nameEl.blur(); }
+    });
+
+    return el;
+  }
+
+  function sanitizeText(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function updateTotalTimeBadge() {
+    const mins = totalMinutes();
+    if (mins === 0) {
+      totalTimeBadge.textContent = '0 min total';
+    } else if (mins < 60) {
+      totalTimeBadge.textContent = `${mins} min total`;
+    } else {
+      const h = Math.floor(mins / 60);
+      const m = mins % 60;
+      totalTimeBadge.textContent = m > 0 ? `${h}h ${m}m total` : `${h}h total`;
+    }
+  }
+
+  // ── Block operations ──────────────────────────────────────────────────────
+  function addBlock(type, overrides = {}) {
+    const block = makeBlock(type, overrides);
+    sequence.push(block);
+    renderSequence();
+    if (timerState === 'idle') resetTimerToStart();
+    return block;
+  }
+
+  function removeBlock(id) {
+    const idx = sequence.findIndex(b => b.id === id);
+    if (idx === -1) return;
+    sequence.splice(idx, 1);
+    if (timerState !== 'idle') {
+      if (idx <= currentBlockIndex) currentBlockIndex = Math.max(0, currentBlockIndex - 1);
+      if (sequence.length === 0) stopTimer();
+    }
+    renderSequence();
+    if (timerState === 'idle') resetTimerToStart();
+  }
+
+  function duplicateBlock(id) {
+    const idx = sequence.findIndex(b => b.id === id);
+    if (idx === -1) return;
+    const orig = sequence[idx];
+    const copy = { ...orig, id: nextId++ };
+    sequence.splice(idx + 1, 0, copy);
+    renderSequence();
+  }
+
+  // ── Edit modal (for custom blocks / editing any block) ────────────────────
+  let editingBlockId = null;
+
+  function openCustomModal(forDropType) {
+    pendingCustomDrop = forDropType || 'custom';
+    editingBlockId = null;
+    customName.value = '';
+    customDuration.value = getDur('custom');
+    selectColor('#7b6cbf');
+    document.getElementById('modal-heading').textContent = 'Custom Block';
+    modalConfirm.textContent = 'Add Block';
+    customModal.classList.add('open');
+    customName.focus();
+  }
+
+  function openEditModal(id) {
+    const block = sequence.find(b => b.id === id);
+    if (!block) return;
+    editingBlockId = id;
+    pendingCustomDrop = null;
+    customName.value = block.name;
+    customDuration.value = block.duration;
+    selectColor(block.color || '#7b6cbf');
+    document.getElementById('modal-heading').textContent = 'Edit Block';
+    modalConfirm.textContent = 'Save';
+    customModal.classList.add('open');
+    customName.focus();
+  }
+
+  function closeModal() {
+    customModal.classList.remove('open');
+    editingBlockId = null;
+    pendingCustomDrop = null;
+  }
+
+  function selectColor(color) {
+    pendingCustomColor = color;
+    colorOptions.querySelectorAll('.color-chip').forEach(chip => {
+      const selected = chip.dataset.color === color;
+      chip.classList.toggle('selected', selected);
+      chip.setAttribute('aria-checked', selected ? 'true' : 'false');
+    });
+  }
+
+  colorOptions.addEventListener('click', (e) => {
+    const chip = e.target.closest('.color-chip');
+    if (chip) selectColor(chip.dataset.color);
+  });
+  colorOptions.addEventListener('keydown', (e) => {
+    const chip = e.target.closest('.color-chip');
+    if (chip && (e.key === 'Enter' || e.key === ' ')) selectColor(chip.dataset.color);
+  });
+
+  modalCancel.addEventListener('click', closeModal);
+  customModal.addEventListener('click', (e) => { if (e.target === customModal) closeModal(); });
+
+  modalConfirm.addEventListener('click', () => {
+    const name = (customName.value.trim() || 'Custom Block').slice(0, 40);
+    const duration = Math.max(1, Math.min(180, parseInt(customDuration.value, 10) || 10));
+    const color = pendingCustomColor;
+    const emoji = '✦';
+
+    if (editingBlockId != null) {
+      const block = sequence.find(b => b.id === editingBlockId);
+      if (block) {
+        block.name = name;
+        block.duration = duration;
+        block.color = color;
+        block.emoji = emoji;
+        renderSequence();
+        if (timerState === 'idle') resetTimerToStart();
+      }
+    } else {
+      addBlock(pendingCustomDrop || 'custom', { name, duration, color, emoji });
+    }
+    closeModal();
+  });
+
+  // ── Drag and drop — palette → sequence ───────────────────────────────────
+  document.querySelectorAll('#palette .block-card').forEach(card => {
+    card.addEventListener('dragstart', (e) => {
+      dragType = 'palette';
+      dragData = { type: card.dataset.type };
+      e.dataTransfer.effectAllowed = 'copy';
+      e.dataTransfer.setData('text/plain', card.dataset.type);
+      card.style.opacity = '0.6';
+    });
+    card.addEventListener('dragend', () => { card.style.opacity = ''; });
+
+    // Click to add (mobile + keyboard)
+    card.addEventListener('click', () => {
+      if (card.dataset.type === 'custom') {
+        openCustomModal('custom');
+      } else {
+        addBlock(card.dataset.type);
+        flashAddFeedback(card);
+      }
+    });
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        card.click();
+      }
+    });
+  });
+
+  function flashAddFeedback(el) {
+    el.style.transform = 'scale(1.05) translateX(3px)';
+    el.style.transition = 'transform 0.12s ease';
+    setTimeout(() => { el.style.transform = ''; }, 160);
+  }
+
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = dragType === 'sequence' ? 'move' : 'copy';
+    dropZone.classList.add('drag-over');
+
+    if (dragType === 'sequence') {
+      // Visual insertion indicator
+      const blocks = [...dropZone.querySelectorAll('.sequence-block')];
+      const overEl = blocks.find(el => {
+        const r = el.getBoundingClientRect();
+        return e.clientY < r.top + r.height / 2;
+      });
+      blocks.forEach(el => el.style.borderTop = '');
+      if (overEl) overEl.style.borderTop = '2px solid var(--forest)';
+    }
+  });
+
+  dropZone.addEventListener('dragleave', (e) => {
+    if (!dropZone.contains(e.relatedTarget)) {
+      dropZone.classList.remove('drag-over');
+      dropZone.querySelectorAll('.sequence-block').forEach(el => el.style.borderTop = '');
+    }
+  });
+
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    dropZone.querySelectorAll('.sequence-block').forEach(el => el.style.borderTop = '');
+
+    if (dragType === 'palette') {
+      const type = e.dataTransfer.getData('text/plain') || (dragData && dragData.type);
+      if (!type) return;
+      if (type === 'custom') {
+        openCustomModal('custom');
+      } else {
+        addBlock(type);
+      }
+    } else if (dragType === 'sequence' && dragData) {
+      // Reorder
+      const fromId = dragData.id;
+      const fromIdx = sequence.findIndex(b => b.id === fromId);
+      if (fromIdx === -1) return;
+
+      const blocks = [...dropZone.querySelectorAll('.sequence-block')];
+      const overEl = blocks.find(el => {
+        const r = el.getBoundingClientRect();
+        return e.clientY < r.top + r.height / 2;
+      });
+      let toIdx = overEl ? parseInt(overEl.dataset.index, 10) : sequence.length;
+      if (toIdx > fromIdx) toIdx--;
+
+      const [moved] = sequence.splice(fromIdx, 1);
+      sequence.splice(toIdx, 0, moved);
+      renderSequence();
+    }
+
+    dragType = null;
+    dragData = null;
+  });
+
+  // Sequence drag (reorder)
+  function onSeqDragStart(e) {
+    dragType = 'sequence';
+    const id = parseInt(this.dataset.id, 10);
+    dragData = { id };
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', String(id));
+    dragEl = this;
+    this.style.opacity = '0.45';
+  }
+
+  function onSeqDragEnd() {
+    this.style.opacity = '';
+    dragEl = null;
+    dropZone.querySelectorAll('.sequence-block').forEach(el => el.style.borderTop = '');
+  }
+
+  // ── Timer logic ───────────────────────────────────────────────────────────
+  function resetTimerToStart() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timerState = 'idle';
+    currentBlockIndex = 0;
+    sessionElapsedSeconds = 0;
+    sessionTotalSeconds = sequence.reduce((a, b) => a + b.duration * 60, 0);
+
+    if (sequence.length === 0) {
+      timerDisplay.textContent = '--:--';
+      timerSub.textContent = 'ready';
+      timerBlockLabel.textContent = 'No blocks in queue';
+      timerBlockLabel.className = 'timer-block-label idle';
+      setRingProgress(0);
+      sessionFill.style.width = '0%';
+    } else {
+      const first = sequence[0];
+      secondsLeft = first.duration * 60;
+      totalSecondsForBlock = secondsLeft;
+      timerDisplay.textContent = formatTime(secondsLeft);
+      timerSub.textContent = 'ready to start';
+      timerBlockLabel.textContent = `${first.emoji || ''} ${first.name}`;
+      timerBlockLabel.className = 'timer-block-label';
+      setRingProgress(0);
+      sessionFill.style.width = '0%';
+      updateRingStrokeForType(first.type);
+    }
+    updateTimerControls();
+    renderSequence();
+  }
+
+  function updateTimerForCurrentBlock() {
+    if (timerState !== 'idle' || sequence.length === 0) return;
+    const block = sequence[currentBlockIndex];
+    if (!block) return;
+    secondsLeft = block.duration * 60;
+    totalSecondsForBlock = secondsLeft;
+    timerDisplay.textContent = formatTime(secondsLeft);
+    timerBlockLabel.textContent = `${block.emoji || ''} ${block.name}`;
+    timerBlockLabel.className = 'timer-block-label';
+    updateRingStrokeForType(block.type);
+  }
+
+  function updateRingStrokeForType(type) {
+    const colors = { focus: '#3d5e38', short: '#c49a3c', long: '#c4714a', custom: '#7b6cbf' };
+    ringProgress.style.stroke = colors[type] || colors.focus;
+  }
+
+  function setRingProgress(fraction) {
+    // fraction 0..1, 0 = empty, 1 = full
+    const offset = RING_CIRCUMFERENCE * (1 - Math.max(0, Math.min(1, fraction)));
+    ringProgress.style.strokeDashoffset = offset;
+  }
+
+  function startTimer() {
+    if (sequence.length === 0) return;
+    if (timerState === 'running') return;
+
+    // Resume from idle/paused
+    if (timerState === 'idle') {
+      secondsLeft = sequence[currentBlockIndex].duration * 60;
+      totalSecondsForBlock = secondsLeft;
+      sessionTotalSeconds = sequence.reduce((a, b) => a + b.duration * 60, 0);
+      sessionElapsedSeconds = sequence.slice(0, currentBlockIndex).reduce((a, b) => a + b.duration * 60, 0);
+    }
+
+    timerState = 'running';
+    playBtn.innerHTML = '⏸';
+    playBtn.setAttribute('aria-label', 'Pause');
+    playBtn.classList.add('playing');
+
+    // Resume AudioContext if suspended
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+
+    timerInterval = setInterval(tick, 1000);
+    updateTimerControls();
+  }
+
+  function pauseTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timerState = 'paused';
+    playBtn.innerHTML = '▶';
+    playBtn.setAttribute('aria-label', 'Resume');
+    playBtn.classList.remove('playing');
+    updateTimerControls();
+  }
+
+  function stopTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timerState = 'idle';
+    playBtn.innerHTML = '▶';
+    playBtn.setAttribute('aria-label', 'Play');
+    playBtn.classList.remove('playing');
+  }
+
+  function tick() {
+    secondsLeft--;
+    sessionElapsedSeconds++;
+
+    timerDisplay.textContent = formatTime(secondsLeft);
+
+    // Urgency
+    if (secondsLeft <= 60) {
+      timerDisplay.classList.add('urgent');
+    } else {
+      timerDisplay.classList.remove('urgent');
+    }
+
+    // Ring progress (elapsed / total for block)
+    const blockElapsed = totalSecondsForBlock - secondsLeft;
+    setRingProgress(blockElapsed / totalSecondsForBlock);
+
+    // Session progress
+    const sessProgress = Math.min(1, sessionElapsedSeconds / sessionTotalSeconds);
+    sessionFill.style.width = `${sessProgress * 100}%`;
+
+    // Tick every 10s visual feedback
+    if (secondsLeft % 10 === 0 && secondsLeft > 0 && secondsLeft % 60 !== 0) {
+      playTickSound();
+    }
+
+    if (secondsLeft <= 0) {
+      advanceBlock();
+    }
+  }
+
+  function advanceBlock(force = false) {
+    const was = currentBlockIndex;
+    currentBlockIndex++;
+
+    if (currentBlockIndex >= sequence.length) {
+      // Session done
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerState = 'complete';
+      playBtn.classList.remove('playing');
+      playBtn.innerHTML = '▶';
+      playBtn.setAttribute('aria-label', 'Play');
+      setRingProgress(1);
+      sessionFill.style.width = '100%';
+      timerBlockLabel.textContent = 'Session complete!';
+      timerDisplay.textContent = '00:00';
+      blockCounter.textContent = `${sequence.length} / ${sequence.length} blocks`;
+      playCompletionSound();
+      launchParticles();
+      setTimeout(() => completionOverlay.classList.add('show'), 600);
+      updateTimerControls();
+      renderSequence();
+      return;
+    }
+
+    const block = sequence[currentBlockIndex];
+    secondsLeft = block.duration * 60;
+    totalSecondsForBlock = secondsLeft;
+    timerDisplay.textContent = formatTime(secondsLeft);
+    timerDisplay.classList.remove('urgent');
+    timerBlockLabel.textContent = `${block.emoji || ''} ${block.name}`;
+    timerSub.textContent = block.type === 'focus' ? 'focus' : 'break';
+    setRingProgress(0);
+    updateRingStrokeForType(block.type);
+
+    if (!force) playSoundForType(block.type);
+
+    blockCounter.textContent = `${currentBlockIndex + 1} / ${sequence.length} blocks`;
+    renderSequence();
+  }
+
+  function prevBlock() {
+    if (currentBlockIndex <= 0) return;
+    currentBlockIndex--;
+    const block = sequence[currentBlockIndex];
+    secondsLeft = block.duration * 60;
+    totalSecondsForBlock = secondsLeft;
+    timerDisplay.textContent = formatTime(secondsLeft);
+    timerDisplay.classList.remove('urgent');
+    timerBlockLabel.textContent = `${block.emoji || ''} ${block.name}`;
+    timerSub.textContent = block.type === 'focus' ? 'focus' : 'break';
+    setRingProgress(0);
+    updateRingStrokeForType(block.type);
+    // Recalculate elapsed
+    sessionElapsedSeconds = sequence.slice(0, currentBlockIndex).reduce((a, b) => a + b.duration * 60, 0);
+    blockCounter.textContent = `${currentBlockIndex + 1} / ${sequence.length} blocks`;
+    renderSequence();
+    updateTimerControls();
+  }
+
+  function updateTimerControls() {
+    const hasBlocks = sequence.length > 0;
+    playBtn.disabled = !hasBlocks;
+    resetBtn.disabled = !hasBlocks;
+    prevBtn.disabled = !hasBlocks || timerState === 'idle' || currentBlockIndex === 0;
+    nextBtn.disabled = !hasBlocks || timerState === 'idle' || currentBlockIndex >= sequence.length - 1;
+
+    if (timerState !== 'idle' && sequence.length > 0) {
+      blockCounter.textContent = `${currentBlockIndex + 1} / ${sequence.length} blocks`;
+      timerSub.textContent = sequence[currentBlockIndex]?.type === 'focus' ? 'focus' : 'break';
+    } else if (sequence.length > 0) {
+      blockCounter.textContent = `${sequence.length} block${sequence.length !== 1 ? 's' : ''} queued`;
+      timerSub.textContent = 'ready to start';
+    } else {
+      blockCounter.textContent = '—';
+      timerSub.textContent = 'ready';
+    }
+  }
+
+  playBtn.addEventListener('click', () => {
+    if (audioCtx == null) {
+      try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+    }
+    if (timerState === 'running') pauseTimer();
+    else startTimer();
+  });
+
+  prevBtn.addEventListener('click', prevBlock);
+
+  nextBtn.addEventListener('click', () => {
+    if (currentBlockIndex < sequence.length - 1) {
+      const wasRunning = timerState === 'running';
+      if (wasRunning) clearInterval(timerInterval);
+      advanceBlock(true);
+      if (wasRunning) {
+        clearInterval(timerInterval);
+        timerInterval = setInterval(tick, 1000);
+      }
+    }
+  });
+
+  resetBtn.addEventListener('click', () => {
+    stopTimer();
+    currentBlockIndex = 0;
+    sessionElapsedSeconds = 0;
+    resetTimerToStart();
+  });
+
+  completionClose.addEventListener('click', () => {
+    completionOverlay.classList.remove('show');
+    stopTimer();
+    currentBlockIndex = 0;
+    resetTimerToStart();
+  });
+
+  // ── Particles ─────────────────────────────────────────────────────────────
+  const pCtx = particleCanvas.getContext('2d');
+  let particles = [];
+  let pAnimId = null;
+
+  function launchParticles() {
+    particleCanvas.width = window.innerWidth;
+    particleCanvas.height = window.innerHeight;
+    particleCanvas.classList.add('active');
+
+    const colors = ['#3d5e38','#c4714a','#c49a3c','#7b6cbf','#4a7343','#f7f0e3'];
+    particles = Array.from({ length: 80 }, () => ({
+      x: Math.random() * particleCanvas.width,
+      y: particleCanvas.height + 10,
+      vx: (Math.random() - 0.5) * 4,
+      vy: -(Math.random() * 8 + 4),
+      r: Math.random() * 6 + 3,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      alpha: 1,
+      rot: Math.random() * Math.PI * 2,
+      rotV: (Math.random() - 0.5) * 0.2,
+    }));
+
+    function animParticles() {
+      pCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.15;
+        p.alpha -= 0.012;
+        p.rot += p.rotV;
+        if (p.alpha <= 0) return;
+        pCtx.save();
+        pCtx.translate(p.x, p.y);
+        pCtx.rotate(p.rot);
+        pCtx.globalAlpha = Math.max(0, p.alpha);
+        pCtx.fillStyle = p.color;
+        pCtx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r);
+        pCtx.restore();
+      });
+      particles = particles.filter(p => p.alpha > 0);
+      if (particles.length > 0) {
+        pAnimId = requestAnimationFrame(animParticles);
+      } else {
+        particleCanvas.classList.remove('active');
+      }
+    }
+    if (pAnimId) cancelAnimationFrame(pAnimId);
+    pAnimId = requestAnimationFrame(animParticles);
+  }
+
+  // ── Clear / Save template ─────────────────────────────────────────────────
+  clearBtn.addEventListener('click', () => {
+    if (sequence.length === 0) return;
+    if (!confirm('Clear all blocks?')) return;
+    stopTimer();
+    sequence = [];
+    renderSequence();
+    resetTimerToStart();
+  });
+
+  saveTemplateBtn.addEventListener('click', () => {
+    if (sequence.length === 0) return alert('Add some blocks first!');
+    const name = prompt('Template name:', 'My Flow')?.trim();
+    if (!name) return;
+    const templates = getUserTemplates();
+    templates.push({
+      id: `user-${Date.now()}`,
+      name,
+      desc: `${sequence.length} blocks · ${totalMinutes()} min`,
+      blocks: sequence.map(b => ({ type: b.type, name: b.name, dur: b.duration, color: b.color })),
+      user: true,
+    });
+    localStorage.setItem(TEMPLATES_KEY, JSON.stringify(templates));
+    renderTemplates();
+  });
+
+  function getUserTemplates() {
+    try {
+      const raw = localStorage.getItem(TEMPLATES_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch(e) { return []; }
+  }
+
+  // ── Templates rendering ───────────────────────────────────────────────────
+  function renderTemplates() {
+    templatesGrid.innerHTML = '';
+    const userTpls = getUserTemplates();
+    const all = [...BUILTIN_TEMPLATES, ...userTpls];
+
+    all.forEach(tpl => {
+      const card = document.createElement('div');
+      card.className = 'template-card';
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', `Load template: ${tpl.name}`);
+
+      const pips = tpl.blocks.slice(0, 12).map(b =>
+        `<div class="template-pip pip-${b.type}"></div>`
+      ).join('');
+
+      const del = tpl.user
+        ? `<button class="btn btn-ghost btn-sm" style="padding:2px 6px;font-size:0.7rem;color:var(--terracotta);" data-del-tpl="${tpl.id}" aria-label="Delete template">✕</button>`
+        : '';
+
+      card.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <div class="template-name">${sanitizeText(tpl.name)}</div>
+          ${del}
+        </div>
+        <div class="template-desc">${sanitizeText(tpl.desc)}</div>
+        <div class="template-blocks-preview">${pips}</div>
+      `;
+
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('[data-del-tpl]')) {
+          const id = e.target.closest('[data-del-tpl]').dataset.delTpl;
+          deleteUserTemplate(id);
+          return;
+        }
+        loadTemplate(tpl);
+      });
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); loadTemplate(tpl); }
+      });
+
+      templatesGrid.appendChild(card);
+    });
+  }
+
+  function loadTemplate(tpl) {
+    stopTimer();
+    sequence = tpl.blocks.map(b => makeBlock(b.type, {
+      name: b.name,
+      duration: b.dur,
+      color: b.color,
+    }));
+    renderSequence();
+    resetTimerToStart();
+  }
+
+  function deleteUserTemplate(id) {
+    const templates = getUserTemplates().filter(t => t.id !== id);
+    localStorage.setItem(TEMPLATES_KEY, JSON.stringify(templates));
+    renderTemplates();
+  }
+
+  // ── Duration inputs → update palette labels ───────────────────────────────
+  [durFocus, durShort, durLong].forEach(input => {
+    input.addEventListener('input', () => {
+      const map = { 'dur-focus': 'focus', 'dur-short': 'short', 'dur-long': 'long' };
+      const type = map[input.id];
+      const el = document.querySelector(`[data-palette-dur="${type}"]`);
+      if (el) el.textContent = `${input.value} min`;
+    });
+  });
+
+  // ── Share URL ─────────────────────────────────────────────────────────────
+  function updateShareUrl() {
+    if (sequence.length === 0) {
+      shareUrlInput.value = window.location.origin + window.location.pathname;
+      return;
+    }
+    const data = sequence.map(b => ({
+      t: b.type,
+      n: b.name !== BLOCK_CONFIGS[b.type]?.name ? b.name : undefined,
+      d: b.duration,
+      c: b.color !== BLOCK_CONFIGS[b.type]?.color ? b.color : undefined,
+    }));
+    const json = JSON.stringify(data);
+    const encoded = btoa(unescape(encodeURIComponent(json)));
+    shareUrlInput.value = `${window.location.origin}${window.location.pathname}?flow=${encoded}`;
+  }
+
+  copyShareBtn.addEventListener('click', () => {
+    if (!shareUrlInput.value) return;
+    navigator.clipboard.writeText(shareUrlInput.value).then(() => {
+      copyFeedback.classList.add('show');
+      setTimeout(() => copyFeedback.classList.remove('show'), 2000);
+    }).catch(() => {
+      shareUrlInput.select();
+      document.execCommand('copy');
+      copyFeedback.classList.add('show');
+      setTimeout(() => copyFeedback.classList.remove('show'), 2000);
+    });
+  });
+
+  loadUrlBtn.addEventListener('click', () => {
+    const url = prompt('Paste a flow share URL:')?.trim();
+    if (!url) return;
+    loadFromUrl(url);
+  });
+
+  function loadFromUrl(urlStr) {
+    try {
+      const u = new URL(urlStr);
+      const encoded = u.searchParams.get('flow');
+      if (!encoded) { alert('No flow data found in URL.'); return; }
+      const json = decodeURIComponent(escape(atob(encoded)));
+      const data = JSON.parse(json);
+      if (!Array.isArray(data)) throw new Error('Bad data');
+      stopTimer();
+      sequence = data.map(item => makeBlock(item.t || 'focus', {
+        name: item.n,
+        duration: item.d,
+        color: item.c,
+      }));
+      renderSequence();
+      resetTimerToStart();
+    } catch(e) {
+      alert('Could not load flow from URL. Make sure you paste the full share URL.');
+    }
+  }
+
+  // Load from query string on start
+  function tryLoadFromQueryString() {
+    const params = new URLSearchParams(window.location.search);
+    const flow = params.get('flow');
+    if (flow) {
+      try {
+        const json = decodeURIComponent(escape(atob(flow)));
+        const data = JSON.parse(json);
+        if (Array.isArray(data) && data.length > 0) {
+          sequence = data.map(item => makeBlock(item.t || 'focus', {
+            name: item.n,
+            duration: item.d,
+            color: item.c,
+          }));
+          return true;
+        }
+      } catch(e) {}
+    }
+    return false;
+  }
+
+  // ── Keyboard shortcuts ────────────────────────────────────────────────────
+  document.addEventListener('keydown', (e) => {
+    // Space = play/pause (not when focused on input/editable)
+    const tag = document.activeElement.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement.contentEditable === 'true') return;
+    if (e.key === ' ') {
+      e.preventDefault();
+      playBtn.click();
+    } else if (e.key === 'ArrowRight') {
+      nextBtn.click();
+    } else if (e.key === 'ArrowLeft') {
+      prevBtn.click();
+    } else if (e.key === 'r' || e.key === 'R') {
+      resetBtn.click();
+    }
+  });
+
+  // ── Init ──────────────────────────────────────────────────────────────────
+  function init() {
+    const loadedFromUrl = tryLoadFromQueryString();
+    if (!loadedFromUrl) loadState();
+    renderSequence();
+    resetTimerToStart();
+    renderTemplates();
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
