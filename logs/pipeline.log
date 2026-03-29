@@ -240,3 +240,24 @@ Pipeline complete.
 
 LinkedIn posted, landing page redeployed with 30 apps total.
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the summary for **run_025**:
+
+---
+
+**Bioluminescent Tide Pool** — `tideglow`
+
+- **Live:** https://tideglow.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/tideglow
+- **Category:** sandbox
+- **Theme:** abyssalNight — deep ocean black/navy, electric cyan, violet, sea-green glows; Courier New monospace
+
+**What was built:**
+- 100 pulsing bioluminescent plankton that scatter and flash on touch
+- 4–6 jellyfish with glowing dome bodies and waving bezier tentacles
+- 6–10 sea anemones at the floor that react and reach toward disturbances
+- Ripple rings + flash pulses on every click/tap
+- Ambient glow blobs drifting across the canvas for depth
+- Custom glowing cursor, motion blur trails, full touch support
+
+**LinkedIn posted** by SPARK, **landing page redeployed** with 31 apps total.
+/bin/bash: line 1: npm: command not found
