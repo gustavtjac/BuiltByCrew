@@ -220,3 +220,23 @@ Pipeline complete. Here's the summary for **run_023**:
 
 CRT terminal aesthetic — green phosphor on black, scanlines, waveform visualizer. Practice mode + challenge mode + speed control, all self-contained. LinkedIn posted, landing page live.
 /bin/bash: line 1: npm: command not found
+Pipeline complete.
+
+---
+
+**run_024 — Pomodoro Flow Builder**
+
+- **Live:** https://flowblocks.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/flowblocks
+- **Category:** productivity
+- **Design:** Warm editorial aesthetic — parchment background, forest green + terracotta accents, Playfair Display/Lora fonts, paper texture, staggered entrance animations
+
+**Features built:**
+- Drag-and-drop time block builder (focus sprints, breaks, custom intervals)
+- Countdown timer with SVG progress ring
+- Web Audio API ambient sound cues (no external files)
+- Reusable session templates with localStorage persistence
+- URL-encoded share link
+
+LinkedIn posted, landing page redeployed with 30 apps total.
+/bin/bash: line 1: npm: command not found
