@@ -275,3 +275,17 @@ Pipeline complete. Here's the summary for **run_026**:
 - **LinkedIn:** Posted by BUILDER
 - **Landing page:** Redeployed with 32 apps
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the summary for run_027:
+
+---
+
+**Pixel Dither Studio** — `run_027`
+
+- **Live:** https://ditherstudio.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/ditherstudio
+- **Category:** creative
+- **Features:** Upload photos, apply Floyd-Steinberg / Bayer 4×4 / Ordered 8×8 / Random dithering, 10 curated retro palettes + custom editor, download as PNG
+- **Design:** Dark terminal aesthetic — pixel grid background, VT323 display font, acid yellow accents
+- **LinkedIn:** Posted ✓
+- **Landing page:** Redeployed ✓ (33 apps live)
+/bin/bash: line 1: npm: command not found
