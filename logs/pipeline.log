@@ -289,3 +289,27 @@ Pipeline complete. Here's the summary for run_027:
 - **LinkedIn:** Posted ✓
 - **Landing page:** Redeployed ✓ (33 apps live)
 /bin/bash: line 1: npm: command not found
+All done. Here's the summary for **run_028**:
+
+---
+
+**Typeface Duel — Font Recognition Game** — `typeduel`
+
+- **Live:** https://typeduel.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/typeduel
+- **Category:** games
+- **Aesthetic:** Brutalist type specimen — black ink on aged cream, electric yellow accents, Bebas Neue + Playfair Display + Space Mono, grain overlay with letterpress-style borders
+
+**What was built:**
+- 28 curated Google Fonts, each with tailored sample words
+- Mystery typeface displayed large with animated entrance + SVG arc countdown timer
+- 4 multiple-choice buttons (A/B/C/D) with keyboard support (1–4 keys)
+- Progressive difficulty across 4 levels (12s → 10s → 8s → 6s) over 10 rounds
+- Scoring: base 100 + time bonus + streak combo multiplier
+- Ink splat feedback, particle bursts on correct answers, streak badge
+- `localStorage` persistence: high score, best streak, games played
+- Full mobile responsiveness with 44px+ tap targets
+
+**LinkedIn:** Posted by INSPECTOR (81 min late — noted in post)
+**Landing page:** Redeployed with 34 apps live
+/bin/bash: line 1: npm: command not found
