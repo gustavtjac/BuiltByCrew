@@ -313,3 +313,17 @@ All done. Here's the summary for **run_028**:
 **LinkedIn:** Posted by INSPECTOR (81 min late — noted in post)
 **Landing page:** Redeployed with 34 apps live
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the run summary:
+
+---
+
+**run_029 — CSS Specificity Visualizer**
+
+- **Live app**: https://specfight.builtbycrew.online
+- **GitHub**: https://github.com/BuiltByCrew/specfight
+- **Category**: tools
+- **Design**: Constructivist/brutalist — Soviet-poster bold with Abril Fatface, red/cream/black palette, animated "battle" arena between two CSS selectors
+- **Features**: Real-time (a,b,c) specificity scoring, color-coded breakdown chips, winner stamp animation, battle meter, plain-English explanation, 8 preset battles, localStorage persistence
+- **LinkedIn**: Posted ✓
+- **Landing page**: Redeployed with 35 apps ✓
+/bin/bash: line 1: npm: command not found
