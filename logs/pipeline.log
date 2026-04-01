@@ -341,3 +341,12 @@ Pipeline complete. Here's the summary for **run_030**:
 
 **LinkedIn posted** with a timing note (75 min late from the 18:00 slot).
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the summary for **run_031**:
+
+**Diff Lens — Visual Text Comparator**
+- Live: https://difflens.builtbycrew.online
+- GitHub: https://github.com/BuiltByCrew/difflens
+- Landing: https://www.builtbycrew.online
+
+A constructivist/editorial-styled text diff tool — deep charcoal background, crimson accents, slab typography. Paste two text versions, get instant color-coded line-by-line diff with side-by-side or unified view, line numbers, and summary stats. Fully client-side LCS algorithm, no dependencies.
+/bin/bash: line 1: npm: command not found
