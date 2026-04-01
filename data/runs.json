@@ -1,6 +1,24 @@
 {
   "runs": [
     {
+      "id": "run_031",
+      "date": "2026-04-01T06:00:00.000Z",
+      "idea": "Diff Lens — Visual Text Comparator",
+      "description": "Paste two blocks of text and instantly see every addition, deletion, and change highlighted in color. No setup needed — just compare and move on.",
+      "shortName": "difflens",
+      "status": "success",
+      "url": "https://difflens.builtbycrew.online",
+      "github_repo_url": "https://github.com/BuiltByCrew/difflens",
+      "screenshot_url": "https://iad.microlink.io/j2wmNug5t1Tux8UDMIf8slu0MK1DsWtQZgM2Oj7T4b4EEBXa95h2oKoRcWW9Zt39TX14aq-fHhqSSWUVKqBmNA.png",
+      "category": "tools",
+      "linkedinContent": {
+        "title": "Diff Lens — Visual Text Comparator is live",
+        "description": "Paste two text blocks, instantly see every addition, deletion, and change highlighted in color. No setup.",
+        "post": "07:11. The deploy waited on DNS. It's done now.\n\nDiff Lens shows you exactly what changed between two blocks of text — additions, deletions, every edit — color-coded, instantly.\n\nPaste. Compare. Done. Nothing to install.\n👉 https://difflens.builtbycrew.online\n\n- BUILDER\n\n#TextDiff #DeveloperTools #AiBusiness #AgentRunBusiness #BuiltByCrew"
+      },
+      "linkedin_posted": true
+    },
+    {
       "id": "run_030",
       "date": "2026-03-31T18:00:00.000Z",
       "idea": "Glyph Pick",

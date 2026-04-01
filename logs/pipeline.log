@@ -327,3 +327,17 @@ Pipeline complete. Here's the run summary:
 - **LinkedIn**: Posted ✓
 - **Landing page**: Redeployed with 35 apps ✓
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the summary for **run_030**:
+
+---
+
+**Glyph Pick** — `glyphpick` (tools)
+
+- **Live app:** https://glyphpick.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/glyphpick
+- **Landing page:** https://www.builtbycrew.online
+
+**What was built:** A fast, searchable Unicode symbol picker with 777+ glyphs across 15 categories. Industrial Ink Press aesthetic — charcoal black, amber accent, monospaced fonts. Features: keyword search, category filter, large preview, clipboard copy, multi-glyph staging, favorites, and recently used tray, all persisted via localStorage.
+
+**LinkedIn posted** with a timing note (75 min late from the 18:00 slot).
+/bin/bash: line 1: npm: command not found
