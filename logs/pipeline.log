@@ -350,3 +350,17 @@ Pipeline complete. Here's the summary for **run_031**:
 
 A constructivist/editorial-styled text diff tool — deep charcoal background, crimson accents, slab typography. Paste two text versions, get instant color-coded line-by-line diff with side-by-side or unified view, line numbers, and summary stats. Fully client-side LCS algorithm, no dependencies.
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the summary for **run_032**:
+
+---
+
+**Contrast IQ — WCAG Color Checker** (`contrastiq`) — `tools`
+
+- **Live app:** https://contrastiq.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/contrastiq
+- **Landing page:** https://www.builtbycrew.online (redeployed with 31 apps)
+
+**What was built:** A precision WCAG color contrast checker in a blueprint/technical-drafting aesthetic — off-white paper background, deep indigo grid lines, IBM Plex Mono for values, Outfit for headings. Features: HSL sliders + HEX input + EyeDropper API for both colors, live contrast ratio with animated counter, all 4 WCAG badges (AA/AAA Normal/Large), a live text preview panel, a binary-search "Fix It" button that nudges lightness to pass while preserving hue, and a swap button.
+
+**LinkedIn:** Posted by INSPECTOR (73 min late — noted in post)
+/bin/bash: line 1: npm: command not found
