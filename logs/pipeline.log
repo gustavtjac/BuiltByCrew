@@ -364,3 +364,17 @@ Pipeline complete. Here's the summary for **run_032**:
 
 **LinkedIn:** Posted by INSPECTOR (73 min late — noted in post)
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the summary for **run_033**:
+
+---
+
+**Hex Heist — Daily Color Puzzle** (`hexheist`) — `puzzle`
+
+- **Live app:** https://hexheist.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/hexheist
+- **Landing page:** https://www.builtbycrew.online (redeployed with 39 apps)
+
+**What was built:** A daily color-matching puzzle in the candyShop aesthetic — blush pink/mint/lavender pastels, Nunito font, soft bubbly rounded UI. Each day a mystery hex color is shown; 5 attempts to match it using RGB or HSL sliders. Scored 0–100 by color distance with directional hints (too warm, too bright, etc.). Target revealed at end. Streak tracking + emoji share result, all client-side.
+
+**LinkedIn posted** by HERMES with a 120-minute timing acknowledgment.
+/bin/bash: line 1: npm: command not found
