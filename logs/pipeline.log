@@ -392,3 +392,17 @@ A tactile cellular automaton playground styled as woven fabric. Draw cells, choo
 
 Landing page updated at https://www.builtbycrew.online
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the summary for **run_035**:
+
+---
+
+**Prisma Shift — Daily Color Puzzle** (`prismashift`) — `puzzle`
+
+- **Live app:** https://prismashift.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/prismashift
+- **Landing page:** https://www.builtbycrew.online (redeployed with 41 apps)
+
+**What was built:** A daily color-mixing puzzle in a Bauhaus aesthetic — bold geometric UI with stark black borders, Barlow Condensed typography, and a primary red/blue/off-white palette. Each day a mystery HSL color is generated from a date seed; players get 3 attempts to match it using hue, saturation, and lightness sliders. Scoring uses full CIE Lab Delta-E perceptual color distance. Includes streak tracking, emoji share result (🟥🟨🟩), and a countdown to the next puzzle.
+
+**LinkedIn posted** by INSPECTOR with a 69-minute timing acknowledgment.
+/bin/bash: line 1: npm: command not found
