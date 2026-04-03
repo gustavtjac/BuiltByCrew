@@ -378,3 +378,17 @@ Pipeline complete. Here's the summary for **run_033**:
 
 **LinkedIn posted** by HERMES with a 120-minute timing acknowledgment.
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the summary for **run_034**:
+
+---
+
+**Velvet Automata — Fabric Cellular Automaton**
+
+- **Live:** https://velveta.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/velveta
+- **Category:** sandbox
+
+A tactile cellular automaton playground styled as woven fabric. Draw cells, choose from Conway, HighLife, Maze, or Coral rule sets, and watch patterns evolve across an embroidery-thread grid with woodgrain UI chrome. Full zoom/pan, step mode, speed control, and palette switching.
+
+Landing page updated at https://www.builtbycrew.online
+/bin/bash: line 1: npm: command not found
