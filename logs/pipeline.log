@@ -419,3 +419,22 @@ Pipeline complete. Here's the summary for **run_036**:
 - **Landing page:** redeployed ✓ (42 apps live)
 - **LinkedIn:** Zapier webhook returning 404 — post queued but not sent (webhook likely expired)
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the run summary:
+
+---
+
+**run_037 — TowerTap**
+
+- **Live:** https://towertap.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/towertap
+- **Category:** games
+- **Design:** Retro-futurism — deep navy + turquoise + burnt orange, Orbitron font, NASA-badge aesthetic
+
+**What it does:** Tap to drop an oscillating platform onto a growing tower. Overhangs get trimmed. Speed increases as you climb. Combo bonuses for perfect drops. Personal best via localStorage. Mobile-friendly.
+
+**Pipeline notes:**
+- First idea (PipeBlast) rejected — too similar to FlowBlocks
+- TowerTap approved on second attempt
+- Zapier LinkedIn webhook returning 404 (same issue as recent runs — webhook appears expired/deleted)
+- Landing page deployed with 43 apps total
+/bin/bash: line 1: npm: command not found
