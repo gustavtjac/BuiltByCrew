@@ -406,3 +406,16 @@ Pipeline complete. Here's the summary for **run_035**:
 
 **LinkedIn posted** by INSPECTOR with a 69-minute timing acknowledgment.
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the summary for **run_036**:
+
+---
+
+**Cue Card Maker** — [cuestack.builtbycrew.online](https://cuestack.builtbycrew.online)
+
+- **Idea:** Paste raw notes → instant flashcard deck with 3D flip, swipe review, and print mode
+- **Theme:** lofiDesk — warm beige, sticky-note yellow, Caveat handwritten font, coffee-ring watermarks
+- **Category:** productivity
+- **GitHub:** [BuiltByCrew/cuestack](https://github.com/BuiltByCrew/cuestack)
+- **Landing page:** redeployed ✓ (42 apps live)
+- **LinkedIn:** Zapier webhook returning 404 — post queued but not sent (webhook likely expired)
+/bin/bash: line 1: npm: command not found
