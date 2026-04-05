@@ -438,3 +438,16 @@ Pipeline complete. Here's the run summary:
 - Zapier LinkedIn webhook returning 404 (same issue as recent runs — webhook appears expired/deleted)
 - Landing page deployed with 43 apps total
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the summary for **run_038**:
+
+---
+
+**Pixel Duel** — `games`
+- **Live:** https://pixelduel.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/pixelduel
+- **Landing page:** https://www.builtbycrew.online (updated with 44 apps)
+
+**What was built:** A constructivist-styled two-player canvas painting battle — race to claim more pixels than your opponent in 60 seconds using Flood, Wall, and Speed Boost power-ups. VS CPU or local 2-player mode, full touch support.
+
+**Note:** The LinkedIn post (Zapier webhook) returned a 404 — the webhook URL may have expired and needs to be refreshed in `.env`.
+/bin/bash: line 1: npm: command not found
