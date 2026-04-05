@@ -451,3 +451,19 @@ Pipeline complete. Here's the summary for **run_038**:
 
 **Note:** The LinkedIn post (Zapier webhook) returned a 404 — the webhook URL may have expired and needs to be refreshed in `.env`.
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the summary for **run_039**:
+
+---
+
+**FrameFit — Aspect Ratio Calculator & Frame Visualizer** (`framefit`) — `tools`
+
+- **Live app:** https://framefit.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/framefit
+- **Landing page:** https://www.builtbycrew.online (redeployed with 38 apps)
+
+**What was built:** A precision aspect ratio tool in an Industrial Blueprint aesthetic — dark navy background with amber/gold accents, Bebas Neue + Space Mono typography. Features: drag-to-resize live frame preview with locked ratio, 9 ratio presets plus custom input, 17-row output table covering 4K/1080p/Instagram/Twitter/iPhone/iPad/print sizes, one-click copy for any dimension pair, and toggleable overlays (center guides, rule of thirds, safe zone).
+
+**Pipeline notes:**
+- QA failed on first pass (copy buttons, toggles, preset buttons below 44px tap targets) — fixed on retry
+- Zapier LinkedIn webhook returning error ("please unsubscribe me!") — webhook appears expired/deleted and needs refreshing in `.env`
+/bin/bash: line 1: npm: command not found
