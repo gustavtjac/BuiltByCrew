@@ -508,3 +508,19 @@ Pipeline complete. Here's the summary for **run_041**:
 **Pipeline notes:**
 - QA failed twice — first pass had font sizes below 0.7rem and tap targets under 44px; second pass caught a few remaining small font sizes. All fixed.
 - LinkedIn Zapier webhook returning "please unsubscribe me!" — webhook appears expired/broken.
+Pipeline complete. Here's the summary for **run_041**:
+
+---
+
+**Keystroke Racer — Typing Speed Benchmark & Heatmap** (`keystroker`) — `tools`
+
+- **Live:** https://keystroker.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/keystroker
+- **Landing:** https://www.builtbycrew.online (47 apps)
+
+**What was built:** A retro-terminal typing speed tool in a 1-bit CRT aesthetic (VT323 font, scanline overlay, pixel chamfered surfaces). Live WPM + accuracy tracking, 4 presets + custom text, and a keyboard heatmap that colors each key by average inter-keystroke delay — cold-blue for fast keys, hot-red for slow ones. Particle burst on finish, localStorage best score.
+
+**Notes:**
+- QA needed 2 fix passes (font sizes below 0.7rem, tap targets under 44px)
+- LinkedIn Zapier webhook is returning "please unsubscribe me!" — the webhook appears expired and needs to be reconnected in `.env`
+/bin/bash: line 1: npm: command not found
