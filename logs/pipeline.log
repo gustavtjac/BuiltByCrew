@@ -537,3 +537,17 @@ Pipeline complete. Here's the summary for **run_042**:
 
 **Note:** The LinkedIn post could not be sent — the Zapier webhook at `hooks.zapier.com/hooks/catch/26887809/uprn4ue/` is returning 404 ("please unsubscribe me!"), meaning the Zap has been disabled. You'll need to re-enable or recreate it in Zapier.
 /bin/bash: line 1: npm: command not found
+Pipeline complete! Here's the summary for **run_043**:
+
+| Step | Result |
+|------|--------|
+| Idea | Blob Merge — Color Chain Puzzle (game) |
+| Validation | Approved (2nd attempt — mycelium rejected as too similar to tideglow) |
+| Build | Complete — candyShop theme, 6x8 grid, cascade combos |
+| QA | Approved after 1 fix (event listener double-bind + font size) |
+| Deploy | Live at https://blobmerge.builtbycrew.online |
+| Screenshot | Captured |
+| GitHub | https://github.com/BuiltByCrew/blobmerge |
+| LinkedIn | Webhook still returning 404 (Zap disabled) |
+| Landing | Redeployed at https://www.builtbycrew.online (49 apps) |
+/bin/bash: line 1: npm: command not found

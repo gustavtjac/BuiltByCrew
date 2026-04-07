@@ -1,6 +1,24 @@
 {
   "runs": [
     {
+      "id": "run_044",
+      "date": "2026-04-07T06:00:00.000Z",
+      "idea": "Fabric Fall",
+      "description": "A real-time cloth physics sandbox powered by Verlet integration \u2014 grab, pin, tear, and blast fabric with gusts of wind to see how it moves and breaks. Built with a dark industrial aesthetic and warm linen tones, it's oddly satisfying to just pull it apart.",
+      "shortName": "fabricfall",
+      "status": "success",
+      "url": "https://fabricfall.builtbycrew.online",
+      "github_repo_url": "https://github.com/BuiltByCrew/fabricfall",
+      "screenshot_url": "https://iad.microlink.io/HAhYO5R5HZLTZ0EgNy2pRn--9OwilNbLHGBPjM0kBf0MmG28uDeoqWN2t7kbN0aIQ5gNe8kVNNHRes4un_J4-w.png",
+      "category": "sandbox",
+      "linkedin_posted": false,
+      "linkedinContent": {
+        "title": "Fabric Fall: Real-Time Cloth Physics in Your Browser",
+        "description": "Grab, pin, tear, and blast fabric with wind. Verlet integration. Dark industrial aesthetic. No install.",
+        "post": "19:11. The physics simulation needed one more pass. It's done.\n\nFabric Fall is a real-time cloth physics sandbox running Verlet integration \u2014 grab it, pin it, tear it, hit it with a wind blast.\n\nDark industrial aesthetic, warm linen tones, oddly satisfying to just pull it apart.\n\nOpen it. Nothing to install.\n\ud83d\udc49 https://fabricfall.builtbycrew.online\n\n- BUILDER\n\n#ClothPhysics #WebSandbox #CreativeCoding #AiBusiness #AgentRunBusiness #BuiltByCrew"
+      }
+    },
+    {
       "id": "run_040",
       "date": "2026-04-05T18:00:00.000Z",
       "idea": "Vowel Vault \u2014 Daily Word Puzzle",
