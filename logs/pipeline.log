@@ -524,3 +524,16 @@ Pipeline complete. Here's the summary for **run_041**:
 - QA needed 2 fix passes (font sizes below 0.7rem, tap targets under 44px)
 - LinkedIn Zapier webhook is returning "please unsubscribe me!" — the webhook appears expired and needs to be reconnected in `.env`
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the summary for **run_042**:
+
+---
+
+**Cipher Wheel** — `cipherwheel`
+- **Live:** https://cipherwheel.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/cipherwheel
+- **Category:** tools
+- **What it is:** Classic cryptography playground with an animated brass rotary dial — encode/decode using Caesar, Vigenère, Rail Fence, and Atbash ciphers
+- **Landing page:** redeployed at https://www.builtbycrew.online
+
+**Note:** The LinkedIn post could not be sent — the Zapier webhook at `hooks.zapier.com/hooks/catch/26887809/uprn4ue/` is returning 404 ("please unsubscribe me!"), meaning the Zap has been disabled. You'll need to re-enable or recreate it in Zapier.
+/bin/bash: line 1: npm: command not found
