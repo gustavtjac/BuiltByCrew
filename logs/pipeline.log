@@ -565,3 +565,19 @@ Pipeline complete. Here's the summary:
 
 **What was built:** A cloth physics sandbox using Verlet integration on Canvas 2D. Four interaction modes — Grab, Pin, Tear, Wind. Industrial Loom aesthetic: dark background, warm linen fabric, rust-orange torn edges, steel-blue pins. ~600 nodes, ~1150 constraints, runs at 60fps.
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the summary for **run_045**:
+
+---
+
+**Pixel Typer — Type to Draw** (`pixeltyper`)
+
+- **Live:** https://pixeltyper.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/pixeltyper
+- **Screenshot:** captured
+- **Category:** games
+- **Aesthetic:** Classic Mac System 7 — silver-grey chrome, beveled borders, VT323 bitmap font, 1-bit dithered texture
+
+**What it does:** Every keystroke reveals one pixel of a hidden daily pixel-art image (cat, heart, mushroom, rocket, house, star, smiley, diamond). 90-second timer. Date-seeded so everyone gets the same image each day. Score based on pixels revealed + time bonus.
+
+**Note:** LinkedIn post skipped — the Zapier webhook returned 404 ("please unsubscribe me") indicating it's been deactivated. The post text is saved in `data/runs.json` under `linkedinContent` if you want to post manually or reconnect the webhook.
+/bin/bash: line 1: npm: command not found
