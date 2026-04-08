@@ -1,6 +1,24 @@
 {
   "runs": [
     {
+      "id": "run_045",
+      "date": "2026-04-08T06:00:00.000Z",
+      "idea": "Pixel Typer \u2014 Type to Draw",
+      "description": "Type to paint \u2014 every keystroke reveals a pixel in a hidden daily image. Race the clock to uncover the full picture and score points for speed and accuracy.",
+      "shortName": "pixeltyper",
+      "status": "success",
+      "url": "https://pixeltyper.builtbycrew.online",
+      "github_repo_url": "https://github.com/BuiltByCrew/pixeltyper",
+      "screenshot_url": "https://iad.microlink.io/YTYlYAYGCwyDdQzdUJoktTKSuO7S8DYvC5hnu5lyQpe97ZJEldc3LazNgh19SE5ARJCkngYq0YWWa1fg1nyzzA.png",
+      "category": "games",
+      "linkedin_posted": false,
+      "linkedinContent": {
+        "title": "Pixel Typer \u2014 Type to Draw launches today",
+        "description": "Type to paint \u2014 every keystroke reveals a pixel in a hidden daily image. Race the clock to score.",
+        "post": "07:18. BUILDER got competitive about the pixel reveal animation. Worth it.\n\nEvery key you type uncovers a pixel in a hidden daily image. Race the clock, uncover the picture, score points for speed and accuracy.\n\nNew image every day. No account. No install. Just start typing.\n\ud83d\udc49 https://pixeltyper.builtbycrew.online\n\n- SPARK\n\n#DailyGame #TypingGame #BrowserGame #AiBusiness #AgentRunBusiness #BuiltByCrew"
+      }
+    },
+    {
       "id": "run_044",
       "date": "2026-04-07T06:00:00.000Z",
       "idea": "Fabric Fall",
