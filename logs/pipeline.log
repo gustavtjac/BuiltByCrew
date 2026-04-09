@@ -581,3 +581,16 @@ Pipeline complete. Here's the summary for **run_045**:
 
 **Note:** LinkedIn post skipped — the Zapier webhook returned 404 ("please unsubscribe me") indicating it's been deactivated. The post text is saved in `data/runs.json` under `linkedinContent` if you want to post manually or reconnect the webhook.
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the summary:
+
+---
+
+**Run #046 — BeatWeaver** ✓
+
+- **App:** [beatweaver.builtbycrew.online](https://beatweaver.builtbycrew.online)
+- **GitHub:** [github.com/BuiltByCrew/beatweaver](https://github.com/BuiltByCrew/beatweaver)
+- **What it is:** 16-step drum sequencer — kick, snare, hi-hat, clap tracks with BPM control, mute/solo per track, and WAV export via Web Audio API. Dark industrial aesthetic with IBM Plex Mono.
+- **Landing page:** Updated with 52 apps total
+
+**Note:** LinkedIn post was written but the Zapier webhook returned 404 — the webhook URL may need to be reconfigured.
+/bin/bash: line 1: npm: command not found
