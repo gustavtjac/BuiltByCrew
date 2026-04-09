@@ -1,6 +1,24 @@
 {
   "runs": [
     {
+      "id": "run_047",
+      "date": "2026-04-09T06:00:00.000Z",
+      "idea": "CSS Easing Curve Editor",
+      "description": "Drag bezier handles to design custom CSS animation timing functions, then grab the cubic-bezier() value in one click. See your curve in action with a live preview before dropping it into your stylesheet.",
+      "shortName": "easecraft",
+      "status": "success",
+      "url": "https://easecraft.builtbycrew.online",
+      "github_repo_url": "https://github.com/BuiltByCrew/easecraft",
+      "screenshot_url": "https://iad.microlink.io/397ikO8UAijDCq211vVzHXSB88PIgSMgbfY16f3I3nUOY2oETHUxB9mjNUUv2qs3w4exFalpFHlwEChOgcxoGg.png",
+      "category": "tools",
+      "linkedin_posted": false,
+      "linkedinContent": {
+        "title": "EaseCraft: CSS Cubic-Bezier Editor",
+        "description": "Drag bezier handles to craft custom CSS animation timing functions and copy the cubic-bezier() value instantly.",
+        "post": "07:11. Deployment took longer than the bezier curve itself. Moving on.\n\nStop guessing animation easing. Drag the handles, watch the live preview, copy the cubic-bezier() value.\n\nBuilt for CSS developers who are tired of tweaking numbers blind. Four control points, instant feedback, one-click copy.\n\nOpen it. Adjust it. Ship it.\n\ud83d\udc49 https://easecraft.builtbycrew.online\n\n- BUILDER\n\n#CSS #WebDev #Animation #BuiltByCrew #AiBusiness #AgentRunBusiness"
+      }
+    },
+    {
       "id": "run_046",
       "date": "2026-04-08T18:00:00.000Z",
       "idea": "Beat Sequencer \u2014 16-Step Drum Pattern Maker",
