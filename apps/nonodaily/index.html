@@ -1,0 +1,2150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nonogram Daily Grid Puzzle</title>
+  <meta name="description" content="A daily nonogram puzzle. Deduce the picture from row and column clues — new puzzle every day.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://nonodaily.builtbycrew.online/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Nonogram Daily Grid Puzzle">
+  <meta property="og:description" content="A daily nonogram puzzle. Deduce the picture from row and column clues — new puzzle every day.">
+  <meta property="og:url" content="https://nonodaily.builtbycrew.online/">
+  <meta property="og:site_name" content="BuiltByCrew">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Nonogram Daily Grid Puzzle">
+  <meta name="twitter:description" content="A daily nonogram puzzle. Deduce the picture from row and column clues — new puzzle every day.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23F5F0E8'/%3E%3Crect x='4' y='4' width='11' height='11' rx='1' fill='%231A6B6B'/%3E%3Crect x='17' y='4' width='11' height='11' rx='1' fill='%231A6B6B' opacity='0.3'/%3E%3Crect x='4' y='17' width='11' height='11' rx='1' fill='%231A6B6B' opacity='0.3'/%3E%3Crect x='17' y='17' width='11' height='11' rx='1' fill='%231A6B6B'/%3E%3C/svg%3E">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,400;0,600;0,700;1,400&family=Zilla+Slab+Highlight:wght@400;700&display=swap');
+
+    :root {
+      --paper: #F5F0E8;
+      --teal: #1A6B6B;
+      --teal-dark: #124d4d;
+      --teal-light: #2a8a8a;
+      --coral: #E85C3A;
+      --coral-dark: #c44828;
+      --yellow: #F2C94C;
+      --yellow-dark: #d4a820;
+      --ink: #1a1208;
+      --ink-light: #3d2e18;
+      --grid-line: #2a3a2a;
+      --cell-size: clamp(30px, 6.5vw, 48px);
+      --clue-size: clamp(28px, 5.5vw, 44px);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      font-size: 16px;
+      background-color: var(--paper);
+    }
+
+    body {
+      font-family: 'Zilla Slab', Georgia, serif;
+      background-color: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Paper grain texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.6;
+    }
+
+    /* Decorative ink blobs in corners */
+    body::after {
+      content: '';
+      position: fixed;
+      top: -60px;
+      right: -60px;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(26,107,107,0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .corner-blob {
+      position: fixed;
+      bottom: -40px;
+      left: -40px;
+      width: 160px;
+      height: 160px;
+      background: radial-gradient(circle, rgba(232,92,58,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      border-radius: 50%;
+    }
+
+    /* ========================
+       HEADER
+    ======================== */
+    header {
+      text-align: center;
+      padding: 28px 20px 16px;
+      position: relative;
+      z-index: 10;
+      border-bottom: 3px solid var(--teal);
+      background: var(--paper);
+    }
+
+    .header-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--coral);
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      font-size: clamp(24px, 5vw, 36px);
+      font-weight: 700;
+      color: var(--teal);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    h1 span {
+      color: var(--coral);
+    }
+
+    .header-meta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .puzzle-num {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--teal-dark);
+      background: rgba(26,107,107,0.1);
+      padding: 3px 10px;
+      border-radius: 2px;
+      border: 1.5px solid var(--teal);
+    }
+
+    .streak-badge {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      background: var(--yellow);
+      padding: 3px 10px;
+      border-radius: 2px;
+      border: 1.5px solid var(--yellow-dark);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .timer-display {
+      font-family: 'Zilla Slab', monospace;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      letter-spacing: 0.05em;
+      background: rgba(26,107,107,0.06);
+      padding: 3px 10px;
+      border-radius: 2px;
+      border: 1.5px solid rgba(26,107,107,0.2);
+    }
+
+    /* ========================
+       MAIN LAYOUT
+    ======================== */
+    .game-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 12px 32px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .instructions {
+      font-size: 12px;
+      color: var(--ink-light);
+      text-align: center;
+      margin-bottom: 20px;
+      font-style: italic;
+      opacity: 0.8;
+    }
+
+    /* ========================
+       NONOGRAM GRID
+    ======================== */
+    .nonogram-container {
+      display: inline-block;
+      position: relative;
+    }
+
+    .nonogram-table {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+
+    /* Column clue header cells */
+    .col-clue-cell {
+      width: var(--cell-size);
+      min-width: var(--cell-size);
+      height: var(--clue-size);
+      vertical-align: bottom;
+      padding: 0 2px 4px;
+      text-align: center;
+    }
+
+    .col-clue-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+    }
+
+    /* Row clue cells */
+    .row-clue-cell {
+      min-width: var(--clue-size);
+      width: var(--clue-size);
+      height: var(--cell-size);
+      text-align: right;
+      padding: 2px 6px 2px 2px;
+      vertical-align: middle;
+    }
+
+    .row-clue-inner {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .clue-num {
+      font-family: 'Zilla Slab', serif;
+      font-size: clamp(11px, 2.2vw, 15px);
+      font-weight: 700;
+      color: var(--teal-dark);
+      line-height: 1;
+      transition: color 0.3s ease;
+    }
+
+    .clue-num.solved {
+      color: var(--teal-light);
+      opacity: 0.5;
+    }
+
+    .col-clue-cell.solved .clue-num,
+    .row-clue-cell.solved .clue-num {
+      color: var(--teal-light);
+      opacity: 0.5;
+    }
+
+    /* The empty top-left corner */
+    .corner-cell {
+      width: var(--clue-size);
+      height: var(--clue-size);
+    }
+
+    /* Grid divider lines */
+    .grid-divider-row td {
+      height: 3px;
+      background: var(--teal);
+      padding: 0;
+    }
+
+    .grid-divider-col {
+      width: 3px;
+      background: var(--teal);
+      padding: 0 !important;
+    }
+
+    /* Game cells */
+    .game-cell {
+      width: var(--cell-size);
+      height: var(--cell-size);
+      min-width: var(--cell-size);
+      min-height: var(--cell-size);
+      border: 1.5px solid rgba(26,107,107,0.25);
+      cursor: pointer;
+      position: relative;
+      transition: background-color 0.1s;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      background: rgba(255,255,255,0.3);
+    }
+
+    /* Every 5th cell gets a thicker border */
+    .game-cell.border-right { border-right: 2px solid rgba(26,107,107,0.5); }
+    .game-cell.border-bottom { border-bottom: 2px solid rgba(26,107,107,0.5); }
+
+    .game-cell:hover:not(.filled):not(.crossed) {
+      background: rgba(26,107,107,0.12);
+    }
+
+    .game-cell.filled {
+      background: var(--teal);
+      box-shadow:
+        inset 1px 1px 0 rgba(255,255,255,0.15),
+        inset -1px -1px 0 rgba(0,0,0,0.15),
+        2px 2px 4px rgba(26,107,107,0.3);
+      animation: inkDrop 0.2s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    }
+
+    .game-cell.correct-filled {
+      background: var(--teal);
+    }
+
+    .game-cell.crossed {
+      background: rgba(232,92,58,0.06);
+    }
+
+    .game-cell.crossed::before,
+    .game-cell.crossed::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 55%;
+      height: 2.5px;
+      background: var(--coral);
+      border-radius: 2px;
+      transform-origin: center;
+    }
+
+    .game-cell.crossed::before {
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    .game-cell.crossed::after {
+      transform: translate(-50%, -50%) rotate(-45deg);
+    }
+
+    /* X mark animation */
+    .game-cell.crossed-anim::before,
+    .game-cell.crossed-anim::after {
+      animation: crossSlash 0.2s ease-out forwards;
+    }
+
+    .game-cell.row-error {
+      animation: rowShake 0.4s ease-out;
+    }
+
+    @keyframes inkDrop {
+      0% { transform: scale(0.7); }
+      60% { transform: scale(1.05); }
+      100% { transform: scale(1.0); }
+    }
+
+    @keyframes crossSlash {
+      0% { opacity: 0; transform: translate(-50%, -50%) rotate(45deg) scaleX(0); }
+      100% { opacity: 1; transform: translate(-50%, -50%) rotate(45deg) scaleX(1); }
+    }
+
+    @keyframes rowShake {
+      0%, 100% { transform: translateX(0); }
+      15% { transform: translateX(-5px); }
+      30% { transform: translateX(5px); }
+      45% { transform: translateX(-4px); }
+      60% { transform: translateX(4px); }
+      75% { transform: translateX(-2px); }
+      90% { transform: translateX(2px); }
+    }
+
+    /* Row/col highlight on hover */
+    .game-cell.row-highlight:not(.filled) { background: rgba(26,107,107,0.07); }
+    .game-cell.col-highlight:not(.filled) { background: rgba(26,107,107,0.07); }
+    .game-cell.row-highlight.col-highlight:not(.filled) { background: rgba(26,107,107,0.14); }
+
+    /* Staggered entrance animations */
+    .game-row {
+      opacity: 0;
+      transform: translateX(-12px);
+      animation: rowSlideIn 0.4s ease-out forwards;
+    }
+
+    @keyframes rowSlideIn {
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ========================
+       WIN / LOSS OVERLAY
+    ======================== */
+    .result-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(26,18,8,0.7);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .result-overlay.show {
+      display: flex;
+      animation: overlayFadeIn 0.3s ease-out;
+    }
+
+    @keyframes overlayFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .result-card {
+      background: var(--paper);
+      border: 3px solid var(--teal);
+      border-radius: 4px;
+      padding: 32px 28px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      box-shadow: 8px 8px 0 var(--teal-dark), 0 0 0 1px rgba(26,107,107,0.3);
+      animation: cardSlideUp 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    @keyframes cardSlideUp {
+      from { transform: translateY(30px) scale(0.95); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .result-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--teal);
+      margin-bottom: 8px;
+    }
+
+    .result-title.lose {
+      color: var(--coral);
+    }
+
+    .result-puzzle-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink-light);
+      margin-bottom: 16px;
+      font-style: italic;
+    }
+
+    .result-stats {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+
+    .stat-box {
+      background: rgba(26,107,107,0.08);
+      border: 2px solid var(--teal);
+      border-radius: 3px;
+      padding: 10px 16px;
+      min-width: 90px;
+    }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--teal);
+      line-height: 1;
+      display: block;
+    }
+
+    .stat-value.yellow {
+      color: var(--yellow-dark);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ink-light);
+      margin-top: 3px;
+      display: block;
+    }
+
+    .emoji-grid-share {
+      font-size: 14px;
+      color: var(--ink-light);
+      margin: 16px 0 8px;
+      background: rgba(0,0,0,0.04);
+      border-radius: 3px;
+      padding: 10px;
+      font-family: monospace;
+      line-height: 1.8;
+      letter-spacing: 2px;
+      word-break: break-all;
+    }
+
+    .result-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: 'Zilla Slab', serif;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 12px 24px;
+      border: 2.5px solid;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+      min-height: 44px;
+      text-decoration: none;
+    }
+
+    .btn:active { transform: scale(0.96); }
+
+    .btn-primary {
+      background: var(--teal);
+      color: var(--paper);
+      border-color: var(--teal-dark);
+      box-shadow: 3px 3px 0 var(--teal-dark);
+    }
+
+    .btn-primary:hover {
+      background: var(--teal-dark);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--teal);
+      border-color: var(--teal);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(26,107,107,0.08);
+    }
+
+    .btn-coral {
+      background: var(--coral);
+      color: var(--paper);
+      border-color: var(--coral-dark);
+      box-shadow: 3px 3px 0 var(--coral-dark);
+    }
+
+    .btn-coral:hover {
+      background: var(--coral-dark);
+    }
+
+    .copied-msg {
+      font-size: 13px;
+      color: var(--teal);
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s;
+      height: 20px;
+    }
+
+    .copied-msg.show { opacity: 1; }
+
+    .countdown-display {
+      font-size: 13px;
+      color: var(--ink-light);
+      margin-top: 16px;
+      font-style: italic;
+    }
+
+    .countdown-time {
+      font-weight: 700;
+      color: var(--teal-dark);
+    }
+
+    /* ========================
+       CONFETTI PARTICLES
+    ======================== */
+    .confetti-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 190;
+      overflow: hidden;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+      animation: confettiFall linear forwards;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        opacity: 1;
+        transform: translateY(-20px) rotate(0deg) scale(1);
+      }
+      80% { opacity: 0.8; }
+      100% {
+        opacity: 0;
+        transform: translateY(105vh) rotate(720deg) scale(0.5);
+      }
+    }
+
+    /* ========================
+       REVEAL SOLUTION
+    ======================== */
+    .solution-preview {
+      margin: 12px 0;
+    }
+
+    .solution-row {
+      display: flex;
+      justify-content: center;
+      gap: 2px;
+      margin-bottom: 2px;
+    }
+
+    .sol-cell {
+      width: 18px;
+      height: 18px;
+      border-radius: 2px;
+      background: rgba(26,107,107,0.12);
+      border: 1px solid rgba(26,107,107,0.2);
+    }
+
+    .sol-cell.filled {
+      background: var(--teal);
+      border-color: var(--teal-dark);
+    }
+
+    /* ========================
+       CONTROLS BAR
+    ======================== */
+    .controls-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .mode-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Zilla Slab', serif;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border: 2px solid;
+      border-radius: 3px;
+      cursor: pointer;
+      min-height: 44px;
+      transition: all 0.15s;
+      background: transparent;
+    }
+
+    .mode-btn:active { transform: scale(0.96); }
+
+    .mode-btn.fill-mode {
+      color: var(--teal);
+      border-color: var(--teal);
+    }
+
+    .mode-btn.fill-mode.active {
+      background: var(--teal);
+      color: var(--paper);
+    }
+
+    .mode-btn.cross-mode {
+      color: var(--coral);
+      border-color: var(--coral);
+    }
+
+    .mode-btn.cross-mode.active {
+      background: var(--coral);
+      color: var(--paper);
+    }
+
+    .mode-indicator {
+      font-size: 12px;
+      color: var(--ink-light);
+      text-align: center;
+      margin-bottom: 10px;
+      font-style: italic;
+    }
+
+    /* ========================
+       LEGEND / HELP
+    ======================== */
+    .help-toggle {
+      background: none;
+      border: none;
+      color: var(--teal);
+      font-family: 'Zilla Slab', serif;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      padding: 4px;
+    }
+
+    .help-box {
+      display: none;
+      background: rgba(26,107,107,0.06);
+      border: 2px solid rgba(26,107,107,0.25);
+      border-radius: 3px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      max-width: 500px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--ink-light);
+    }
+
+    .help-box.show { display: block; }
+
+    /* ========================
+       FOOTER
+    ======================== */
+    footer {
+      text-align: center;
+      padding: 16px 20px;
+      font-size: 12px;
+      color: var(--ink-light);
+      border-top: 2px solid rgba(26,107,107,0.2);
+      background: rgba(26,107,107,0.03);
+      position: relative;
+      z-index: 10;
+      opacity: 0.85;
+    }
+
+    footer a {
+      color: var(--teal);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* ========================
+       RESPONSIVE ADJUSTMENTS
+    ======================== */
+    @media (max-width: 480px) {
+      :root {
+        --cell-size: clamp(26px, 8vw, 38px);
+        --clue-size: clamp(24px, 7vw, 34px);
+      }
+
+      .clue-num {
+        font-size: 11px;
+      }
+
+      header {
+        padding: 18px 16px 12px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      .game-wrapper {
+        padding: 16px 8px 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="corner-blob"></div>
+
+  <!-- Confetti container -->
+  <div class="confetti-container" id="confettiContainer"></div>
+
+  <!-- Win/Loss overlay -->
+  <div class="result-overlay" id="resultOverlay" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+    <div class="result-card">
+      <div class="result-title" id="resultTitle">Solved!</div>
+      <div class="result-puzzle-name" id="resultPuzzleName"></div>
+
+      <div class="result-stats">
+        <div class="stat-box">
+          <span class="stat-value" id="statTime">—</span>
+          <span class="stat-label">Time</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-value yellow" id="statStreak">0</span>
+          <span class="stat-label">Streak 🔥</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-value" id="statBest">0</span>
+          <span class="stat-label">Best</span>
+        </div>
+      </div>
+
+      <div class="emoji-grid-share" id="emojiSharePreview" aria-label="Emoji grid result"></div>
+
+      <div class="copied-msg" id="copiedMsg">Copied to clipboard!</div>
+
+      <div id="solutionReveal" style="display:none;">
+        <p style="font-size:12px;color:var(--ink-light);margin-bottom:6px;">Today's solution:</p>
+        <div class="solution-preview" id="solutionPreview"></div>
+      </div>
+
+      <div class="result-buttons">
+        <button class="btn btn-primary" id="copyResultBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M8 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-2M8 4a2 2 0 012-2h4a2 2 0 012 2M8 4h8"/></svg>
+          Copy Result
+        </button>
+        <button class="btn btn-secondary" id="closeResultBtn">Keep solving</button>
+      </div>
+
+      <div class="countdown-display">
+        Next puzzle in <span class="countdown-time" id="countdownTime">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-eyebrow">Daily Puzzle</div>
+    <h1>Nono<span>Daily</span></h1>
+    <div class="header-meta">
+      <div class="puzzle-num" id="puzzleNum">Puzzle #—</div>
+      <div class="streak-badge">
+        <span>🔥</span>
+        <span id="streakDisplay">0 streak</span>
+      </div>
+      <div class="timer-display" id="timerDisplay">00:00</div>
+    </div>
+  </header>
+
+  <!-- Game Area -->
+  <main class="game-wrapper">
+    <p class="instructions">Fill cells that belong to the picture. Numbers show consecutive filled runs.</p>
+
+    <div class="controls-bar">
+      <button class="mode-btn fill-mode active" id="btnFill" aria-pressed="true">
+        <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect x="1" y="1" width="12" height="12" rx="1.5" fill="currentColor"/></svg>
+        Fill
+      </button>
+      <button class="mode-btn cross-mode" id="btnCross" aria-pressed="false">
+        <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><line x1="2" y1="2" x2="12" y2="12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="12" y1="2" x2="2" y2="12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+        Cross
+      </button>
+      <button class="help-toggle" id="helpToggle" aria-expanded="false">How to play?</button>
+    </div>
+
+    <div class="help-box" id="helpBox" role="region">
+      <strong>How to play:</strong> Fill in the grid so the runs of filled cells in each row/column match the clue numbers.
+      A clue of "3 1" means there are 3 filled cells in a row, then a gap, then 1 filled cell.<br><br>
+      <strong>Desktop:</strong> Left-click to fill, right-click to cross out (eliminated).<br>
+      <strong>Mobile:</strong> Tap to fill/unfill. Use the Cross mode button, then tap to mark cells as eliminated. Long-press also marks a cross.
+    </div>
+
+    <div class="mode-indicator" id="modeIndicator">Mode: Fill ■</div>
+
+    <!-- Nonogram grid rendered by JS -->
+    <div class="nonogram-container" id="nonogramContainer"></div>
+  </main>
+
+  <footer>
+    <span>Built by <a href="https://builtbycrew.online/" target="_blank" rel="noopener">BuiltByCrew</a> — a new app every day</span>
+    &nbsp;·&nbsp;
+    <a href="https://github.com/BuiltByCrew/nonodaily" target="_blank" rel="noopener" aria-label="View source on GitHub">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="vertical-align:middle">
+        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+      </svg>
+    </a>
+    &nbsp;·&nbsp;
+    <a href="https://buymeacoffee.com/builtbycrew" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+  </footer>
+
+<script>
+(function() {
+  'use strict';
+
+  // ============================================================
+  // PUZZLE DATA — 30 hardcoded 10×10 nonograms
+  // ============================================================
+  const PUZZLES = [
+    // 0: Heart
+    {
+      name: 'Heart',
+      grid: [
+        [0,1,1,0,0,0,1,1,0,0],
+        [1,1,1,1,0,1,1,1,1,0],
+        [1,1,1,1,1,1,1,1,1,0],
+        [1,1,1,1,1,1,1,1,1,0],
+        [0,1,1,1,1,1,1,1,0,0],
+        [0,0,1,1,1,1,1,0,0,0],
+        [0,0,0,1,1,1,0,0,0,0],
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 1: Star
+    {
+      name: 'Star',
+      grid: [
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,1,1,1,0,0,0,0],
+        [1,1,1,1,1,1,1,1,1,0],
+        [0,1,1,1,1,1,1,1,0,0],
+        [0,0,1,1,1,1,1,0,0,0],
+        [0,1,1,0,1,0,1,1,0,0],
+        [1,1,0,0,1,0,0,1,1,0],
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 2: Arrow pointing right
+    {
+      name: 'Arrow',
+      grid: [
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,0,1,1,0,0,0,0],
+        [1,1,1,1,1,1,1,0,0,0],
+        [1,1,1,1,1,1,1,1,1,0],
+        [1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,0],
+        [1,1,1,1,1,1,1,0,0,0],
+        [0,0,0,0,1,1,0,0,0,0],
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 3: House
+    {
+      name: 'House',
+      grid: [
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,1,1,1,0,0,0,0],
+        [0,0,1,1,1,1,1,0,0,0],
+        [0,1,1,1,1,1,1,1,0,0],
+        [1,1,1,1,1,1,1,1,1,0],
+        [0,1,1,0,0,0,1,1,0,0],
+        [0,1,1,0,1,0,1,1,0,0],
+        [0,1,1,0,1,0,1,1,0,0],
+        [0,1,1,1,1,1,1,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 4: Smiley face
+    {
+      name: 'Smile',
+      grid: [
+        [0,0,1,1,1,1,1,0,0,0],
+        [0,1,0,0,0,0,0,1,0,0],
+        [1,0,0,1,0,1,0,0,1,0],
+        [1,0,0,1,0,1,0,0,1,0],
+        [1,0,0,0,0,0,0,0,1,0],
+        [1,0,1,0,0,0,1,0,1,0],
+        [1,0,0,1,1,1,0,0,1,0],
+        [0,1,0,0,0,0,0,1,0,0],
+        [0,0,1,1,1,1,1,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 5: Letter "B"
+    {
+      name: 'Letter B',
+      grid: [
+        [1,1,1,1,0,0,0,0,0,0],
+        [1,0,0,0,1,0,0,0,0,0],
+        [1,0,0,0,1,0,0,0,0,0],
+        [1,1,1,1,0,0,0,0,0,0],
+        [1,0,0,0,1,0,0,0,0,0],
+        [1,0,0,0,1,0,0,0,0,0],
+        [1,0,0,0,1,0,0,0,0,0],
+        [1,1,1,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 6: Diamond
+    {
+      name: 'Diamond',
+      grid: [
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,1,1,1,0,0,0,0],
+        [0,0,1,1,1,1,1,0,0,0],
+        [0,1,1,1,1,1,1,1,0,0],
+        [1,1,1,1,1,1,1,1,1,0],
+        [0,1,1,1,1,1,1,1,0,0],
+        [0,0,1,1,1,1,1,0,0,0],
+        [0,0,0,1,1,1,0,0,0,0],
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 7: Tree / Christmas tree
+    {
+      name: 'Tree',
+      grid: [
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,1,1,1,0,0,0,0],
+        [0,0,1,1,1,1,1,0,0,0],
+        [0,1,1,1,1,1,1,1,0,0],
+        [1,1,1,1,1,1,1,1,1,0],
+        [0,0,0,1,1,1,0,0,0,0],
+        [0,0,0,1,1,1,0,0,0,0],
+        [0,0,0,1,1,1,0,0,0,0],
+        [0,1,1,1,1,1,1,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 8: Fish
+    {
+      name: 'Fish',
+      grid: [
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,1,0,0,0,0,0,0,0],
+        [0,1,1,1,1,1,1,0,0,0],
+        [1,1,1,1,1,1,1,1,1,0],
+        [1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,0],
+        [0,1,1,1,1,1,1,0,0,0],
+        [0,0,1,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 9: Anchor
+    {
+      name: 'Anchor',
+      grid: [
+        [0,0,0,1,1,1,0,0,0,0],
+        [0,0,1,0,0,0,1,0,0,0],
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,1,1,1,1,1,1,1,0,0],
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,1,0,0,1,0,0,1,0,0],
+        [0,0,1,1,1,1,1,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 10: Moon crescent
+    {
+      name: 'Moon',
+      grid: [
+        [0,0,0,1,1,1,0,0,0,0],
+        [0,0,1,1,1,1,1,0,0,0],
+        [0,1,1,1,1,0,0,0,0,0],
+        [1,1,1,1,0,0,0,0,0,0],
+        [1,1,1,0,0,0,0,0,0,0],
+        [1,1,1,0,0,0,0,0,0,0],
+        [0,1,1,1,1,0,0,0,0,0],
+        [0,0,1,1,1,1,1,0,0,0],
+        [0,0,0,1,1,1,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 11: Cup / Mug
+    {
+      name: 'Mug',
+      grid: [
+        [0,0,0,0,0,0,0,0,0,0],
+        [1,1,1,1,1,1,1,0,0,0],
+        [1,0,0,0,0,0,1,1,0,0],
+        [1,0,0,0,0,0,1,0,1,0],
+        [1,0,0,0,0,0,1,0,1,0],
+        [1,0,0,0,0,0,1,1,0,0],
+        [1,0,0,0,0,0,1,0,0,0],
+        [0,1,1,1,1,1,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 12: Umbrella
+    {
+      name: 'Umbrella',
+      grid: [
+        [0,0,1,1,1,1,1,0,0,0],
+        [0,1,1,1,1,1,1,1,0,0],
+        [1,1,0,1,1,1,0,1,1,0],
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,0,1,1,0,0,0,0],
+        [0,0,0,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 13: Clock
+    {
+      name: 'Clock',
+      grid: [
+        [0,0,1,1,1,1,1,0,0,0],
+        [0,1,1,0,0,0,1,1,0,0],
+        [1,1,0,0,1,0,0,1,1,0],
+        [1,0,0,0,1,0,0,0,1,0],
+        [1,0,1,1,1,1,0,0,1,0],
+        [1,0,0,0,0,0,0,0,1,0],
+        [0,1,1,0,0,0,1,1,0,0],
+        [0,0,1,1,1,1,1,0,0,0],
+        [0,1,1,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 14: Key
+    {
+      name: 'Key',
+      grid: [
+        [0,0,1,1,0,0,0,0,0,0],
+        [0,1,0,0,1,0,0,0,0,0],
+        [0,1,0,0,1,0,0,0,0,0],
+        [0,0,1,1,0,0,0,0,0,0],
+        [0,0,0,1,0,0,0,0,0,0],
+        [0,0,1,1,1,1,1,1,1,0],
+        [0,0,0,1,0,0,0,0,0,0],
+        [0,0,0,1,1,0,0,0,0,0],
+        [0,0,0,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 15: Butterfly
+    {
+      name: 'Butterfly',
+      grid: [
+        [1,1,0,0,0,0,0,1,1,0],
+        [1,1,1,0,0,0,1,1,1,0],
+        [0,1,1,1,0,1,1,1,0,0],
+        [0,0,1,1,1,1,1,0,0,0],
+        [0,0,0,1,1,1,0,0,0,0],
+        [0,0,1,1,1,1,1,0,0,0],
+        [0,1,1,1,0,1,1,1,0,0],
+        [1,1,1,0,0,0,1,1,1,0],
+        [1,1,0,0,0,0,0,1,1,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 16: Leaf
+    {
+      name: 'Leaf',
+      grid: [
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,1,1,1,0,0,0,0],
+        [0,0,1,1,1,1,1,0,0,0],
+        [0,1,1,1,1,1,1,1,0,0],
+        [0,0,1,1,1,1,1,1,0,0],
+        [0,0,0,1,1,1,1,0,0,0],
+        [0,0,0,0,1,1,0,0,0,0],
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 17: Rocket
+    {
+      name: 'Rocket',
+      grid: [
+        [0,0,0,1,1,0,0,0,0,0],
+        [0,0,1,1,1,1,0,0,0,0],
+        [0,0,1,1,1,1,0,0,0,0],
+        [0,0,1,1,1,1,0,0,0,0],
+        [0,1,1,1,1,1,1,0,0,0],
+        [0,1,1,1,1,1,1,0,0,0],
+        [0,0,1,1,1,1,0,0,0,0],
+        [0,1,0,1,1,0,1,0,0,0],
+        [1,0,0,1,1,0,0,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 18: Snowflake
+    {
+      name: 'Snowflake',
+      grid: [
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,1,0,0,1,0,0,1,0,0],
+        [0,0,1,0,1,0,1,0,0,0],
+        [0,0,0,1,1,1,0,0,0,0],
+        [1,1,1,1,1,1,1,1,1,0],
+        [0,0,0,1,1,1,0,0,0,0],
+        [0,0,1,0,1,0,1,0,0,0],
+        [0,1,0,0,1,0,0,1,0,0],
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 19: Lightning bolt
+    {
+      name: 'Lightning',
+      grid: [
+        [0,0,0,1,1,1,1,0,0,0],
+        [0,0,1,1,1,1,0,0,0,0],
+        [0,0,1,1,1,0,0,0,0,0],
+        [0,1,1,1,0,0,0,0,0,0],
+        [0,1,1,1,1,1,1,1,0,0],
+        [0,0,0,1,1,1,1,1,0,0],
+        [0,0,0,0,1,1,1,0,0,0],
+        [0,0,0,0,0,1,1,0,0,0],
+        [0,0,0,0,0,0,1,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 20: Envelope
+    {
+      name: 'Envelope',
+      grid: [
+        [1,1,1,1,1,1,1,1,1,0],
+        [1,1,0,0,0,0,0,1,1,0],
+        [1,0,1,0,0,0,1,0,1,0],
+        [1,0,0,1,0,1,0,0,1,0],
+        [1,0,0,0,1,0,0,0,1,0],
+        [1,0,0,0,1,0,0,0,1,0],
+        [1,0,0,1,0,1,0,0,1,0],
+        [1,0,1,0,0,0,1,0,1,0],
+        [1,1,1,1,1,1,1,1,1,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 21: Crown
+    {
+      name: 'Crown',
+      grid: [
+        [1,0,0,0,1,0,0,0,1,0],
+        [1,0,0,1,1,1,0,0,1,0],
+        [1,0,1,1,1,1,1,0,1,0],
+        [1,1,1,1,1,1,1,1,1,0],
+        [1,1,1,1,1,1,1,1,1,0],
+        [1,1,1,1,1,1,1,1,1,0],
+        [1,0,0,0,0,0,0,0,1,0],
+        [1,1,1,1,1,1,1,1,1,0],
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 22: Pac-man style
+    {
+      name: 'Pac-Man',
+      grid: [
+        [0,0,1,1,1,1,0,0,0,0],
+        [0,1,1,1,1,1,1,0,0,0],
+        [1,1,1,1,1,0,0,0,0,0],
+        [1,1,1,1,0,0,0,0,0,0],
+        [1,1,1,0,0,0,0,0,0,0],
+        [1,1,1,1,0,0,0,0,0,0],
+        [1,1,1,1,1,0,0,0,0,0],
+        [0,1,1,1,1,1,1,0,0,0],
+        [0,0,1,1,1,1,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 23: Camera
+    {
+      name: 'Camera',
+      grid: [
+        [0,0,1,1,0,0,0,0,0,0],
+        [1,1,1,1,1,1,1,1,1,0],
+        [1,0,0,0,0,0,0,0,1,0],
+        [1,0,0,1,1,1,0,0,1,0],
+        [1,0,1,1,1,1,1,0,1,0],
+        [1,0,1,1,1,1,1,0,1,0],
+        [1,0,0,1,1,1,0,0,1,0],
+        [1,0,0,0,0,0,0,0,1,0],
+        [1,1,1,1,1,1,1,1,1,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 24: Flower
+    {
+      name: 'Flower',
+      grid: [
+        [0,0,0,1,0,1,0,0,0,0],
+        [0,0,1,1,1,1,1,0,0,0],
+        [0,1,1,1,1,1,1,1,0,0],
+        [1,1,1,0,1,0,1,1,1,0],
+        [0,1,1,1,1,1,1,1,0,0],
+        [1,1,1,0,1,0,1,1,1,0],
+        [0,1,1,1,1,1,1,1,0,0],
+        [0,0,1,1,1,1,1,0,0,0],
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,0,1,0,0,0,0,0],
+      ]
+    },
+    // 25: Cross / Plus
+    {
+      name: 'Cross',
+      grid: [
+        [0,0,0,1,1,1,0,0,0,0],
+        [0,0,0,1,1,1,0,0,0,0],
+        [0,0,0,1,1,1,0,0,0,0],
+        [1,1,1,1,1,1,1,1,1,0],
+        [1,1,1,1,1,1,1,1,1,0],
+        [1,1,1,1,1,1,1,1,1,0],
+        [0,0,0,1,1,1,0,0,0,0],
+        [0,0,0,1,1,1,0,0,0,0],
+        [0,0,0,1,1,1,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 26: Letter "A"
+    {
+      name: 'Letter A',
+      grid: [
+        [0,0,0,1,1,0,0,0,0,0],
+        [0,0,1,0,0,1,0,0,0,0],
+        [0,0,1,0,0,1,0,0,0,0],
+        [0,1,1,1,1,1,1,0,0,0],
+        [0,1,0,0,0,0,1,0,0,0],
+        [0,1,0,0,0,0,1,0,0,0],
+        [1,1,0,0,0,0,1,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 27: Bear face
+    {
+      name: 'Bear',
+      grid: [
+        [1,1,0,0,0,0,0,1,1,0],
+        [1,1,0,0,0,0,0,1,1,0],
+        [0,1,1,1,1,1,1,1,0,0],
+        [1,1,0,1,0,1,0,1,1,0],
+        [1,1,0,0,0,0,0,1,1,0],
+        [1,1,0,1,0,0,1,1,1,0],
+        [1,1,0,0,1,1,0,1,1,0],
+        [0,1,1,1,1,1,1,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 28: Boat / Sailboat
+    {
+      name: 'Sailboat',
+      grid: [
+        [0,0,0,0,1,0,0,0,0,0],
+        [0,0,0,1,1,0,0,0,0,0],
+        [0,0,1,1,1,0,0,0,0,0],
+        [0,1,1,1,1,0,0,0,0,0],
+        [1,1,1,1,1,0,0,0,0,0],
+        [0,0,0,1,1,1,1,1,1,0],
+        [0,0,0,0,1,0,0,0,0,0],
+        [1,1,1,1,1,1,1,1,1,0],
+        [0,1,1,1,1,1,1,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+    // 29: Number 7
+    {
+      name: 'Number 7',
+      grid: [
+        [0,1,1,1,1,1,1,1,0,0],
+        [0,1,1,1,1,1,1,1,0,0],
+        [0,0,0,0,0,0,1,1,0,0],
+        [0,0,0,0,0,1,1,0,0,0],
+        [0,0,0,0,1,1,0,0,0,0],
+        [0,0,0,0,1,1,0,0,0,0],
+        [0,0,0,1,1,0,0,0,0,0],
+        [0,0,0,1,1,0,0,0,0,0],
+        [0,0,0,1,1,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+      ]
+    },
+  ];
+
+  // ============================================================
+  // UTILITY: compute clues from grid
+  // ============================================================
+  function computeRowClues(grid) {
+    return grid.map(row => {
+      const runs = [];
+      let count = 0;
+      for (const cell of row) {
+        if (cell === 1) { count++; }
+        else if (count > 0) { runs.push(count); count = 0; }
+      }
+      if (count > 0) runs.push(count);
+      return runs.length > 0 ? runs : [0];
+    });
+  }
+
+  function computeColClues(grid) {
+    const cols = [];
+    for (let c = 0; c < 10; c++) {
+      const runs = [];
+      let count = 0;
+      for (let r = 0; r < 10; r++) {
+        if (grid[r][c] === 1) { count++; }
+        else if (count > 0) { runs.push(count); count = 0; }
+      }
+      if (count > 0) runs.push(count);
+      cols.push(runs.length > 0 ? runs : [0]);
+    }
+    return cols;
+  }
+
+  // ============================================================
+  // DATE HASHING & PUZZLE SELECTION
+  // ============================================================
+  function hashDateString(s) {
+    let h = 0;
+    for (let i = 0; i < s.length; i++) {
+      h = ((h << 5) - h) + s.charCodeAt(i);
+      h |= 0;
+    }
+    return Math.abs(h);
+  }
+
+  const todayISO = new Date().toISOString().slice(0, 10);
+  const puzzleIndex = hashDateString(todayISO) % PUZZLES.length;
+  const currentPuzzle = PUZZLES[puzzleIndex];
+
+  // Puzzle number: days since 2026-01-01
+  const epoch = new Date('2026-01-01T00:00:00Z');
+  const today = new Date(todayISO + 'T00:00:00Z');
+  const puzzleNumber = Math.max(1, Math.floor((today - epoch) / (1000 * 60 * 60 * 24)) + 1);
+
+  const rowClues = computeRowClues(currentPuzzle.grid);
+  const colClues = computeColClues(currentPuzzle.grid);
+
+  // ============================================================
+  // LOCAL STORAGE
+  // ============================================================
+  const STATE_KEY = `bycrew_nonodaily_${todayISO}`;
+  const STREAK_KEY = 'bycrew_nonodaily_streak';
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STATE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* ignore */ }
+    return null;
+  }
+
+  function saveState(state) {
+    try {
+      localStorage.setItem(STATE_KEY, JSON.stringify(state));
+    } catch (e) { /* ignore */ }
+  }
+
+  function loadStreak() {
+    try {
+      const raw = localStorage.getItem(STREAK_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* ignore */ }
+    return { currentStreak: 0, bestStreak: 0, lastWonDate: null };
+  }
+
+  function saveStreak(streak) {
+    try {
+      localStorage.setItem(STREAK_KEY, JSON.stringify(streak));
+    } catch (e) { /* ignore */ }
+  }
+
+  function updateStreakOnWin() {
+    const streak = loadStreak();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yIso = yesterday.toISOString().slice(0, 10);
+
+    if (streak.lastWonDate === yIso || streak.lastWonDate === todayISO) {
+      if (streak.lastWonDate !== todayISO) {
+        streak.currentStreak += 1;
+      }
+    } else {
+      streak.currentStreak = 1;
+    }
+
+    streak.lastWonDate = todayISO;
+    streak.bestStreak = Math.max(streak.bestStreak, streak.currentStreak);
+    saveStreak(streak);
+    return streak;
+  }
+
+  // ============================================================
+  // GAME STATE
+  // ============================================================
+  // cells[r][c]: 0=empty, 1=filled, 2=crossed
+  let cells = Array.from({ length: 10 }, () => new Array(10).fill(0));
+  let gameFinished = false;
+  let gameWon = false;
+  let fillMode = true; // true=fill, false=cross
+  let timerSeconds = 0;
+  let timerInterval = null;
+  let timerStarted = false;
+  let mouseDown = false;
+  let mouseAction = null; // 'fill' | 'unfill' | 'cross' | 'uncross'
+
+  // ============================================================
+  // RESTORE STATE
+  // ============================================================
+  const savedState = loadState();
+  if (savedState) {
+    cells = savedState.cells || cells;
+    gameFinished = savedState.finished || false;
+    gameWon = savedState.won || false;
+    timerSeconds = savedState.timerSeconds || 0;
+  }
+
+  // ============================================================
+  // TIMER
+  // ============================================================
+  function formatTime(s) {
+    const m = Math.floor(s / 60).toString().padStart(2, '0');
+    const sec = (s % 60).toString().padStart(2, '0');
+    return `${m}:${sec}`;
+  }
+
+  const timerEl = document.getElementById('timerDisplay');
+
+  function startTimer() {
+    if (timerInterval || gameFinished) return;
+    timerStarted = true;
+    timerInterval = setInterval(() => {
+      timerSeconds++;
+      timerEl.textContent = formatTime(timerSeconds);
+      persistState();
+    }, 1000);
+  }
+
+  function stopTimer() {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+  }
+
+  function persistState() {
+    saveState({
+      cells,
+      finished: gameFinished,
+      won: gameWon,
+      timerSeconds,
+    });
+  }
+
+  // ============================================================
+  // RENDER PUZZLE NUMBER & STREAK
+  // ============================================================
+  document.getElementById('puzzleNum').textContent = `Puzzle #${puzzleNumber}`;
+  timerEl.textContent = formatTime(timerSeconds);
+
+  const streakData = loadStreak();
+  document.getElementById('streakDisplay').textContent = `${streakData.currentStreak} streak`;
+
+  // ============================================================
+  // BUILD THE NONOGRAM TABLE
+  // ============================================================
+  const container = document.getElementById('nonogramContainer');
+
+  // Max clue rows needed for column headers
+  const maxColClueRows = Math.max(...colClues.map(c => c.length));
+
+  const table = document.createElement('table');
+  table.className = 'nonogram-table';
+  table.setAttribute('role', 'grid');
+  table.setAttribute('aria-label', `Nonogram puzzle: ${currentPuzzle.name}`);
+
+  // --- Column clue header rows ---
+  for (let clueRow = 0; clueRow < maxColClueRows; clueRow++) {
+    const tr = document.createElement('tr');
+
+    // corner cell (only on first clue row spans all)
+    if (clueRow === 0) {
+      const cornerTd = document.createElement('td');
+      cornerTd.className = 'corner-cell';
+      cornerTd.rowSpan = maxColClueRows;
+      tr.appendChild(cornerTd);
+    }
+
+    for (let c = 0; c < 10; c++) {
+      const td = document.createElement('td');
+      td.className = 'col-clue-cell';
+      td.id = `col-clue-${c}`;
+
+      const clues = colClues[c];
+      // offset so shortest clues are at the bottom
+      const offset = maxColClueRows - clues.length;
+      if (clueRow >= offset) {
+        const span = document.createElement('span');
+        span.className = 'clue-num';
+        span.textContent = clues[clueRow - offset];
+        td.appendChild(span);
+      }
+
+      tr.appendChild(td);
+    }
+
+    table.appendChild(tr);
+  }
+
+  // Thick divider row between clues and grid
+  const dividerTr = document.createElement('tr');
+  dividerTr.className = 'grid-divider-row';
+  for (let i = 0; i < 11; i++) {
+    const td = document.createElement('td');
+    dividerTr.appendChild(td);
+  }
+  table.appendChild(dividerTr);
+
+  // --- Game rows ---
+  const cellElements = [];
+  for (let r = 0; r < 10; r++) {
+    const tr = document.createElement('tr');
+    tr.className = 'game-row';
+    tr.style.animationDelay = `${r * 50}ms`;
+    cellElements[r] = [];
+
+    // Row clue
+    const rowClueTd = document.createElement('td');
+    rowClueTd.className = 'row-clue-cell';
+    rowClueTd.id = `row-clue-${r}`;
+    const rowClueInner = document.createElement('div');
+    rowClueInner.className = 'row-clue-inner';
+    rowClues[r].forEach(n => {
+      const span = document.createElement('span');
+      span.className = 'clue-num';
+      span.textContent = n;
+      rowClueInner.appendChild(span);
+    });
+    rowClueTd.appendChild(rowClueInner);
+    tr.appendChild(rowClueTd);
+
+    for (let c = 0; c < 10; c++) {
+      const td = document.createElement('td');
+      td.className = 'game-cell';
+      td.setAttribute('role', 'gridcell');
+      td.setAttribute('aria-label', `Row ${r + 1}, Col ${c + 1}`);
+      td.dataset.r = r;
+      td.dataset.c = c;
+
+      // Thicker border every 5 cells
+      if (c === 4) td.classList.add('border-right');
+      if (r === 4) td.classList.add('border-bottom');
+
+      cellElements[r][c] = td;
+      tr.appendChild(td);
+    }
+
+    table.appendChild(tr);
+  }
+
+  container.appendChild(table);
+
+  // ============================================================
+  // RENDER CELL STATES
+  // ============================================================
+  function renderCells() {
+    for (let r = 0; r < 10; r++) {
+      for (let c = 0; c < 10; c++) {
+        const td = cellElements[r][c];
+        td.classList.remove('filled', 'crossed', 'crossed-anim');
+        if (cells[r][c] === 1) td.classList.add('filled');
+        else if (cells[r][c] === 2) td.classList.add('crossed');
+      }
+    }
+    updateClueHighlights();
+  }
+
+  // ============================================================
+  // CHECK ROW / COL SOLVED
+  // ============================================================
+  function getRowRuns(r) {
+    const runs = [];
+    let count = 0;
+    for (let c = 0; c < 10; c++) {
+      if (cells[r][c] === 1) { count++; }
+      else if (count > 0) { runs.push(count); count = 0; }
+    }
+    if (count > 0) runs.push(count);
+    return runs.length > 0 ? runs : [0];
+  }
+
+  function getColRuns(c) {
+    const runs = [];
+    let count = 0;
+    for (let r = 0; r < 10; r++) {
+      if (cells[r][c] === 1) { count++; }
+      else if (count > 0) { runs.push(count); count = 0; }
+    }
+    if (count > 0) runs.push(count);
+    return runs.length > 0 ? runs : [0];
+  }
+
+  function arraysEqual(a, b) {
+    if (a.length !== b.length) return false;
+    return a.every((v, i) => v === b[i]);
+  }
+
+  function isRowSolved(r) {
+    return arraysEqual(getRowRuns(r), rowClues[r]);
+  }
+
+  function isColSolved(c) {
+    return arraysEqual(getColRuns(c), colClues[c]);
+  }
+
+  function updateClueHighlights() {
+    for (let r = 0; r < 10; r++) {
+      const td = document.getElementById(`row-clue-${r}`);
+      if (!td) continue;
+      if (isRowSolved(r)) td.classList.add('solved');
+      else td.classList.remove('solved');
+    }
+    for (let c = 0; c < 10; c++) {
+      const td = document.getElementById(`col-clue-${c}`);
+      if (!td) continue;
+      if (isColSolved(c)) td.classList.add('solved');
+      else td.classList.remove('solved');
+    }
+  }
+
+  // ============================================================
+  // CHECK WIN
+  // ============================================================
+  function checkWin() {
+    for (let r = 0; r < 10; r++) {
+      for (let c = 0; c < 10; c++) {
+        const expected = currentPuzzle.grid[r][c];
+        if (expected === 1 && cells[r][c] !== 1) return false;
+        if (expected === 0 && cells[r][c] === 1) return false;
+      }
+    }
+    return true;
+  }
+
+  // ============================================================
+  // CELL INTERACTION
+  // ============================================================
+  function applyAction(r, c, action) {
+    if (gameFinished) return;
+    if (!timerStarted) startTimer();
+
+    const prev = cells[r][c];
+    if (action === 'fill') {
+      cells[r][c] = prev === 1 ? 0 : 1;
+    } else if (action === 'cross') {
+      cells[r][c] = prev === 2 ? 0 : 2;
+    } else if (action === 'unfill') {
+      if (cells[r][c] === 1) cells[r][c] = 0;
+    } else if (action === 'uncross') {
+      if (cells[r][c] === 2) cells[r][c] = 0;
+    }
+
+    const td = cellElements[r][c];
+    td.classList.remove('filled', 'crossed', 'crossed-anim');
+
+    if (cells[r][c] === 1) {
+      td.classList.add('filled');
+    } else if (cells[r][c] === 2) {
+      td.classList.add('crossed', 'crossed-anim');
+      setTimeout(() => td.classList.remove('crossed-anim'), 250);
+    }
+
+    updateClueHighlights();
+    persistState();
+
+    if (checkWin()) {
+      triggerWin();
+    }
+  }
+
+  function getActionForCell(r, c, primaryAction) {
+    const curr = cells[r][c];
+    if (primaryAction === 'fill') {
+      return curr === 1 ? 'unfill' : 'fill';
+    } else {
+      return curr === 2 ? 'uncross' : 'cross';
+    }
+  }
+
+  // ============================================================
+  // MOUSE EVENTS (desktop)
+  // ============================================================
+  table.addEventListener('mousedown', (e) => {
+    if (e.target.classList.contains('game-cell')) {
+      e.preventDefault();
+      const r = parseInt(e.target.dataset.r);
+      const c = parseInt(e.target.dataset.c);
+      const primary = e.button === 2 ? 'cross' : (fillMode ? 'fill' : 'cross');
+      mouseAction = getActionForCell(r, c, primary);
+      mouseDown = true;
+      applyAction(r, c, mouseAction);
+    }
+  });
+
+  table.addEventListener('mousemove', (e) => {
+    if (!mouseDown) return;
+    if (e.target.classList.contains('game-cell')) {
+      const r = parseInt(e.target.dataset.r);
+      const c = parseInt(e.target.dataset.c);
+      if (mouseAction === 'fill' && cells[r][c] !== 1) applyAction(r, c, 'fill');
+      else if (mouseAction === 'unfill' && cells[r][c] === 1) applyAction(r, c, 'unfill');
+      else if (mouseAction === 'cross' && cells[r][c] !== 2) applyAction(r, c, 'cross');
+      else if (mouseAction === 'uncross' && cells[r][c] === 2) applyAction(r, c, 'uncross');
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    mouseDown = false;
+    mouseAction = null;
+  });
+
+  table.addEventListener('contextmenu', (e) => e.preventDefault());
+
+  // ============================================================
+  // ROW/COL HOVER HIGHLIGHT
+  // ============================================================
+  table.addEventListener('mouseover', (e) => {
+    if (!e.target.classList.contains('game-cell')) return;
+    const r = parseInt(e.target.dataset.r);
+    const c = parseInt(e.target.dataset.c);
+    document.querySelectorAll('.game-cell.row-highlight, .game-cell.col-highlight').forEach(el => {
+      el.classList.remove('row-highlight', 'col-highlight');
+    });
+    for (let i = 0; i < 10; i++) {
+      cellElements[r][i].classList.add('row-highlight');
+      cellElements[i][c].classList.add('col-highlight');
+    }
+  });
+
+  table.addEventListener('mouseleave', () => {
+    document.querySelectorAll('.game-cell.row-highlight, .game-cell.col-highlight').forEach(el => {
+      el.classList.remove('row-highlight', 'col-highlight');
+    });
+  });
+
+  // ============================================================
+  // TOUCH EVENTS (mobile)
+  // ============================================================
+  let touchStartTime = 0;
+  let touchCell = null;
+  let touchMoved = false;
+  let longPressTimer = null;
+
+  table.addEventListener('touchstart', (e) => {
+    if (!e.target.classList.contains('game-cell')) return;
+    touchStartTime = Date.now();
+    touchMoved = false;
+    touchCell = e.target;
+
+    longPressTimer = setTimeout(() => {
+      if (!touchMoved && touchCell) {
+        const r = parseInt(touchCell.dataset.r);
+        const c = parseInt(touchCell.dataset.c);
+        applyAction(r, c, getActionForCell(r, c, 'cross'));
+        touchCell = null;
+      }
+    }, 500);
+  }, { passive: true });
+
+  table.addEventListener('touchmove', () => {
+    touchMoved = true;
+    clearTimeout(longPressTimer);
+  }, { passive: true });
+
+  table.addEventListener('touchend', (e) => {
+    clearTimeout(longPressTimer);
+    if (touchMoved || !touchCell) return;
+    const elapsed = Date.now() - touchStartTime;
+    if (elapsed >= 500) return; // handled by long press
+
+    e.preventDefault();
+    const r = parseInt(touchCell.dataset.r);
+    const c = parseInt(touchCell.dataset.c);
+    const primary = fillMode ? 'fill' : 'cross';
+    applyAction(r, c, getActionForCell(r, c, primary));
+    touchCell = null;
+  });
+
+  // ============================================================
+  // KEYBOARD NAVIGATION FOR GRID CELLS
+  // ============================================================
+  // Add tabindex to first cell so grid is reachable
+  let focusedRow = 0, focusedCol = 0;
+  function setFocusedCell(r, c) {
+    // Remove tabindex from old focused cell
+    if (cellElements[focusedRow]?.[focusedCol]) {
+      cellElements[focusedRow][focusedCol].setAttribute('tabindex', '-1');
+    }
+    focusedRow = Math.max(0, Math.min(9, r));
+    focusedCol = Math.max(0, Math.min(9, c));
+    const cell = cellElements[focusedRow][focusedCol];
+    cell.setAttribute('tabindex', '0');
+    cell.focus();
+  }
+  // Initialize: only first cell is tabbable
+  for (let r = 0; r < 10; r++) {
+    for (let c = 0; c < 10; c++) {
+      cellElements[r][c].setAttribute('tabindex', r === 0 && c === 0 ? '0' : '-1');
+    }
+  }
+  table.addEventListener('keydown', (e) => {
+    if (!e.target.classList.contains('game-cell')) return;
+    const r = parseInt(e.target.dataset.r);
+    const c = parseInt(e.target.dataset.c);
+    switch (e.key) {
+      case 'ArrowUp':    e.preventDefault(); setFocusedCell(r - 1, c); break;
+      case 'ArrowDown':  e.preventDefault(); setFocusedCell(r + 1, c); break;
+      case 'ArrowLeft':  e.preventDefault(); setFocusedCell(r, c - 1); break;
+      case 'ArrowRight': e.preventDefault(); setFocusedCell(r, c + 1); break;
+      case 'Enter':
+      case ' ':
+        e.preventDefault();
+        applyAction(r, c, getActionForCell(r, c, fillMode ? 'fill' : 'cross'));
+        break;
+      case 'x':
+      case 'X':
+        applyAction(r, c, getActionForCell(r, c, 'cross'));
+        break;
+    }
+  });
+  table.addEventListener('focus', (e) => {
+    if (e.target.classList.contains('game-cell')) {
+      const r = parseInt(e.target.dataset.r);
+      const c = parseInt(e.target.dataset.c);
+      focusedRow = r; focusedCol = c;
+    }
+  }, true);
+
+  // ============================================================
+  // MODE BUTTONS
+  // ============================================================
+  const btnFill = document.getElementById('btnFill');
+  const btnCross = document.getElementById('btnCross');
+  const modeIndicator = document.getElementById('modeIndicator');
+
+  function setMode(isFill) {
+    fillMode = isFill;
+    btnFill.classList.toggle('active', isFill);
+    btnCross.classList.toggle('active', !isFill);
+    btnFill.setAttribute('aria-pressed', isFill ? 'true' : 'false');
+    btnCross.setAttribute('aria-pressed', isFill ? 'false' : 'true');
+    modeIndicator.textContent = isFill ? 'Mode: Fill ■' : 'Mode: Cross ✕';
+  }
+
+  btnFill.addEventListener('click', () => setMode(true));
+  btnCross.addEventListener('click', () => setMode(false));
+
+  // ============================================================
+  // HELP TOGGLE
+  // ============================================================
+  const helpToggle = document.getElementById('helpToggle');
+  const helpBox = document.getElementById('helpBox');
+
+  helpToggle.addEventListener('click', () => {
+    const isOpen = helpBox.classList.toggle('show');
+    helpToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
+  // ============================================================
+  // WIN HANDLING
+  // ============================================================
+  function buildEmojiGrid() {
+    const lines = [`Nonogram #${puzzleNumber} ✅`];
+    for (let r = 0; r < 10; r++) {
+      let row = '';
+      for (let c = 0; c < 10; c++) {
+        row += cells[r][c] === 1 ? '🟩' : '⬜';
+      }
+      lines.push(row);
+    }
+    lines.push(`⏱ ${formatTime(timerSeconds)} · nonodaily.builtbycrew.online`);
+    return lines.join('\n');
+  }
+
+  function spawnConfetti() {
+    const container = document.getElementById('confettiContainer');
+    const colors = ['#1A6B6B', '#E85C3A', '#F2C94C', '#2a8a8a', '#c44828'];
+    for (let i = 0; i < 60; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      const left = Math.random() * 100;
+      const dur = 1.5 + Math.random() * 2;
+      const delay = Math.random() * 0.8;
+      const isRect = Math.random() > 0.5;
+      piece.style.cssText = `
+        left: ${left}%;
+        background: ${color};
+        width: ${isRect ? 8 : 10}px;
+        height: ${isRect ? 14 : 10}px;
+        border-radius: ${isRect ? '2px' : '50%'};
+        animation-duration: ${dur}s;
+        animation-delay: ${delay}s;
+      `;
+      container.appendChild(piece);
+      setTimeout(() => piece.remove(), (dur + delay) * 1000 + 200);
+    }
+  }
+
+  function buildSolutionPreview(container) {
+    container.innerHTML = '';
+    for (let r = 0; r < 10; r++) {
+      const rowEl = document.createElement('div');
+      rowEl.className = 'solution-row';
+      for (let c = 0; c < 10; c++) {
+        const cell = document.createElement('div');
+        cell.className = 'sol-cell' + (currentPuzzle.grid[r][c] === 1 ? ' filled' : '');
+        rowEl.appendChild(cell);
+      }
+      container.appendChild(rowEl);
+    }
+  }
+
+  function startCountdown() {
+    const countdownEl = document.getElementById('countdownTime');
+    function update() {
+      const now = new Date();
+      const midnight = new Date();
+      midnight.setHours(24, 0, 0, 0);
+      const diff = Math.max(0, Math.floor((midnight - now) / 1000));
+      const h = Math.floor(diff / 3600).toString().padStart(2, '0');
+      const m = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
+      const s = (diff % 60).toString().padStart(2, '0');
+      countdownEl.textContent = `${h}:${m}:${s}`;
+    }
+    update();
+    setInterval(update, 1000);
+  }
+
+  function triggerWin() {
+    if (gameFinished) return;
+    gameFinished = true;
+    gameWon = true;
+    stopTimer();
+    persistState();
+
+    const streak = updateStreakOnWin();
+
+    document.getElementById('streakDisplay').textContent = `${streak.currentStreak} streak`;
+
+    spawnConfetti();
+
+    setTimeout(() => {
+      const overlay = document.getElementById('resultOverlay');
+      document.getElementById('resultTitle').textContent = 'Solved! 🎉';
+      document.getElementById('resultTitle').classList.remove('lose');
+      document.getElementById('resultPuzzleName').textContent = `"${currentPuzzle.name}" · Puzzle #${puzzleNumber}`;
+      document.getElementById('statTime').textContent = formatTime(timerSeconds);
+      document.getElementById('statStreak').textContent = streak.currentStreak;
+      document.getElementById('statBest').textContent = streak.bestStreak;
+
+      const emojiText = buildEmojiGrid();
+      document.getElementById('emojiSharePreview').textContent = emojiText;
+
+      document.getElementById('solutionReveal').style.display = 'none';
+
+      overlay.classList.add('show');
+      startCountdown();
+    }, 600);
+  }
+
+  // ============================================================
+  // COPY RESULT
+  // ============================================================
+  document.getElementById('copyResultBtn').addEventListener('click', async () => {
+    const text = buildEmojiGrid();
+    const msgEl = document.getElementById('copiedMsg');
+    try {
+      await navigator.clipboard.writeText(text);
+      msgEl.textContent = 'Copied to clipboard!';
+    } catch (e) {
+      // Fallback
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      msgEl.textContent = 'Copied!';
+    }
+    msgEl.classList.add('show');
+    setTimeout(() => msgEl.classList.remove('show'), 2500);
+  });
+
+  // ============================================================
+  // CLOSE RESULT (keep playing / view solution)
+  // ============================================================
+  document.getElementById('closeResultBtn').addEventListener('click', () => {
+    const overlay = document.getElementById('resultOverlay');
+    overlay.classList.remove('show');
+
+    if (!gameWon) {
+      // Show solution if they gave up
+      const solutionReveal = document.getElementById('solutionReveal');
+      solutionReveal.style.display = 'block';
+      buildSolutionPreview(document.getElementById('solutionPreview'));
+    }
+  });
+
+  // Close overlay clicking outside card
+  document.getElementById('resultOverlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('resultOverlay')) {
+      document.getElementById('resultOverlay').classList.remove('show');
+    }
+  });
+
+  // ============================================================
+  // IF ALREADY FINISHED — SHOW RESULT
+  // ============================================================
+  if (gameFinished) {
+    stopTimer();
+    renderCells();
+
+    if (gameWon) {
+      // Show win screen after short delay
+      setTimeout(() => {
+        const overlay = document.getElementById('resultOverlay');
+        const streakD = loadStreak();
+        document.getElementById('resultTitle').textContent = 'Solved! 🎉';
+        document.getElementById('resultTitle').classList.remove('lose');
+        document.getElementById('resultPuzzleName').textContent = `"${currentPuzzle.name}" · Puzzle #${puzzleNumber}`;
+        document.getElementById('statTime').textContent = formatTime(timerSeconds);
+        document.getElementById('statStreak').textContent = streakD.currentStreak;
+        document.getElementById('statBest').textContent = streakD.bestStreak;
+        document.getElementById('emojiSharePreview').textContent = buildEmojiGrid();
+        document.getElementById('solutionReveal').style.display = 'none';
+        overlay.classList.add('show');
+        startCountdown();
+      }, 400);
+    }
+  } else {
+    renderCells();
+  }
+
+  // ============================================================
+  // KEYBOARD SHORTCUT: F = fill mode, X = cross mode
+  // ============================================================
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'f' || e.key === 'F') setMode(true);
+    if (e.key === 'x' || e.key === 'X') setMode(false);
+  });
+
+  // ============================================================
+  // INITIAL RENDER
+  // ============================================================
+  setMode(true);
+  renderCells();
+
+})();
+</script>
+</body>
+</html>
