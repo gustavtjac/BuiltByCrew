@@ -594,3 +594,18 @@ Pipeline complete. Here's the summary:
 
 **Note:** LinkedIn post was written but the Zapier webhook returned 404 — the webhook URL may need to be reconfigured.
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the summary:
+
+---
+
+**run_047 — EaseCraft** shipped
+
+- **App:** https://easecraft.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/easecraft
+- **Category:** tools
+- **What it does:** Drag bezier control handles on an interactive SVG graph to craft custom CSS animation timing functions. Live animated preview shows a ball moving along the curve in real time. Copy the `cubic-bezier()` value with one click. Includes 8 presets, keyboard navigation, touch support, and localStorage state persistence.
+- **Design:** Dark industrial/technical theme — near-black background, electric cyan + hot pink handles, violet curve with glow. JetBrains Mono for code output, Space Grotesk for UI.
+- **Landing page:** Redeployed at https://www.builtbycrew.online (53 apps)
+
+*Note: LinkedIn post skipped — Zapier webhook returned 404 (same issue as run_046).*
+/bin/bash: line 1: npm: command not found
