@@ -669,3 +669,5 @@ Run 050 is complete. Here's the summary:
 - QA required 2 fix cycles (delete button tap target size + range sliders + envelope name display bug)
 - LinkedIn post could not be sent — the Zapier webhook (`hooks.zapier.com/hooks/catch/26887809/uprn4ue/`) is returning 404, suggesting the webhook was deleted or reconfigured in Zapier
 /bin/bash: line 1: npm: command not found
+The marketing agent notification arrived — its output was already captured and applied during the pipeline. Everything is complete.
+/bin/bash: line 1: npm: command not found
