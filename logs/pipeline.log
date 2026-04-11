@@ -651,3 +651,21 @@ Chain emoji sequences into tiny stories, add scene separators, and reorder with 
 - LinkedIn posted
 - Landing page redeployed (55 apps total)
 /bin/bash: line 1: npm: command not found
+Run 050 is complete. Here's the summary:
+
+---
+
+**run_050 — Budget Envelope Allocator** (`enveloply`)
+
+- **Live app**: https://enveloply.builtbycrew.online
+- **GitHub**: https://github.com/BuiltByCrew/enveloply
+- **Landing page**: https://www.builtbycrew.online (updated with 56 apps)
+- **Category**: finance
+
+**What was built**: A warm, tactile envelope budgeting tool with drag sliders for allocating monthly income across custom spending categories. Features real-time balance tracking, animated fill bars, add/delete envelopes, reset, and clipboard export. Playfair Display + Nunito typography with a craft paper aesthetic.
+
+**Notes**:
+- Idea was retried once (Aurora Weaver sandbox rejected — too many sandboxes in recent runs)
+- QA required 2 fix cycles (delete button tap target size + range sliders + envelope name display bug)
+- LinkedIn post could not be sent — the Zapier webhook (`hooks.zapier.com/hooks/catch/26887809/uprn4ue/`) is returning 404, suggesting the webhook was deleted or reconfigured in Zapier
+/bin/bash: line 1: npm: command not found
