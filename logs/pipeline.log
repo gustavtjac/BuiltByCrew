@@ -685,3 +685,16 @@ Pipeline complete. Here's the summary for **run_052**:
 
 **Landing page** redeployed with 58 total apps. LinkedIn webhook returned 404 (same issue as recent runs — webhook appears inactive).
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the summary for **run_053**:
+
+---
+
+**Hue Duel — Color Matching Challenge**
+- Live: https://hueduel.builtbycrew.online
+- GitHub: https://github.com/BuiltByCrew/hueduel
+- Category: games
+
+The game features a retro TV broadcast / game show aesthetic — dark stage with phosphor-glow colors (Bebas Neue + Share Tech Mono fonts), CRT scanlines, and a radial vignette. Five rounds of date-seeded HSL target swatches, Delta-E perceptual scoring, 15-second timer with speed bonus, and a shareable emoji scorecard.
+
+**Note:** The LinkedIn webhook returned 404 (appears to be disabled/expired). LinkedIn post was not sent — you may want to check the Zapier webhook configuration.
+/bin/bash: line 1: npm: command not found
