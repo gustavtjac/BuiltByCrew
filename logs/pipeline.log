@@ -671,3 +671,17 @@ Run 050 is complete. Here's the summary:
 /bin/bash: line 1: npm: command not found
 The marketing agent notification arrived — its output was already captured and applied during the pipeline. Everything is complete.
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the summary for **run_052**:
+
+---
+
+**Mycelium Network — Fungal Growth Sandbox** `myceliumweb`
+
+- **Live:** https://myceliumweb.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/myceliumweb
+- **Category:** sandbox
+
+**What it does:** Click the canvas to plant spores and watch glowing amber mycelium threads branch and spread organically in real time. Three sliders control growth speed, branching density, and thread length. Built on canvas 2D with per-frame random-walk growth, glow effects via `shadowBlur`, and a slow burn-in trail giving the network a living, evolving feel.
+
+**Landing page** redeployed with 58 total apps. LinkedIn webhook returned 404 (same issue as recent runs — webhook appears inactive).
+/bin/bash: line 1: npm: command not found
