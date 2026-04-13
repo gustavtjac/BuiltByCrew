@@ -700,3 +700,16 @@ The game features a retro TV broadcast / game show aesthetic — dark stage with
 /bin/bash: line 1: npm: command not found
 The marketing agent confirmed the same description already saved. Everything is in sync — run_054 is fully complete.
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the summary for **run_055**:
+
+---
+
+**Silhouette Daily — Guess the Shape**
+- **URL:** https://silhouetiq.builtbycrew.online
+- **GitHub:** https://github.com/BuiltByCrew/silhouetiq
+- **Category:** puzzle
+
+**What was built:** A dark gallery-themed daily puzzle where a mystery object is shown as a stark black silhouette, heavily zoomed in. Each wrong guess zooms out progressively across 6 levels. Features 37 embedded SVG silhouettes, streak tracking, shareable emoji results, and a date-seeded daily challenge — all in one self-contained HTML file.
+
+**Note:** LinkedIn post was written but Zapier webhook returned 404 (appears to be an expired webhook — consistent with other recent runs showing `linkedin_posted: false`).
+/bin/bash: line 1: npm: command not found
