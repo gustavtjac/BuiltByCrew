@@ -715,3 +715,17 @@ Pipeline complete. Here's the summary for **run_055**:
 /bin/bash: line 1: npm: command not found
 Landing deployed successfully — 62 apps now on the landing page. All confirmed.
 /bin/bash: line 1: npm: command not found
+Pipeline complete. Here's the run summary:
+
+---
+
+**run_057 — Breath Pacer** ✓
+
+- **Live**: [breathpace.builtbycrew.online](https://breathpace.builtbycrew.online)
+- **GitHub**: [github.com/BuiltByCrew/breathpace](https://github.com/BuiltByCrew/breathpace)
+- **Category**: tools
+- **Features**: 3 breathing presets (Box Breathing, 4-7-8, Cyclic Sighing), animated glowing orb, phase countdown, 1/3/5/10 min sessions, localStorage history, completion animation
+- **Aesthetic**: Scandinavian Calm — linen background, Cormorant Garamond, sage + dusty blue accents
+
+**Note**: LinkedIn webhook returned a deactivation message (`please unsubscribe me!`) — the Zapier webhook may need to be re-enabled in the Zapier dashboard.
+/bin/bash: line 1: npm: command not found
