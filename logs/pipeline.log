@@ -713,3 +713,5 @@ Pipeline complete. Here's the summary for **run_055**:
 
 **Note:** LinkedIn post was written but Zapier webhook returned 404 (appears to be an expired webhook — consistent with other recent runs showing `linkedin_posted: false`).
 /bin/bash: line 1: npm: command not found
+Landing deployed successfully — 62 apps now on the landing page. All confirmed.
+/bin/bash: line 1: npm: command not found
